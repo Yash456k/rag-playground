@@ -1,6 +1,6 @@
 # RAG Playground progress
 
-Last updated: 2026-07-11 22:36 IST
+Last updated: 2026-07-11 23:00 IST
 
 ## Goal
 
@@ -18,17 +18,38 @@ Ship a public portfolio RAG playground with a Vite/React frontend on Vercel and 
 
 - [x] Confirmed SSH access to `hermes-hetzner` as `yash`.
 - [x] Recorded the VPS baseline: 4 vCPU, 7.6 GiB RAM/no swap, 4.8 GiB available, no pre-existing Docker runtime, and host-native services on loopback ports 5432/8000/8880/8642/8643.
-- [ ] Resolve audit deviation: an Ubuntu `lxc` installer wrapper unexpectedly installed and started the LXD snap during an intended read-only probe. Passive inspection found no `lxdbr0` interface or LXD IP address; no rollback has been attempted.
+- [x] Resolved audit deviation: an Ubuntu `lxc` installer wrapper unexpectedly installed LXD. After confirming zero bridges, addresses, containers, VMs, storage pools, or networks, the snap was purged and the pre-audit interface state restored.
 - [x] Reconciled real public details from the tracked resume and both portfolio source trees without modifying either portfolio repository.
 - [x] Added two truthful starter corpus documents with RAG Playground first, corrected contact/project links, and dated work history.
 - [x] Implemented the backend, frontend, isolated Compose/Caddy assets, ingestion, retention, and automated tests.
 - [x] Verified 34 backend tests, 2 frontend parser tests, Ruff, ESLint, TypeScript, and the Vite production build.
 - [x] Built the exact CPU Docker image locally. Four-model smoke: 1,943.3 MiB RSS with all models resident; query latency was 8.1/17.2/61.2/527.1 ms for MiniLM/BGE Small/BGE Base/Qwen3 under a 2.5 CPU / 4 GiB container cap.
-- [ ] Create and push a new GitHub repository.
-- [ ] Deploy the isolated VPS stack and ingest the corpus.
-- [ ] Configure an HTTPS API subdomain and strict frontend CORS.
-- [ ] Deploy the frontend to Vercel production.
+- [x] Created and pushed the public repository at `https://github.com/Yash456k/rag-playground`.
+- [x] Installed Ubuntu's `docker.io` and `docker-compose-v2` packages because the audited VPS had no container runtime. No pre-existing Docker containers existed.
+- [x] Deployed the private API/database under `/opt/rag-playground`; ingestion produced 2 documents / 9 chunks with all 9 rows populated in each vector column.
+- [ ] Start the isolated Caddy proxy and validate public HTTPS after `rag-api.yashx.me` DNS exists.
+- [x] Verified strict CORS: the Vercel production origin is echoed and an unlisted origin receives no allow-origin header.
+- [x] Deployed Vercel production at `https://rag-playground-alpha.vercel.app`; custom domain `rag.yashx.me` is attached and waiting for DNS.
 - [ ] Run the final live verification matrix with captured outputs.
+
+## Current deployment evidence
+
+- API loopback health is `ok`; database reports 9 chunks and vector coverage of 9/9 for all four embedders.
+- After warmed queries across every embedder, `docker stats` reported API 510.8 MiB and Postgres 35.57 MiB. Both are well below the 4.5 GiB combined budget; proxy is capped at 96 MiB.
+- Internal SSE checks passed for all 4 embedders and all 3 Groq models. Every stream emitted `meta`, `sources`, many `token` events, and `done` with per-stage latency.
+- Off-topic prompt-injection questions were refused for all four embedders.
+- Forced provider failure returned Groq 404 for the injected invalid model, then completed on GPT-OSS 20B with `fallbackUsed=true` and a logged attempt.
+- The live PostgreSQL per-IP daily limiter returned HTTP 429 with `ip_daily_rate_limit_exceeded`.
+- Existing SSH, fail2ban, Tailscale, PostgreSQL, Life Task API, OmniVoice, and Hermes listeners remain active with the same processes/listeners; UFW rules are unchanged.
+
+## External DNS blocker
+
+Add both records at the current `yashx.me` DNS provider, then continue:
+
+- `A rag-api 178.104.56.243`
+- `A rag 76.76.21.21`
+
+After propagation, start `proxy`, verify certificates/CORS, run Playwright through the public Vercel site for the full model matrix, trip the public rate limit, repeat the fallback/off-topic checks publicly, capture final stats/service parity, and rotate the exposed Groq key.
 
 ## Architecture decisions
 
