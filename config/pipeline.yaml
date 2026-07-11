@@ -1,0 +1,72 @@
+version: 1
+
+chunking:
+  max_characters: 900
+  overlap_characters: 140
+  minimum_characters: 120
+
+retrieval:
+  top_k: 5
+
+generation:
+  temperature: 0.15
+  max_tokens: 600
+  request_timeout_seconds: 45
+
+embedders:
+  - id: minilm-l6
+    label: MiniLM L6
+    description: Fastest · 384 dimensions
+    model: sentence-transformers/all-MiniLM-L6-v2
+    revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+    dimensions: 384
+    column: embedding_minilm
+    query_prefix: ""
+    dtype: float32
+    minimum_score: 0.18
+  - id: bge-small
+    label: BGE Small v1.5
+    description: Fast + stronger retrieval · 384 dimensions
+    model: BAAI/bge-small-en-v1.5
+    revision: 5c38ec7c405ec4b44b94cc5a9bb96e735b38267a
+    dimensions: 384
+    column: embedding_bge_small
+    query_prefix: "Represent this sentence for searching relevant passages: "
+    dtype: float32
+    minimum_score: 0.30
+  - id: bge-base
+    label: BGE Base v1.5
+    description: Balanced quality · 768 dimensions
+    model: BAAI/bge-base-en-v1.5
+    revision: a5beb1e3e68b9ab74eb54cfd186867f64f240e1a
+    dimensions: 768
+    column: embedding_bge_base
+    query_prefix: "Represent this sentence for searching relevant passages: "
+    dtype: float32
+    minimum_score: 0.30
+  - id: qwen3-embedding
+    label: Qwen3 Embedding 0.6B
+    description: Highest quality · 1024 dimensions
+    model: Qwen/Qwen3-Embedding-0.6B
+    revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
+    dimensions: 1024
+    column: embedding_qwen3
+    query_prefix: "Instruct: Retrieve portfolio passages that answer the question.\nQuery: "
+    dtype: bfloat16
+    minimum_score: 0.30
+
+llms:
+  - id: openai/gpt-oss-20b
+    label: GPT-OSS 20B
+    description: Fast, efficient reasoning
+  - id: openai/gpt-oss-120b
+    label: GPT-OSS 120B
+    description: Highest-capability production model
+  - id: qwen/qwen3.6-27b
+    label: Qwen3.6 27B
+    description: Preview · strong multilingual reasoning
+
+fallback_order:
+  - openai/gpt-oss-20b
+  - openai/gpt-oss-120b
+  - qwen/qwen3.6-27b

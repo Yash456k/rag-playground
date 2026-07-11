@@ -1,0 +1,216 @@
+from __future__ import annotations
+
+import hashlib
+import json
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+from uuid import UUID
+
+from pgvector.psycopg import register_vector_async
+from psycopg import AsyncConnection, sql
+from psycopg.rows import dict_row
+from psycopg_pool import AsyncConnectionPool
+
+from app.config import EmbedderConfig
+
+
+async def _configure_connection(connection) -> None:
+    await register_vector_async(connection)
+
+
+class Database:
+    def __init__(self, database_url: str) -> None:
+        self.database_url = database_url
+        self.pool = AsyncConnectionPool(
+            conninfo=database_url,
+            min_size=1,
+            max_size=6,
+            open=False,
+            configure=_configure_connection,
+            kwargs={"autocommit": True, "row_factory": dict_row},
+        )
+
+    async def open(self) -> None:
+        schema_path = Path(__file__).parents[1] / "sql" / "schema.sql"
+        schema = schema_path.read_text(encoding="utf-8")
+        # Bootstrap pgvector before pool connection hooks try to register its OIDs.
+        connection = await AsyncConnection.connect(self.database_url, autocommit=True)
+        async with connection:
+            await connection.execute(schema)
+        await self.pool.open(wait=True, timeout=30)
+
+    async def close(self) -> None:
+        await self.pool.close()
+
+    async def health(self) -> dict[str, Any]:
+        async with self.pool.connection() as connection:
+            row = await (
+                await connection.execute(
+                    """
+                    SELECT
+                        count(*) AS chunks,
+                        count(*) FILTER (WHERE embedding_minilm IS NOT NULL) AS minilm,
+                        count(*) FILTER (WHERE embedding_bge_small IS NOT NULL) AS bge_small,
+                        count(*) FILTER (WHERE embedding_bge_base IS NOT NULL) AS bge_base,
+                        count(*) FILTER (WHERE embedding_qwen3 IS NOT NULL) AS qwen3
+                    FROM chunks
+                    """
+                )
+            ).fetchone()
+        chunks = int(row["chunks"]) if row else 0
+        coverage = {
+            "minilm-l6": int(row["minilm"]) if row else 0,
+            "bge-small": int(row["bge_small"]) if row else 0,
+            "bge-base": int(row["bge_base"]) if row else 0,
+            "qwen3-embedding": int(row["qwen3"]) if row else 0,
+        }
+        return {
+            "ok": chunks > 0 and all(count == chunks for count in coverage.values()),
+            "chunks": chunks,
+            "vectorCoverage": coverage,
+        }
+
+    async def cleanup_retention(self) -> None:
+        async with self.pool.connection() as connection:
+            await connection.execute(
+                "DELETE FROM query_logs WHERE created_at < now() - interval '30 days'"
+            )
+            await connection.execute(
+                "DELETE FROM rate_limit_buckets WHERE bucket_date < current_date - 3"
+            )
+
+    async def retrieve(
+        self,
+        embedder: EmbedderConfig,
+        query_vector: list[float],
+        top_k: int,
+    ) -> list[dict[str, Any]]:
+        # Column names come exclusively from PipelineConfig's Literal allowlist.
+        column = embedder.column
+        query = sql.SQL("""
+            SELECT id, source, title, chunk_index, content,
+                   1 - ({column} <=> %s::vector) AS score
+            FROM chunks
+            WHERE {column} IS NOT NULL
+            ORDER BY {column} <=> %s::vector
+            LIMIT %s
+        """).format(column=sql.Identifier(column))
+        async with self.pool.connection() as connection:
+            cursor = await connection.execute(query, (query_vector, query_vector, top_k))
+            rows = await cursor.fetchall()
+        return [
+            {
+                "id": str(row["id"]),
+                "source": row["source"],
+                "title": row["title"],
+                "chunkIndex": row["chunk_index"],
+                "content": row["content"],
+                "score": round(float(row["score"]), 5),
+            }
+            for row in rows
+        ]
+
+    async def reserve_daily_limits(
+        self,
+        ip_hash: str,
+        per_ip_limit: int,
+        global_limit: int,
+    ) -> tuple[bool, int, str | None]:
+        today = datetime.now(UTC).date()
+        global_key = "all"
+        async with self.pool.connection() as connection, connection.transaction():
+            # Stable locks make the two-counter check/increment atomic across workers.
+            await connection.execute(
+                "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (f"global:{today}",)
+            )
+            await connection.execute(
+                "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (f"ip:{today}:{ip_hash}",)
+            )
+            cursor = await connection.execute(
+                """
+                SELECT scope, request_count
+                FROM rate_limit_buckets
+                WHERE bucket_date = %s
+                  AND ((scope = 'global' AND key_hash = %s) OR (scope = 'ip' AND key_hash = %s))
+                """,
+                (today, global_key, ip_hash),
+            )
+            counts = {row["scope"]: row["request_count"] for row in await cursor.fetchall()}
+            if counts.get("global", 0) >= global_limit:
+                return False, 0, "global"
+            if counts.get("ip", 0) >= per_ip_limit:
+                return False, 0, "ip"
+            await connection.execute(
+                """
+                INSERT INTO rate_limit_buckets (bucket_date, scope, key_hash, request_count)
+                VALUES (%s, 'global', %s, 1), (%s, 'ip', %s, 1)
+                ON CONFLICT (bucket_date, scope, key_hash) DO UPDATE
+                SET request_count = rate_limit_buckets.request_count + 1, updated_at = now()
+                """,
+                (today, global_key, today, ip_hash),
+            )
+            remaining = per_ip_limit - counts.get("ip", 0) - 1
+            return True, max(0, remaining), None
+
+    async def start_query_log(
+        self,
+        request_id: UUID,
+        ip_hash: str,
+        question: str,
+        embedder: str,
+        model: str,
+    ) -> None:
+        async with self.pool.connection() as connection:
+            await connection.execute(
+                """
+                INSERT INTO query_logs
+                    (id, ip_hash, question, requested_embedder, requested_model)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (request_id, ip_hash, question, embedder, model),
+            )
+
+    async def finish_query_log(
+        self,
+        request_id: UUID,
+        *,
+        status: str,
+        actual_model: str | None = None,
+        fallback_used: bool = False,
+        fallback_attempts: list[dict[str, Any]] | None = None,
+        chunks: list[dict[str, Any]] | None = None,
+        latencies: dict[str, Any] | None = None,
+        answer_characters: int | None = None,
+        error_type: str | None = None,
+    ) -> None:
+        chunk_log = [
+            {"id": item["id"], "source": item["source"], "score": item["score"]}
+            for item in (chunks or [])
+        ]
+        async with self.pool.connection() as connection:
+            await connection.execute(
+                """
+                UPDATE query_logs
+                SET completed_at = now(), status = %s, actual_model = %s,
+                    fallback_used = %s, fallback_attempts = %s::jsonb,
+                    retrieved_chunks = %s::jsonb, latencies = %s::jsonb,
+                    answer_characters = %s, error_type = %s
+                WHERE id = %s
+                """,
+                (
+                    status,
+                    actual_model,
+                    fallback_used,
+                    json.dumps(fallback_attempts or []),
+                    json.dumps(chunk_log),
+                    json.dumps(latencies or {}),
+                    answer_characters,
+                    error_type,
+                    request_id,
+                ),
+            )
+
+
+def content_digest(content: str) -> str:
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()

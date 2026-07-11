@@ -1,0 +1,76 @@
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import pytest
+from pydantic import ValidationError
+
+from app.config import PipelineConfig
+
+PROJECT_ROOT = Path(__file__).parents[1]
+
+
+def test_shipped_embedder_ladder_has_unique_schema_backed_columns(pipeline: PipelineConfig) -> None:
+    expected = {
+        "minilm-l6": ("embedding_minilm", 384),
+        "bge-small": ("embedding_bge_small", 384),
+        "bge-base": ("embedding_bge_base", 768),
+        "qwen3-embedding": ("embedding_qwen3", 1024),
+    }
+    actual = {item.id: (item.column, item.dimensions) for item in pipeline.embedders}
+
+    assert actual == expected
+    assert len({item.column for item in pipeline.embedders}) == len(pipeline.embedders)
+
+    schema = (PROJECT_ROOT / "sql" / "schema.sql").read_text(encoding="utf-8")
+    for embedder in pipeline.embedders:
+        pattern = rf"\b{re.escape(embedder.column)}\s+vector\({embedder.dimensions}\)"
+        assert re.search(pattern, schema), f"schema does not match {embedder.id}"
+
+
+def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
+    pipeline: PipelineConfig,
+) -> None:
+    public = pipeline.public_dict()
+    embedder_ids = {item.id for item in pipeline.embedders}
+    llm_ids = {item.id for item in pipeline.llms}
+
+    assert 3 <= len(llm_ids) <= 4
+    assert public["defaults"]["embedder"] in embedder_ids
+    assert public["defaults"]["llm"] in llm_ids
+    assert {item["id"] for item in public["embedders"]} == embedder_ids
+    assert {item["id"] for item in public["llms"]} == llm_ids
+    assert set(pipeline.fallback_order).issubset(llm_ids)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("duplicate_embedder_id", "embedder ids must be unique"),
+        ("duplicate_embedder_column", "each embedder must have its own vector column"),
+        ("duplicate_llm_id", "LLM ids must be unique"),
+        ("unknown_fallback", "fallback_order may only contain configured LLM ids"),
+    ],
+)
+def test_registry_rejects_ambiguous_or_unknown_mappings(
+    pipeline_data: dict, mutation: str, message: str
+) -> None:
+    if mutation == "duplicate_embedder_id":
+        pipeline_data["embedders"][1]["id"] = pipeline_data["embedders"][0]["id"]
+    elif mutation == "duplicate_embedder_column":
+        pipeline_data["embedders"][1]["column"] = pipeline_data["embedders"][0]["column"]
+    elif mutation == "duplicate_llm_id":
+        pipeline_data["llms"][1]["id"] = pipeline_data["llms"][0]["id"]
+    else:
+        pipeline_data["fallback_order"].append("not/a-configured-model")
+
+    with pytest.raises(ValidationError, match=message):
+        PipelineConfig.model_validate(pipeline_data)
+
+
+def test_registry_lookup_fails_closed_for_unknown_ids(pipeline: PipelineConfig) -> None:
+    with pytest.raises(KeyError, match="missing-embedder"):
+        pipeline.embedder("missing-embedder")
+    with pytest.raises(KeyError, match="missing-model"):
+        pipeline.llm("missing-model")
