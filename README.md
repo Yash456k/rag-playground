@@ -115,6 +115,15 @@ Set it for Vercel Production, Preview, and Development. The backend `FRONTEND_OR
 
 SSE event types are `meta`, `sources`, `model`, `token`, `usage`, `done`, and `error`. A completed response reports both the requested and served model, fallback attempts, and `embeddingMs`, `retrievalMs`, `firstTokenMs`, `generationMs`, and `totalMs`.
 
+One stream can be checked from the production image without exposing the operator token:
+
+```bash
+docker compose exec -T api python -m scripts.verify_stream \
+  --url http://127.0.0.1:8000 \
+  --embedder bge-small \
+  --model openai/gpt-oss-20b
+```
+
 ## Model attribution
 
 - `sentence-transformers/all-MiniLM-L6-v2` - Apache-2.0
