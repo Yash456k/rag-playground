@@ -157,6 +157,27 @@ def test_answer_gates_require_claim_evidence_and_valid_citation() -> None:
     assert result["citation"]["requiredEvidenceCited"] is True
 
 
+def test_answer_gates_normalize_model_typography_without_changing_semantics() -> None:
+    response = {
+        "httpStatus": 200,
+        "answer": "He handled more than 100,000 database records per day【S1】.",
+        "sources": [
+            {
+                "source": "about.md",
+                "chunkIndex": 1,
+                "content": "He handled more than 100,000 database records per day.",
+            }
+        ],
+        "done": _done(),
+        "streamError": None,
+    }
+
+    result = evaluate_answer(_case(), response, [])
+
+    assert result["passed"] is True
+    assert result["citation"]["citedSourceNumbers"] == [1]
+
+
 def test_refusal_and_forbidden_claim_gates_fail_unsafe_answer() -> None:
     response = {
         "httpStatus": 200,

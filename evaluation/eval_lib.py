@@ -5,6 +5,7 @@ import hmac
 import json
 import math
 import re
+import unicodedata
 from collections.abc import Iterable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
@@ -214,8 +215,31 @@ def select_cases(
     return selected
 
 
+def normalize_text(text: str) -> str:
+    """Canonicalize harmless model typography before semantic contract matching."""
+    normalized = unicodedata.normalize("NFKC", text).translate(
+        str.maketrans(
+            {
+                "‐": "-",
+                "‑": "-",
+                "‒": "-",
+                "–": "-",
+                "—": "-",
+                "―": "-",
+                "’": "'",
+                "‘": "'",
+                "【": "[",
+                "】": "]",
+            }
+        )
+    )
+    normalized = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", normalized)
+    normalized = re.sub(r"\s+%", "%", normalized)
+    return normalized.replace("**", "")
+
+
 def regex_matches(pattern: str, text: str) -> bool:
-    return re.search(pattern, text, re.I | re.S) is not None
+    return re.search(pattern, normalize_text(text), re.I | re.S) is not None
 
 
 def evidence_option_matches(option: dict[str, Any], chunk: dict[str, Any]) -> bool:

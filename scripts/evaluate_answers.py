@@ -26,6 +26,7 @@ from evaluation.eval_lib import (  # noqa: E402
     load_cases,
     load_gates,
     mean,
+    normalize_text,
     percentile,
     redact_sensitive,
     regex_matches,
@@ -185,9 +186,12 @@ def _citation_results(
     case: dict[str, Any], answer: str, sources: Sequence[dict[str, Any]]
 ) -> dict[str, Any]:
     expectation = case["answer_expectation"]
-    cited = [int(value) for value in re.findall(r"\[S(\d+)\]", answer, re.I)]
+    normalized_answer = normalize_text(answer)
+    cited = [int(value) for value in re.findall(r"\[S(\d+)\]", normalized_answer, re.I)]
     unique = sorted(set(cited))
-    malformed = re.findall(r"\[S[^\]]*\]", re.sub(r"\[S\d+\]", "", answer), re.I)
+    malformed = re.findall(
+        r"\[S[^\]]*\]", re.sub(r"\[S\d+\]", "", normalized_answer), re.I
+    )
     valid = not malformed and all(1 <= index <= len(sources) for index in unique)
     cited_chunks = [sources[index - 1] for index in unique if 1 <= index <= len(sources)]
     group_support = [
