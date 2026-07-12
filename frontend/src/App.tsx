@@ -118,23 +118,25 @@ function ModelControls({
   onHistoryAwareChange,
 }: ModelControlsProps) {
   const embedder = config.embedders.find((item) => item.id === embedderId)
-  const model = config.llms.find((item) => item.id === modelId)
 
   return (
     <section className="model-panel" aria-labelledby="model-panel-title">
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">LIVE PIPELINE CONFIG</p>
-          <h2 id="model-panel-title">Choose the route</h2>
+          <p className="eyebrow">ROUTE</p>
+          <h2 id="model-panel-title">Retrieval setup</h2>
         </div>
-        <p className="panel-note">Every answer preserves this selection in its trace.</p>
+        {embedder && (
+          <div className="optimization-readout" aria-label="Active retrieval optimizations">
+            <b>{embedder.optimization.portfolioTuned ? 'Fine-tuned' : 'Baseline'}</b>
+            <span>{embedder.optimization.queryTransform}</span>
+            <span>threshold {embedder.optimization.minimumScore.toFixed(2)}</span>
+          </div>
+        )}
       </div>
       <div className="model-grid">
         <label className="model-control">
-          <span className="control-index" aria-hidden="true">
-            01
-          </span>
-          <span className="control-label">Embedding model</span>
+          <span className="control-label">Embedder</span>
           <span className="select-wrap">
             <select
               value={embedderId}
@@ -148,17 +150,10 @@ function ModelControls({
               ))}
             </select>
           </span>
-          <span className="control-description">
-            {embedder?.description} · {embedder?.dimensions}D ·{' '}
-            {embedder?.optimization.portfolioTuned ? 'portfolio fine-tune' : 'general baseline'}
-          </span>
         </label>
 
         <label className="model-control">
-          <span className="control-index" aria-hidden="true">
-            02
-          </span>
-          <span className="control-label">Generation model</span>
+          <span className="control-label">Generator</span>
           <span className="select-wrap">
             <select
               value={modelId}
@@ -172,14 +167,10 @@ function ModelControls({
               ))}
             </select>
           </span>
-          <span className="control-description">{model?.description}</span>
         </label>
 
         <label className="model-control">
-          <span className="control-index" aria-hidden="true">
-            03
-          </span>
-          <span className="control-label">Retrieval depth</span>
+          <span className="control-label">Context</span>
           <span className="select-wrap">
             <select
               value={topK}
@@ -193,14 +184,10 @@ function ModelControls({
               ))}
             </select>
           </span>
-          <span className="control-description">Trade context coverage for a tighter prompt</span>
         </label>
 
         <label className="model-control toggle-control">
-          <span className="control-index" aria-hidden="true">
-            04
-          </span>
-          <span className="control-label">Follow-up optimization</span>
+          <span className="control-label">Follow-ups</span>
           <span className="toggle-line">
             <input
               type="checkbox"
@@ -208,20 +195,10 @@ function ModelControls({
               onChange={(event) => onHistoryAwareChange(event.target.checked)}
               disabled={disabled}
             />
-            <strong>{historyAware ? 'History-aware retrieval' : 'Question only'}</strong>
+            <strong>{historyAware ? 'Use history' : 'Question only'}</strong>
           </span>
-          <span className="control-description">Use recent user turns to resolve short follow-ups</span>
         </label>
       </div>
-      {embedder && (
-        <div className="optimization-readout" aria-label="Active retrieval optimizations">
-          <span>ACTIVE OPTIMIZATIONS</span>
-          <b>{embedder.optimization.queryTransform}</b>
-          <b>cosine threshold {embedder.optimization.minimumScore.toFixed(2)}</b>
-          <b>top {topK}</b>
-          <b>{historyAware ? 'history context on' : 'history context off'}</b>
-        </div>
-      )}
     </section>
   )
 }
