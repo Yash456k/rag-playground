@@ -12,7 +12,6 @@ import type {
   AssistantMessage,
   ChatMessage,
   HistoryItem,
-  Latencies,
   ModelOption,
   PlaygroundConfig,
   RetrievedChunk,
@@ -26,6 +25,30 @@ const STORAGE_KEYS = {
   topK: 'rag-playground:top-k',
   history: 'rag-playground:history-aware',
 }
+
+const PREVIEW_CHUNKS: RetrievedChunk[] = [
+  {
+    id: 'preview-resume',
+    title: 'Resume',
+    source: 'about-and-experience.md',
+    content: 'Full-stack engineering, applied AI, education, and measurable internship experience.',
+    score: 0.92,
+  },
+  {
+    id: 'preview-projects',
+    title: 'Projects',
+    source: 'projects.md',
+    content: 'Production projects spanning RAG, concurrent booking systems, and real-time chat.',
+    score: 0.89,
+  },
+  {
+    id: 'preview-case-study',
+    title: 'RAG Engineering',
+    source: 'rag-playground-case-study.md',
+    content: 'Retrieval training, pgvector architecture, deployment tradeoffs, and verification.',
+    score: 0.86,
+  },
+]
 
 function newId(prefix: string): string {
   return `${prefix}-${crypto.randomUUID()}`
@@ -55,18 +78,20 @@ function AppHeader({ connected }: { connected: boolean }) {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Yash Khambhatta RAG Playground home">
-        <span className="brand-mark" aria-hidden="true">
-          YK
-        </span>
-        <span className="brand-copy">
-          <strong>RAG Playground</strong>
-          <span>Yash Khambhatta</span>
-        </span>
+        <span className="brand-mark" aria-hidden="true">YK</span>
+        <strong>Yash Dev</strong>
       </a>
-      <div className={`connection-status ${connected ? 'is-connected' : ''}`} role="status">
-        <span className="status-dot" aria-hidden="true" />
-        {connected ? 'Pipeline online' : 'Connecting'}
-      </div>
+      <nav className="site-nav" aria-label="Portfolio navigation">
+        <a href="https://www.yashx.me/#work">Work</a>
+        <a href="https://www.yashx.me/#about">About</a>
+        <a href="https://www.yashx.me/#contact">Contact</a>
+        <span
+          className={`connection-status ${connected ? 'is-connected' : ''}`}
+          role="status"
+          aria-label={connected ? 'Pipeline online' : 'Connecting'}
+          title={connected ? 'Pipeline online' : 'Connecting'}
+        />
+      </nav>
     </header>
   )
 }
@@ -121,22 +146,10 @@ function ModelControls({
 
   return (
     <section className="model-panel" aria-labelledby="model-panel-title">
-      <div className="panel-heading">
-        <div>
-          <p className="eyebrow">ROUTE</p>
-          <h2 id="model-panel-title">Retrieval setup</h2>
-        </div>
-        {embedder && (
-          <div className="optimization-readout" aria-label="Active retrieval optimizations">
-            <b>{embedder.optimization.portfolioTuned ? 'Fine-tuned' : 'Baseline'}</b>
-            <span>{embedder.optimization.queryTransform}</span>
-            <span>threshold {embedder.optimization.minimumScore.toFixed(2)}</span>
-          </div>
-        )}
-      </div>
+      <h2 className="visually-hidden" id="model-panel-title">Choose the route</h2>
       <div className="model-grid">
         <label className="model-control">
-          <span className="control-label">Embedder</span>
+          <span className="control-label">Embedding:</span>
           <span className="select-wrap">
             <select
               value={embedderId}
@@ -153,7 +166,7 @@ function ModelControls({
         </label>
 
         <label className="model-control">
-          <span className="control-label">Generator</span>
+          <span className="control-label">LLM:</span>
           <span className="select-wrap">
             <select
               value={modelId}
@@ -168,86 +181,80 @@ function ModelControls({
             </select>
           </span>
         </label>
-
-        <label className="model-control">
-          <span className="control-label">Context</span>
-          <span className="select-wrap">
+      </div>
+      <details className="route-advanced">
+        <summary>Retrieval settings</summary>
+        <div className="advanced-content">
+          <label>
+            Context
             <select
               value={topK}
               onChange={(event) => onTopKChange(Number(event.target.value))}
               disabled={disabled}
             >
               {config.retrieval.selectableTopK.map((value) => (
-                <option key={value} value={value}>
-                  Top {value} passages
-                </option>
+                <option key={value} value={value}>Top {value}</option>
               ))}
             </select>
-          </span>
-        </label>
-
-        <label className="model-control toggle-control">
-          <span className="control-label">Follow-ups</span>
-          <span className="toggle-line">
+          </label>
+          <label className="advanced-toggle">
             <input
               type="checkbox"
               checked={historyAware}
               onChange={(event) => onHistoryAwareChange(event.target.checked)}
               disabled={disabled}
             />
-            <strong>{historyAware ? 'Use history' : 'Question only'}</strong>
-          </span>
-        </label>
-      </div>
+            Use recent questions for follow-ups
+          </label>
+          {embedder && (
+            <span className="optimization-readout">
+              {embedder.optimization.portfolioTuned ? 'Fine-tuned' : 'Baseline'} ·{' '}
+              {embedder.optimization.queryTransform} · threshold{' '}
+              {embedder.optimization.minimumScore.toFixed(2)}
+            </span>
+          )}
+        </div>
+      </details>
     </section>
   )
 }
 
-const latencyStages: Array<{ key: keyof Latencies; label: string }> = [
-  { key: 'embeddingMs', label: 'Embed' },
-  { key: 'retrievalMs', label: 'Retrieve' },
-  { key: 'firstTokenMs', label: 'First token' },
-  { key: 'generationMs', label: 'Generate' },
-  { key: 'totalMs', label: 'Total' },
-]
-
-function LatencyTrace({ latencies }: { latencies: Latencies }) {
+function SourceCard({ chunk, index }: { chunk: RetrievedChunk; index: number }) {
   return (
-    <div className="latency-trace" aria-label="Pipeline latency">
-      {latencyStages.map((stage) => {
-        const value = latencies[stage.key]
-        return (
-          <div className="latency-stage" key={stage.key}>
-            <span>{stage.label}</span>
-            <strong>{value === undefined ? '—' : `${Math.round(value)} ms`}</strong>
-          </div>
-        )
-      })}
-    </div>
+    <article className="source-card">
+      <div className="source-title">
+        <svg className="source-number" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3.5h7l4 4V20.5H7zM14 3.5v4h4M10 12h5M10 15.5h5" />
+        </svg>
+        <strong>{chunk.title}</strong>
+      </div>
+      <span className="source-file">Source: {chunk.source}</span>
+      <p>{chunk.content}</p>
+      <footer className="source-meta">
+        <span>Chunk {index + 1}</span>
+        <strong aria-label={`Similarity score ${chunk.score.toFixed(2)}`}>
+          Score: {chunk.score.toFixed(2)}
+        </strong>
+      </footer>
+    </article>
   )
 }
 
-function SourceCard({ chunk, index }: { chunk: RetrievedChunk; index: number }) {
-  const percent = Math.max(0, Math.min(100, chunk.score * 100))
-
+function RetrievedRail({ chunks }: { chunks: RetrievedChunk[] }) {
   return (
-    <article className="source-card">
-      <header className="source-header">
-        <span className="source-number">S{index + 1}</span>
-        <div className="source-title">
-          <strong>{chunk.title}</strong>
-          <span>{chunk.source}</span>
-        </div>
-        <div className="score" aria-label={`Similarity score ${chunk.score.toFixed(3)}`}>
-          <strong>{chunk.score.toFixed(3)}</strong>
-          <span>score</span>
-        </div>
+    <aside className="source-rail" aria-label="Retrieved chunks">
+      <header className="rail-heading">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
+        </svg>
+        <h2>Retrieved chunks</h2>
       </header>
-      <div className="score-track" aria-hidden="true">
-        <span style={{ width: `${percent}%` }} />
+      <div className="source-list">
+        {chunks.slice(0, 3).map((chunk, index) => (
+          <SourceCard key={`${chunk.id ?? chunk.source}-${index}`} chunk={chunk} index={index} />
+        ))}
       </div>
-      <p>{chunk.content}</p>
-    </article>
+    </aside>
   )
 }
 
@@ -259,39 +266,8 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
 
   return (
     <article className={`message assistant-message is-${message.status}`} aria-label="RAG answer">
-      <div className="message-rail" aria-hidden="true">
-        <span>AI</span>
-      </div>
-      <div className="answer-body">
-        <header className="answer-heading">
-          <div>
-            <span className="answer-kicker">GROUNDED RESPONSE</span>
-            <span className={`answer-state state-${message.status}`}>
-              {message.status === 'retrieving' && 'Retrieving'}
-              {message.status === 'streaming' && 'Streaming'}
-              {message.status === 'complete' && 'Complete'}
-              {message.status === 'error' && 'Interrupted'}
-            </span>
-          </div>
-          {message.requestId && <code title="Request ID">{message.requestId.slice(0, 8)}</code>}
-        </header>
-
-        <div className="selection-snapshot" aria-label="Models used for this answer">
-          <span>
-            <small>EMBED</small>
-            {message.embedderLabel} · K{message.topK} · {message.historyAware ? 'history' : 'question only'}
-          </span>
-          <span>
-            <small>REQUESTED</small>
-            {message.requestedModelLabel}
-          </span>
-          <span>
-            <small>SERVED</small>
-            {servedLabel}
-          </span>
-          {message.fallbackUsed && <b className="fallback-badge">FALLBACK</b>}
-        </div>
-
+      <div className="assistant-orb" aria-hidden="true">✧</div>
+      <div className="assistant-content">
         <div className="answer-copy" aria-live="polite" aria-busy={isWorking}>
           {message.content ? (
             <p>
@@ -313,39 +289,14 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
             </div>
           )}
         </div>
-
-        <section className="trace-block" aria-label="Answer trace">
-          <div className="trace-heading">
-            <div>
-              <span className="trace-icon" aria-hidden="true">
-                ↳
-              </span>
-              <strong>Pipeline trace</strong>
-            </div>
-            <span>
-              {message.chunks.length} chunk{message.chunks.length === 1 ? '' : 's'} retrieved
-            </span>
-          </div>
-          <LatencyTrace latencies={message.latencies} />
-        </section>
-
-        {message.chunks.length > 0 ? (
-          <section className="sources" aria-label="Retrieved source chunks">
-            <div className="sources-heading">
-              <strong>Retrieved context</strong>
-              <span>ranked by cosine similarity</span>
-            </div>
-            <div className="source-list">
-              {message.chunks.map((chunk, index) => (
-                <SourceCard key={`${chunk.id ?? chunk.source}-${index}`} chunk={chunk} index={index} />
-              ))}
-            </div>
-          </section>
-        ) : (
-          message.status === 'complete' && (
-            <p className="empty-sources">No corpus chunks met the retrieval threshold for this question.</p>
-          )
-        )}
+        <div className="message-meta">
+          <span>{servedLabel}{message.fallbackUsed ? ' · fallback' : ''}</span>
+          <span>
+            {message.latencies.totalMs === undefined
+              ? message.status === 'complete' ? 'Complete' : 'Working…'
+              : `${Math.round(message.latencies.totalMs)} ms`}
+          </span>
+        </div>
       </div>
     </article>
   )
@@ -354,16 +305,26 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
 function ChatTranscript({ messages }: { messages: ChatMessage[] }) {
   if (messages.length === 0) {
     return (
-      <div className="empty-chat">
-        <div className="empty-glyph" aria-hidden="true">
-          <span>?</span>
-        </div>
-        <p className="eyebrow">CORPUS READY</p>
-        <h2>Ask what the résumé cannot show at a glance.</h2>
-        <p>
-          Explore Yash&apos;s experience, technical decisions, projects, skills, and education. Every answer
-          arrives with the evidence that shaped it.
-        </p>
+      <div className="transcript demo-transcript">
+        <article className="message user-message" aria-label="Example question">
+          <p>What kind of work do you do?</p>
+          <time>Ask me anything</time>
+        </article>
+        <article className="message assistant-message" aria-label="Example answer">
+          <div className="assistant-orb" aria-hidden="true">✧</div>
+          <div className="assistant-content">
+            <div className="answer-copy">
+              <p>
+                I&apos;m a full-stack developer focused on clean product engineering, real-time systems,
+                search, analytics, and applied AI.
+              </p>
+            </div>
+            <div className="message-meta">
+              <span>Portfolio corpus</span>
+              <span>Ready</span>
+            </div>
+          </div>
+        </article>
       </div>
     )
   }
@@ -373,8 +334,8 @@ function ChatTranscript({ messages }: { messages: ChatMessage[] }) {
       {messages.map((message) =>
         message.role === 'user' ? (
           <article className="message user-message" key={message.id} aria-label="Your question">
-            <div className="user-message-label">YOU</div>
             <p>{message.content}</p>
+            <time>Now</time>
           </article>
         ) : (
           <AssistantAnswer key={message.id} message={message} />
@@ -409,7 +370,7 @@ function Composer({ value, disabled, onChange, onSubmit, inputRef }: ComposerPro
 
   return (
     <form className="composer" onSubmit={submit} aria-label="Ask Yash's portfolio">
-      <label htmlFor="question-input">Ask about Yash</label>
+      <label className="visually-hidden" htmlFor="question-input">Ask about Yash</label>
       <div className="composer-input">
         <textarea
           id="question-input"
@@ -417,17 +378,17 @@ function Composer({ value, disabled, onChange, onSubmit, inputRef }: ComposerPro
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="What did Yash build, and what engineering tradeoffs did he make?"
+          placeholder="Ask me anything about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
           disabled={disabled}
           aria-describedby="composer-help composer-count"
         />
         <button type="submit" disabled={!canSubmit} aria-label="Send question">
-          <span>{disabled ? 'Working' : 'Ask'}</span>
-          <span className="send-arrow" aria-hidden="true">
-            ↗
-          </span>
+          <span className="visually-hidden">{disabled ? 'Working' : 'Send'}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 3 10.5 13.5M21 3l-6.8 18-3.7-7.5L3 9.8 21 3Z" />
+          </svg>
         </button>
       </div>
       <div className="composer-meta">
@@ -451,7 +412,7 @@ function App() {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
-  const transcriptEndRef = useRef<HTMLDivElement>(null)
+  const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const activeRequest = useRef<AbortController | null>(null)
 
@@ -482,7 +443,11 @@ function App() {
   }, [loadAttempt])
 
   useEffect(() => {
-    transcriptEndRef.current?.scrollIntoView({ behavior: isStreaming ? 'smooth' : 'auto', block: 'end' })
+    const chatScroll = chatScrollRef.current
+    chatScroll?.scrollTo({
+      top: chatScroll.scrollHeight,
+      behavior: isStreaming ? 'smooth' : 'auto',
+    })
   }, [messages, isStreaming])
 
   useEffect(
@@ -500,6 +465,16 @@ function App() {
     () => config?.llms.find((item) => item.id === modelId),
     [config, modelId],
   )
+  const latestAssistant = useMemo(
+    () =>
+      messages.reduce<AssistantMessage | undefined>(
+        (latest, message) => (message.role === 'assistant' ? message : latest),
+        undefined,
+      ),
+    [messages],
+  )
+  const railChunks =
+    latestAssistant && latestAssistant.chunks.length > 0 ? latestAssistant.chunks : PREVIEW_CHUNKS
 
   const chooseEmbedder = useCallback((id: string) => {
     setEmbedderId(id)
@@ -669,62 +644,33 @@ function App() {
 
   return (
     <div className="app-shell" id="top">
-      <div className="ambient-grid" aria-hidden="true" />
+      <div className="background-art" aria-hidden="true">
+        <span className="shape shape-one" />
+        <span className="shape shape-two" />
+        <span className="shape shape-three" />
+      </div>
       <AppHeader connected />
-      <main>
-        <section className="hero" aria-labelledby="page-title">
-          <div className="hero-copy">
-            <p className="eyebrow">PORTFOLIO / RETRIEVAL-AUGMENTED GENERATION</p>
-            <h1 id="page-title">
-              Ask Yash.
-              <br />
-              <span>Inspect the answer.</span>
-            </h1>
-            <p className="hero-lede">
-              A transparent chat over my résumé and project writeups. Pick the retrieval and generation
-              models, then see exactly what they found and how long each stage took.
-            </p>
-          </div>
-          <aside className="hero-stats" aria-label="Playground features">
-            <div>
-              <strong>{config.embedders.length.toString().padStart(2, '0')}</strong>
-              <span>resident embedding models</span>
-            </div>
-            <div>
-              <strong>{config.llms.length.toString().padStart(2, '0')}</strong>
-              <span>generation routes</span>
-            </div>
-            <div>
-              <strong>{config.retrieval.topK.toString().padStart(2, '0')}</strong>
-              <span>chunks per retrieval</span>
-            </div>
-          </aside>
-        </section>
-
-        <ModelControls
-          config={config}
-          embedderId={embedderId}
-          modelId={modelId}
-          topK={topK}
-          historyAware={historyAware}
-          disabled={isStreaming}
-          onEmbedderChange={chooseEmbedder}
-          onModelChange={chooseModel}
-          onTopKChange={chooseTopK}
-          onHistoryAwareChange={chooseHistoryAware}
-        />
-
-        <section className="chat-panel" aria-label="Conversation">
-          <div className="chat-topbar">
-            <div>
-              <span className="terminal-dot" aria-hidden="true" />
-              <strong>portfolio_rag.session</strong>
-            </div>
-            <span>answers constrained to Yash&apos;s corpus</span>
-          </div>
-          <div className="chat-scroll">
+      <main className="portfolio-card">
+        <section className="chat-column" aria-labelledby="page-title">
+          <header className="card-intro">
+            <span className="sparkle-mark" aria-hidden="true">✦</span>
+            <h1 id="page-title">Chat with <em>my portfolio</em></h1>
+            <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
+            <ModelControls
+              config={config}
+              embedderId={embedderId}
+              modelId={modelId}
+              topK={topK}
+              historyAware={historyAware}
+              disabled={isStreaming}
+              onEmbedderChange={chooseEmbedder}
+              onModelChange={chooseModel}
+              onTopKChange={chooseTopK}
+              onHistoryAwareChange={chooseHistoryAware}
+            />
+          </header>
+          <div className="chat-scroll" ref={chatScrollRef}>
             <ChatTranscript messages={messages} />
-            <div ref={transcriptEndRef} />
           </div>
           <Composer
             value={question}
@@ -734,12 +680,8 @@ function App() {
             inputRef={inputRef}
           />
         </section>
+        <RetrievedRail chunks={railChunks} />
       </main>
-
-      <footer>
-        <span>Built as a transparent RAG experiment by Yash Khambhatta.</span>
-        <span>Grounded answers · Visible evidence · No general-purpose prompts</span>
-      </footer>
     </div>
   )
 }
