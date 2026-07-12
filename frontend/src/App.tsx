@@ -664,7 +664,10 @@ function App() {
                 status: 'complete',
                 requestId: event.requestId,
                 servedModelId: event.servedModel,
-                servedModelLabel: optionLabel(config.llms, event.servedModel),
+                servedModelLabel:
+                  optionLabel(config.llms, event.servedModel) ??
+                  event.servedModel ??
+                  answer.servedModelLabel,
                 fallbackUsed: event.fallbackUsed,
                 attempts: event.attempts,
                 latencies: event.latencies,
