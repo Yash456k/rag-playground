@@ -1,5 +1,10 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "chunking": {
+    "max_characters": 900,
+    "overlap_characters": 140,
+    "minimum_characters": 120
+  },
   "corpus_chunks_sha256": "b8574d3306981fe2e39da36f43aa5b7443d7555101a49af23a0e9bbb3fbf8669",
   "chunk_ids": [
     "about-and-experience.md#0",

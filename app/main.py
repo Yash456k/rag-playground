@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -99,6 +100,42 @@ def _build_retrieval_query(request: ChatRequest) -> str:
         return request.question
     context = "\n".join(prior_user_messages)
     return f"Previous user context:\n{context}\n\nCurrent question:\n{request.question}"
+
+
+def _chunk_terms(content: str) -> set[str]:
+    return {
+        token
+        for token in re.findall(r"[a-z0-9+#.-]{3,}", content.casefold())
+        if token not in {"about", "and", "for", "from", "that", "the", "this", "with", "yash"}
+    }
+
+
+def _select_diverse_chunks(
+    candidates: list[dict[str, Any]], top_k: int
+) -> list[dict[str, Any]]:
+    """Prefer distinct evidence over adjacent chunks repeating the same claim."""
+    selected: list[dict[str, Any]] = []
+    selected_terms: list[set[str]] = []
+    for candidate in candidates:
+        terms = _chunk_terms(candidate["content"])
+        duplicate = False
+        for existing, existing_terms in zip(selected, selected_terms, strict=True):
+            union = terms | existing_terms
+            similarity = len(terms & existing_terms) / len(union) if union else 0.0
+            adjacent = (
+                candidate["source"] == existing["source"]
+                and abs(candidate["chunkIndex"] - existing["chunkIndex"]) <= 1
+            )
+            if similarity >= 0.60 or (adjacent and similarity >= 0.32):
+                duplicate = True
+                break
+        if duplicate:
+            continue
+        selected.append(candidate)
+        selected_terms.append(terms)
+        if len(selected) == top_k:
+            break
+    return selected
 
 
 async def _reserve_request_limits(
@@ -278,7 +315,10 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                 )
 
                 retrieval_started = time.perf_counter()
-                chunks = await request.app.state.database.retrieve(embedder, vector, body.top_k)
+                candidates = await request.app.state.database.retrieve(
+                    embedder, vector, min(12, body.top_k * 3)
+                )
+                chunks = _select_diverse_chunks(candidates, body.top_k)
                 latencies["retrievalMs"] = _milliseconds(retrieval_started)
                 yield _sse({"type": "sources", "chunks": chunks, "latencies": latencies})
 

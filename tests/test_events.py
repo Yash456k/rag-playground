@@ -8,6 +8,7 @@ from app.main import (
     _milliseconds,
     _reserve_request_limits,
     _retry_after_midnight,
+    _select_diverse_chunks,
     _sse,
 )
 from app.schemas import ChatRequest, HistoryMessage
@@ -92,6 +93,29 @@ def test_history_optimization_can_be_disabled() -> None:
 
     assert _build_retrieval_query(request) == request.question
     assert "AIVID Techvision" not in _build_user_prompt(request, [])
+
+
+def test_diverse_chunk_selection_drops_adjacent_repeated_claims() -> None:
+    repeated = "Built ten reusable React components for a shared component library."
+    candidates = [
+        {"id": "1", "source": "resume.md", "chunkIndex": 0, "content": repeated},
+        {
+            "id": "2",
+            "source": "resume.md",
+            "chunkIndex": 1,
+            "content": repeated + " Delivered frontend features.",
+        },
+        {
+            "id": "3",
+            "source": "projects.md",
+            "chunkIndex": 2,
+            "content": "Built a portfolio RAG system with visible retrieval evidence.",
+        },
+    ]
+
+    selected = _select_diverse_chunks(candidates, 3)
+
+    assert [item["id"] for item in selected] == ["1", "3"]
 
 
 class _LimitDatabase:

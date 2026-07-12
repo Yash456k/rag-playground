@@ -14,7 +14,7 @@
           "any_of": [
             {
               "source": "about-and-experience.md",
-              "chunk_indexes": [1],
+              "chunk_indexes": [1, 2],
               "content_any_of": ["AIVID Techvision[\\s\\S]*1,000 user roles", "100,000 database records"]
             }
           ]
@@ -49,7 +49,7 @@
           "any_of": [
             {
               "source": "about-and-experience.md",
-              "chunk_indexes": [2],
+              "chunk_indexes": [3],
               "content_any_of": ["led a four-person frontend team"]
             }
           ]
@@ -76,7 +76,7 @@
           "any_of": [
             {
               "source": "projects.md",
-              "chunk_indexes": [2],
+              "chunk_indexes": [3],
               "content_any_of": ["500 concurrent users[\\s\\S]*exactly one booking committed"]
             }
           ]
@@ -135,7 +135,7 @@
           "any_of": [
             {
               "source": "projects.md",
-              "chunk_indexes": [3],
+              "chunk_indexes": [4],
               "content_any_of": ["Socket.IO[\\s\\S]*Google OAuth 2.0"]
             }
           ]
@@ -145,7 +145,7 @@
           "any_of": [
             {
               "source": "projects.md",
-              "chunk_indexes": [4],
+              "chunk_indexes": [4, 5],
               "content_any_of": ["AI chatbot powered by Google Gemini"]
             }
           ]
@@ -201,7 +201,7 @@
           "any_of": [
             {
               "source": "about-and-experience.md",
-              "chunk_indexes": [3],
+              "chunk_indexes": [5],
               "content_any_of": ["more than 150 problems[\\s\\S]*1619"]
             }
           ]
@@ -285,7 +285,7 @@
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
-              "chunk_indexes": [4],
+              "chunk_indexes": [5],
               "content_any_of": ["keeps them resident[\\s\\S]*avoids repeated cold starts"]
             }
           ]
@@ -295,7 +295,7 @@
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
-              "chunk_indexes": [5],
+              "chunk_indexes": [7],
               "content_any_of": ["Generation is delegated to Groq[\\s\\S]*fallback models"]
             }
           ]
@@ -320,12 +320,22 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID systems and scale despite typos",
+          "label": "AIVID notification system despite typos",
           "any_of": [
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [1],
-              "content_any_of": ["push-notification system[\\s\\S]*100,000 database records"]
+              "content_any_of": ["push-notification system[\\s\\S]*1,000 user roles"]
+            }
+          ]
+        },
+        {
+          "label": "AIVID data scale despite typos",
+          "any_of": [
+            {
+              "source": "about-and-experience.md",
+              "chunk_indexes": [2],
+              "content_any_of": ["100,000 database records"]
             }
           ]
         }
@@ -354,7 +364,7 @@
           "any_of": [
             {
               "source": "projects.md",
-              "chunk_indexes": [2],
+              "chunk_indexes": [3],
               "content_any_of": ["temporary slot reservations[\\s\\S]*exactly one booking committed"]
             }
           ]

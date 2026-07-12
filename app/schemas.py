@@ -23,7 +23,7 @@ class ChatRequest(BaseModel):
     embedder: str = Field(min_length=2, max_length=80)
     model: str = Field(min_length=2, max_length=100)
     history: list[HistoryMessage] = Field(default_factory=list, max_length=6)
-    top_k: Literal[3, 5, 7] = Field(default=7, alias="topK")
+    top_k: Literal[3, 5, 7] = Field(default=3, alias="topK")
     use_history: bool = Field(default=True, alias="useHistory")
 
     @field_validator("question")

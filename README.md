@@ -6,8 +6,8 @@ A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's
 
 - Six resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5,
   Qwen3 Embedding 0.6B, portfolio-tuned E5 Small, and portfolio-tuned GTE Small.
-- Three Groq generation choices plus an optional OpenRouter-compatible route, including
-  the `openrouter/free` model router. Provider keys remain server-side.
+- Three Groq generation choices plus the OpenRouter free-model router. Provider keys
+  remain server-side.
 - Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
 - Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
 
@@ -15,6 +15,8 @@ Visitors control the embedder, generation model, retrieval depth (top 3, 5, or 7
 and whether recent user turns expand follow-up retrieval. The UI also exposes the
 active query transform, score threshold, and whether the route is portfolio-tuned.
 Retrieval defaults live in [`config/pipeline.yaml`](config/pipeline.yaml).
+The production default is three focused chunks. Runtime chunks are capped at 650
+characters with only 60 characters of overlap to reduce repeated résumé claims.
 
 For a ground-up explanation of RAG and this exact system, read
 [`RAG_GUIDE.md`](RAG_GUIDE.md).
@@ -147,9 +149,9 @@ llms:
     provider: openrouter
 ```
 
-`openrouter/free` is already registered for experimentation. It chooses a currently
-available free model per request, so the resolved model reported by OpenRouter is what
-the UI displays after generation begins.
+`openrouter/free` is registered for zero-cost routing. OpenRouter selects a currently
+available free model for each request, and the UI reports the resolved model once
+generation starts.
 
 ## API overview
 

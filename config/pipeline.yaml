@@ -1,12 +1,12 @@
 version: 1
 
 chunking:
-  max_characters: 900
-  overlap_characters: 140
-  minimum_characters: 120
+  max_characters: 650
+  overlap_characters: 60
+  minimum_characters: 90
 
 retrieval:
-  top_k: 7
+  top_k: 3
 
 generation:
   temperature: 0.15

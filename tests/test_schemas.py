@@ -14,7 +14,7 @@ def test_question_is_normalized_and_exact_cap_is_accepted() -> None:
 
     assert normalized.question == "What did Yash build?"
     assert len(capped.question) == 500
-    assert normalized.top_k == 7
+    assert normalized.top_k == 3
     assert normalized.use_history is True
 
 

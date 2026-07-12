@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from app.config import load_pipeline
+from app.config import ChunkingConfig, load_pipeline
 from app.ingest import chunk_document, discover_documents
 
 TRAIN_MINIMUM_EXAMPLES = 60
@@ -57,9 +57,15 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     return records
 
 
-def build_chunk_snapshot(repo_root: Path) -> dict[str, str]:
+def build_chunk_snapshot(
+    repo_root: Path, locked_chunking: dict[str, Any] | None = None
+) -> dict[str, str]:
     corpus_path = repo_root / "corpus"
     pipeline = load_pipeline(repo_root / "config" / "pipeline.yaml")
+    if locked_chunking is not None:
+        pipeline = pipeline.model_copy(
+            update={"chunking": ChunkingConfig.model_validate(locked_chunking)}
+        )
     chunks: dict[str, str] = {}
     for document in discover_documents(corpus_path):
         for chunk in chunk_document(document, pipeline):
@@ -162,12 +168,12 @@ def load_and_validate(repo_root: Path) -> DatasetBundle:
         "dev": data_dir / "dev.jsonl",
         "locked_holdout": data_dir / "locked_holdout.jsonl",
     }
-    chunks = build_chunk_snapshot(repo_root)
     lock_path = data_dir / "corpus-lock.json"
     corpus_lock = json.loads(lock_path.read_text(encoding="utf-8"))
-    chunk_hash = _canonical_hash(chunks)
-    if corpus_lock.get("schema_version") != 1:
+    if corpus_lock.get("schema_version") != 2:
         raise ValueError("training/data/corpus-lock.json has an unsupported schema version")
+    chunks = build_chunk_snapshot(repo_root, corpus_lock.get("chunking"))
+    chunk_hash = _canonical_hash(chunks)
     if corpus_lock.get("corpus_chunks_sha256") != chunk_hash:
         raise ValueError(
             "corpus chunks changed after dataset review; refresh corpus-lock.json and manually "

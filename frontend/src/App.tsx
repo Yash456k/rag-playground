@@ -25,7 +25,7 @@ const QUESTION_LIMIT = 500
 const STORAGE_KEYS = {
   embedder: 'rag-playground:embedder',
   model: 'rag-playground:model',
-  topK: 'rag-playground:top-k',
+  topK: 'rag-playground:v2:top-k',
   history: 'rag-playground:history-aware',
 }
 
@@ -483,7 +483,7 @@ function App() {
   const [loadAttempt, setLoadAttempt] = useState(0)
   const [embedderId, setEmbedderId] = useState('')
   const [modelId, setModelId] = useState('')
-  const [topK, setTopK] = useState(5)
+  const [topK, setTopK] = useState(3)
   const [historyAware, setHistoryAware] = useState(true)
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])

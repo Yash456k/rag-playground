@@ -10,12 +10,22 @@
       "history": [],
       "required_evidence": [
         {
-          "label": "AIVID production metrics",
+          "label": "AIVID notification scale",
           "any_of": [
             {
               "source": "about-and-experience.md",
               "chunk_indexes": [1],
-              "content_any_of": ["1,000 user roles per day[\\s\\S]*100,000 database records per day"]
+              "content_any_of": ["1,000 user roles per day"]
+            }
+          ]
+        },
+        {
+          "label": "AIVID data scale",
+          "any_of": [
+            {
+              "source": "about-and-experience.md",
+              "chunk_indexes": [2],
+              "content_any_of": ["100,000 database records per day"]
             }
           ]
         }
@@ -42,7 +52,7 @@
           "any_of": [
             {
               "source": "about-and-experience.md",
-              "chunk_indexes": [2],
+              "chunk_indexes": [3],
               "content_any_of": ["four-person frontend team[\\s\\S]*code-review workflows"]
             }
           ]
@@ -71,7 +81,7 @@
           "any_of": [
             {
               "source": "projects.md",
-              "chunk_indexes": [2],
+              "chunk_indexes": [3],
               "content_any_of": ["MongoDB sessions[\\s\\S]*500 concurrent users[\\s\\S]*226 ms"]
             }
           ]
@@ -131,7 +141,7 @@
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
-              "chunk_indexes": [3],
+              "chunk_indexes": [4],
               "content_any_of": ["Exact cosine scans are intentional[\\s\\S]*scale linearly[\\s\\S]*approximate index"]
             }
           ]
@@ -221,7 +231,7 @@
           "any_of": [
             {
               "source": "rag-playground-case-study.md",
-              "chunk_indexes": [5],
+              "chunk_indexes": [6],
               "content_any_of": ["bind only to host loopback addresses[\\s\\S]*Caddy container is the public HTTPS edge"]
             }
           ]
