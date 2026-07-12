@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
 
     groq_api_key: str = Field(min_length=20)
+    openrouter_api_key: str | None = Field(default=None, min_length=20)
     database_url: str = Field(min_length=20)
     frontend_origins: Annotated[list[str], NoDecode]
     public_api_url: str

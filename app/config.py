@@ -64,6 +64,7 @@ class LlmConfig(BaseModel):
     id: str
     label: str
     description: str
+    provider: Literal["groq", "openrouter"] = "groq"
 
 
 class PipelineConfig(BaseModel):

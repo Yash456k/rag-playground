@@ -6,7 +6,8 @@ A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's
 
 - Six resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5,
   Qwen3 Embedding 0.6B, portfolio-tuned E5 Small, and portfolio-tuned GTE Small.
-- Three Groq generation choices: GPT-OSS 20B, GPT-OSS 120B, and Qwen3.6 27B Preview.
+- Three Groq generation choices plus an optional OpenRouter-compatible route, including
+  the `openrouter/free` model router. Provider keys remain server-side.
 - Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
 - Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
 
@@ -109,6 +110,19 @@ docker compose stop api
 docker compose start api
 ```
 
+To rebuild everything after editing files in `corpus/`, use the end-to-end helper. It
+checks and builds the frontend when Node is available, rebuilds the API image, safely
+stops the resident embedding process, re-ingests every vector space, restarts the stack,
+and verifies the public health endpoint:
+
+```bash
+./scripts/rebuild-data.sh
+```
+
+Use `./scripts/rebuild-data.sh --skip-frontend` for a data-only server refresh. The
+training corpus lock remains intentionally separate: changes intended for another
+fine-tuning run still require dataset review before retraining.
+
 PostgreSQL is reachable from the host only at `127.0.0.1:55432`; the API debug binding is `127.0.0.1:18080`. Caddy binds only the VPS public IPv4 to avoid the audited Tailscale-specific port 443 listener.
 
 ## Frontend deployment
@@ -120,6 +134,22 @@ VITE_API_URL=https://rag-api.yashx.me
 ```
 
 Set it for Vercel Production, Preview, and Development. The backend `FRONTEND_ORIGINS` must list the exact Vercel production URL and any configured custom frontend domain. No provider key is ever placed in Vercel.
+
+OpenRouter uses the same server-side streaming path as Groq. Add
+`OPENROUTER_API_KEY` to the VPS `.env` to activate its choices. New custom models
+only need a registry entry—no client code change:
+
+```yaml
+llms:
+  - id: vendor/model-id
+    label: Display name
+    description: OpenRouter · short description
+    provider: openrouter
+```
+
+`openrouter/free` is already registered for experimentation. It chooses a currently
+available free model per request, so the resolved model reported by OpenRouter is what
+the UI displays after generation begins.
 
 ## API overview
 

@@ -19,10 +19,19 @@ class GroqStreamError(RuntimeError):
 
 
 class GroqClient:
-    endpoint = "https://api.groq.com/openai/v1/chat/completions"
+    endpoints = {
+        "groq": "https://api.groq.com/openai/v1/chat/completions",
+        "openrouter": "https://openrouter.ai/api/v1/chat/completions",
+    }
 
-    def __init__(self, api_key: str, pipeline: PipelineConfig) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        pipeline: PipelineConfig,
+        openrouter_api_key: str | None = None,
+    ) -> None:
         self.api_key = api_key
+        self.api_keys = {"groq": api_key, "openrouter": openrouter_api_key}
         self.pipeline = pipeline
         self.client = httpx.AsyncClient(
             timeout=httpx.Timeout(pipeline.generation.request_timeout_seconds),
@@ -39,7 +48,9 @@ class GroqClient:
             return ["verification/forced-provider-error", *candidates]
         return candidates
 
-    def _payload(self, model: str, system_prompt: str, user_prompt: str) -> dict[str, Any]:
+    def _payload(
+        self, model: str, system_prompt: str, user_prompt: str, provider: str = "groq"
+    ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": model,
             "messages": [
@@ -47,15 +58,28 @@ class GroqClient:
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": self.pipeline.generation.temperature,
-            "max_completion_tokens": self.pipeline.generation.max_tokens,
             "stream": True,
             "stream_options": {"include_usage": True},
         }
-        if model.startswith("openai/gpt-oss-"):
+        payload["max_tokens" if provider == "openrouter" else "max_completion_tokens"] = (
+            self.pipeline.generation.max_tokens
+        )
+        if provider == "groq" and model.startswith("openai/gpt-oss-"):
             payload.update({"reasoning_effort": "low", "include_reasoning": False})
-        elif model.startswith("qwen/"):
+        elif provider == "groq" and model.startswith("qwen/"):
             payload["reasoning_effort"] = "none"
         return payload
+
+    def _provider(self, model: str) -> str:
+        if model.startswith("verification/"):
+            return "groq"
+        return self.pipeline.llm(model).provider
+
+    def _key(self, provider: str) -> str | None:
+        keys = getattr(self, "api_keys", None)
+        if isinstance(keys, dict):
+            return keys.get(provider)
+        return self.api_key if provider == "groq" else None
 
     async def stream(
         self,
@@ -66,18 +90,35 @@ class GroqClient:
         force_failure: bool = False,
     ) -> AsyncIterator[dict[str, Any]]:
         attempts: list[dict[str, Any]] = []
-        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
         candidates = self.candidates(selected_model, force_failure)
 
         for candidate in candidates:
+            provider = self._provider(candidate)
+            api_key = self._key(provider)
+            if not api_key:
+                attempts.append(
+                    {"model": candidate, "status": None, "reason": f"{provider}_not_configured"}
+                )
+                continue
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            }
+            if provider == "openrouter":
+                headers.update(
+                    {
+                        "HTTP-Referer": "https://rag.yashx.me",
+                        "X-Title": "Yash Khambhatta RAG Playground",
+                    }
+                )
             emitted_content = False
             saw_done = False
             try:
                 async with self.client.stream(
                     "POST",
-                    self.endpoint,
+                    self.endpoints[provider],
                     headers=headers,
-                    json=self._payload(candidate, system_prompt, user_prompt),
+                    json=self._payload(candidate, system_prompt, user_prompt, provider),
                 ) as response:
                     if response.status_code != 200:
                         body = (await response.aread()).decode(errors="replace")[:300]
@@ -93,8 +134,8 @@ class GroqClient:
                             or response.status_code >= 500
                         )
                         if response.status_code == 401 or not can_fallback:
-                            raise GroqStreamError("Groq rejected the request", attempts)
-                        logger.warning("Groq model %s failed; trying fallback", candidate)
+                            raise GroqStreamError(f"{provider} rejected the request", attempts)
+                        logger.warning("%s model %s failed; trying fallback", provider, candidate)
                         continue
 
                     stream_failed = False
@@ -138,10 +179,11 @@ class GroqClient:
                             token = (choices[0].get("delta") or {}).get("content")
                             if token:
                                 if not emitted_content:
+                                    served_model = str(chunk.get("model") or candidate)
                                     yield {
                                         "type": "model",
                                         "requestedModel": selected_model,
-                                        "servedModel": candidate,
+                                        "servedModel": served_model,
                                         "fallbackUsed": (
                                             candidate != selected_model or bool(attempts)
                                         ),
@@ -164,7 +206,9 @@ class GroqClient:
                         attempts.append(
                             {"model": candidate, "status": 200, "reason": "empty_stream"}
                         )
-                    logger.warning("Groq model %s returned no answer; trying fallback", candidate)
+                    logger.warning(
+                        "%s model %s returned no answer; trying fallback", provider, candidate
+                    )
                     continue
             except GroqStreamError:
                 raise
@@ -174,9 +218,9 @@ class GroqClient:
                     raise GroqStreamError(
                         "Provider stream stopped after output began", attempts
                     ) from exc
-                logger.warning("Groq network failure for %s; trying fallback", candidate)
+                logger.warning("%s network failure for %s; trying fallback", provider, candidate)
                 continue
-        raise GroqStreamError("No configured Groq model was available", attempts)
+        raise GroqStreamError("No configured generation model was available", attempts)
 
 
 def _provider_error_message(body: str) -> str:

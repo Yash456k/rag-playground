@@ -59,6 +59,8 @@ def _client(pipeline: PipelineConfig, responses: list[_Response]) -> tuple[GroqC
     transport = _HttpClient(responses)
     client = object.__new__(GroqClient)
     client.api_key = "unit-test-key"
+    client.api_keys = {"groq": "unit-test-key", "openrouter": "unit-test-openrouter-key"}
+    client.api_keys = {"groq": "unit-test-key", "openrouter": "openrouter-test-key"}
     client.pipeline = pipeline
     client.client = transport
     return client, transport
@@ -193,4 +195,56 @@ async def test_non_retryable_rejection_does_not_spend_fallback_candidates(
     assert len(transport.calls) == 1
     assert captured.value.attempts == [
         {"model": selected, "status": 400, "reason": "invalid request"}
+    ]
+
+
+@pytest.mark.asyncio
+async def test_openrouter_free_uses_openrouter_endpoint_and_reports_resolved_model(
+    pipeline: PipelineConfig,
+) -> None:
+    selected = "openrouter/free"
+    lines = [
+        'data: {"model":"openai/gpt-oss-20b:free","choices":[{"delta":{"content":"Hello"}}]}',
+        "data: [DONE]",
+    ]
+    client, transport = _client(pipeline, [_Response(200, lines=lines)])
+
+    events = [
+        event
+        async for event in client.stream(
+            selected_model=selected,
+            system_prompt="system",
+            user_prompt="user",
+        )
+    ]
+
+    call = transport.calls[0]
+    assert call["endpoint"] == "https://openrouter.ai/api/v1/chat/completions"
+    assert call["headers"]["HTTP-Referer"] == "https://rag.yashx.me"
+    assert call["json"]["model"] == "openrouter/free"
+    assert call["json"]["max_tokens"] == pipeline.generation.max_tokens
+    assert "max_completion_tokens" not in call["json"]
+    assert events[0]["servedModel"] == "openai/gpt-oss-20b:free"
+
+
+@pytest.mark.asyncio
+async def test_missing_openrouter_key_falls_back_to_groq(
+    pipeline: PipelineConfig,
+) -> None:
+    client, transport = _client(pipeline, [_Response(200, lines=_success_lines("fallback"))])
+    client.api_keys["openrouter"] = None
+
+    events = [
+        event
+        async for event in client.stream(
+            selected_model="openrouter/free",
+            system_prompt="system",
+            user_prompt="user",
+        )
+    ]
+
+    assert transport.calls[0]["json"]["model"] == pipeline.fallback_order[0]
+    assert events[0]["fallbackUsed"] is True
+    assert events[0]["attempts"] == [
+        {"model": "openrouter/free", "status": None, "reason": "openrouter_not_configured"}
     ]

@@ -2,6 +2,7 @@ export type ModelOption = {
   id: string
   label: string
   description: string
+  provider?: 'groq' | 'openrouter'
 }
 
 export type EmbedderOption = ModelOption & {
@@ -41,6 +42,14 @@ export type RetrievedChunk = {
   score: number
 }
 
+export type EmbeddingConfirmation = {
+  embedder: string
+  label: string
+  dimensions: number
+  vectorDimensions: number
+  embeddingMs: number
+}
+
 export type Latencies = {
   embeddingMs?: number
   retrievalMs?: number
@@ -62,7 +71,14 @@ export type StreamEvent =
       requestId: string
       embedder: string
       requestedModel: string
+      requestReceived: {
+        embedder: string
+        model: string
+        topK: number
+        historyAware: boolean
+      }
     }
+  | ({ type: 'embedding' } & EmbeddingConfirmation)
   | {
       type: 'sources'
       chunks: RetrievedChunk[]
@@ -110,6 +126,7 @@ export type AssistantMessage = {
   attempts: FallbackAttempt[]
   chunks: RetrievedChunk[]
   latencies: Latencies
+  embedding?: EmbeddingConfirmation
   requestId?: string
   error?: string
 }

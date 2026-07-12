@@ -7,10 +7,13 @@ import {
   useRef,
   useState,
 } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { ApiError, getConfig, streamChat } from './api'
 import type {
   AssistantMessage,
   ChatMessage,
+  EmbeddingConfirmation,
   HistoryItem,
   ModelOption,
   PlaygroundConfig,
@@ -79,7 +82,7 @@ function AppHeader({ connected }: { connected: boolean }) {
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Yash Khambhatta RAG Playground home">
         <span className="brand-mark" aria-hidden="true">YK</span>
-        <strong>Yash Dev</strong>
+        <strong>Yash Khambhatta</strong>
       </a>
       <nav className="site-nav" aria-label="Portfolio navigation">
         <a href="https://www.yashx.me/#work">Work</a>
@@ -130,6 +133,72 @@ type ModelControlsProps = {
   onHistoryAwareChange: (value: boolean) => void
 }
 
+type ThemeSelectProps = {
+  label: string
+  options: ModelOption[]
+  value: string
+  disabled: boolean
+  onChange: (id: string) => void
+}
+
+function ThemeSelect({ label, options, value, disabled, onChange }: ThemeSelectProps) {
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const selected = options.find((option) => option.id === value) ?? options[0]
+
+  useEffect(() => {
+    if (!open) return
+    const closeOutside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('pointerdown', closeOutside)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [open])
+
+  return (
+    <div className={`theme-select ${open ? 'is-open' : ''}`} ref={rootRef}>
+      <span className="control-label">{label}:</span>
+      <button
+        className="select-trigger"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        disabled={disabled}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <span>{selected?.label}</span>
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3 3.5-3" /></svg>
+      </button>
+      {open && (
+        <div className="select-menu" role="listbox" aria-label={label}>
+          {options.map((option) => (
+            <button
+              type="button"
+              role="option"
+              aria-selected={option.id === value}
+              key={option.id}
+              onClick={() => {
+                onChange(option.id)
+                setOpen(false)
+              }}
+            >
+              <span>{option.label}</span>
+              <small>{option.description}</small>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ModelControls({
   config,
   embedderId,
@@ -148,39 +217,20 @@ function ModelControls({
     <section className="model-panel" aria-labelledby="model-panel-title">
       <h2 className="visually-hidden" id="model-panel-title">Choose the route</h2>
       <div className="model-grid">
-        <label className="model-control">
-          <span className="control-label">Embedding:</span>
-          <span className="select-wrap">
-            <select
-              value={embedderId}
-              onChange={(event) => onEmbedderChange(event.target.value)}
-              disabled={disabled}
-            >
-              {config.embedders.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </span>
-        </label>
-
-        <label className="model-control">
-          <span className="control-label">LLM:</span>
-          <span className="select-wrap">
-            <select
-              value={modelId}
-              onChange={(event) => onModelChange(event.target.value)}
-              disabled={disabled}
-            >
-              {config.llms.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </span>
-        </label>
+        <ThemeSelect
+          label="Embedding"
+          options={config.embedders}
+          value={embedderId}
+          disabled={disabled}
+          onChange={onEmbedderChange}
+        />
+        <ThemeSelect
+          label="LLM"
+          options={config.llms}
+          value={modelId}
+          disabled={disabled}
+          onChange={onModelChange}
+        />
       </div>
       <details className="route-advanced">
         <summary>Retrieval settings</summary>
@@ -240,9 +290,35 @@ function SourceCard({ chunk, index }: { chunk: RetrievedChunk; index: number }) 
   )
 }
 
-function RetrievedRail({ chunks }: { chunks: RetrievedChunk[] }) {
+function RetrievedRail({
+  chunks,
+  embedding,
+  pendingEmbedding,
+}: {
+  chunks: RetrievedChunk[]
+  embedding?: EmbeddingConfirmation
+  pendingEmbedding?: string
+}) {
+  const confirmationLabel = embedding
+    ? 'Embedding confirmed'
+    : pendingEmbedding
+      ? 'Request received'
+      : 'Ready for a query'
+  const confirmationValue = embedding
+    ? `${embedding.label} · ${embedding.vectorDimensions}D`
+    : pendingEmbedding
+      ? `${pendingEmbedding} · embedding queued`
+      : 'Vector receipt appears here'
+
   return (
     <aside className="source-rail" aria-label="Retrieved chunks">
+      <div className={`embedding-confirmation ${embedding ? 'is-confirmed' : ''}`} role="status">
+        <span aria-hidden="true" />
+        <div>
+          <small>{confirmationLabel}</small>
+          <strong>{confirmationValue}</strong>
+        </div>
+      </div>
       <header className="rail-heading">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
@@ -270,10 +346,10 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
       <div className="assistant-content">
         <div className="answer-copy" aria-live="polite" aria-busy={isWorking}>
           {message.content ? (
-            <p>
-              {message.content}
+            <>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
               {isWorking && <span className="stream-cursor" aria-hidden="true" />}
-            </p>
+            </>
           ) : message.status === 'error' ? null : (
             <div className="thinking-line">
               <span />
@@ -476,6 +552,15 @@ function App() {
   const railChunks =
     latestAssistant && latestAssistant.chunks.length > 0 ? latestAssistant.chunks : PREVIEW_CHUNKS
 
+  const clearChat = useCallback(() => {
+    activeRequest.current?.abort()
+    activeRequest.current = null
+    setMessages([])
+    setQuestion('')
+    setIsStreaming(false)
+    window.setTimeout(() => inputRef.current?.focus(), 0)
+  }, [])
+
   const chooseEmbedder = useCallback((id: string) => {
     setEmbedderId(id)
     window.localStorage.setItem(STORAGE_KEYS.embedder, id)
@@ -548,6 +633,18 @@ function App() {
           switch (event.type) {
             case 'meta':
               return { ...answer, requestId: event.requestId }
+            case 'embedding':
+              return {
+                ...answer,
+                embedding: {
+                  embedder: event.embedder,
+                  label: event.label,
+                  dimensions: event.dimensions,
+                  vectorDimensions: event.vectorDimensions,
+                  embeddingMs: event.embeddingMs,
+                },
+                latencies: { ...answer.latencies, embeddingMs: event.embeddingMs },
+              }
             case 'sources':
               return { ...answer, chunks: event.chunks, latencies: event.latencies }
             case 'model':
@@ -652,6 +749,14 @@ function App() {
       <AppHeader connected />
       <main className="portfolio-card">
         <section className="chat-column" aria-labelledby="page-title">
+          <button
+            className="clear-chat"
+            type="button"
+            onClick={clearChat}
+            disabled={messages.length === 0 && !question}
+          >
+            Clear chat
+          </button>
           <header className="card-intro">
             <span className="sparkle-mark" aria-hidden="true">✦</span>
             <h1 id="page-title">Chat with <em>my portfolio</em></h1>
@@ -680,7 +785,11 @@ function App() {
             inputRef={inputRef}
           />
         </section>
-        <RetrievedRail chunks={railChunks} />
+        <RetrievedRail
+          chunks={railChunks}
+          embedding={latestAssistant?.embedding}
+          pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
+        />
       </main>
     </div>
   )
