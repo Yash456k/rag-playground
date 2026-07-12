@@ -1,6 +1,6 @@
 # RAG Playground progress
 
-Last updated: 2026-07-11 23:00 IST
+Last updated: 2026-07-12 13:48 IST
 
 ## Goal
 
@@ -30,6 +30,7 @@ Ship a public portfolio RAG playground with a Vite/React frontend on Vercel and 
 - [ ] Start the isolated Caddy proxy and validate public HTTPS after `rag-api.yashx.me` DNS exists.
 - [x] Verified strict CORS: the Vercel production origin is echoed and an unlisted origin receives no allow-origin header.
 - [x] Deployed Vercel production at `https://rag-playground-alpha.vercel.app`; custom domain `rag.yashx.me` is attached and waiting for DNS.
+- [x] Connected the Vercel project to `Yash456k/rag-playground`, set production branch `main` and monorepo root `frontend`, and configured `VITE_API_URL` for production, preview, and development.
 - [ ] Run the final live verification matrix with captured outputs.
 
 ## Current deployment evidence
