@@ -1,6 +1,6 @@
 # RAG Playground progress
 
-Last updated: 2026-07-12 13:48 IST
+Last updated: 2026-07-12 14:12 IST
 
 ## Goal
 
@@ -27,7 +27,8 @@ Ship a public portfolio RAG playground with a Vite/React frontend on Vercel and 
 - [x] Created and pushed the public repository at `https://github.com/Yash456k/rag-playground`.
 - [x] Installed Ubuntu's `docker.io` and `docker-compose-v2` packages because the audited VPS had no container runtime. No pre-existing Docker containers existed.
 - [x] Deployed the private API/database under `/opt/rag-playground`; ingestion produced 2 documents / 9 chunks with all 9 rows populated in each vector column.
-- [ ] Start the isolated Caddy proxy and validate public HTTPS after `rag-api.yashx.me` DNS exists.
+- [x] Started the isolated Caddy proxy with the temporary `178-104-56-243.sslip.io` hostname, obtained a Let's Encrypt certificate, and validated public HTTPS without exposing the API's loopback port.
+- [ ] Cut the public API hostname from the temporary fallback to `rag-api.yashx.me` after its DNS record exists.
 - [x] Verified strict CORS: the Vercel production origin is echoed and an unlisted origin receives no allow-origin header.
 - [x] Deployed Vercel production at `https://rag-playground-alpha.vercel.app`; custom domain `rag.yashx.me` is attached and waiting for DNS.
 - [x] Connected the Vercel project to `Yash456k/rag-playground`, set production branch `main` and monorepo root `frontend`, and configured `VITE_API_URL` for production, preview, and development.
@@ -42,15 +43,17 @@ Ship a public portfolio RAG playground with a Vite/React frontend on Vercel and 
 - Forced provider failure returned Groq 404 for the injected invalid model, then completed on GPT-OSS 20B with `fallbackUsed=true` and a logged attempt.
 - The live PostgreSQL per-IP daily limiter returned HTTP 429 with `ip_daily_rate_limit_exceeded`.
 - Existing SSH, fail2ban, Tailscale, PostgreSQL, Life Task API, OmniVoice, and Hermes listeners remain active with the same processes/listeners; UFW rules are unchanged.
+- A real Brave session loaded `PIPELINE ONLINE` from the stable Vercel URL and completed a public BGE Small + GPT-OSS 20B stream with five visible sources. The trace reported 34 ms embedding, 5 ms retrieval, 504 ms first token, and 689 ms total latency.
+- The matching PostgreSQL query log is `completed` with 824 answer characters and no fallback. After that request, API/database/proxy residency was 662.6/35.4/53 MiB.
 
 ## External DNS blocker
 
-Add both records at the current `yashx.me` DNS provider, then continue:
+The application is operational through `https://178-104-56-243.sslip.io`, but the branded hostnames still need these records at the current `yashx.me` DNS provider:
 
 - `A rag-api 178.104.56.243`
 - `A rag 76.76.21.21`
 
-After propagation, start `proxy`, verify certificates/CORS, run Playwright through the public Vercel site for the full model matrix, trip the public rate limit, repeat the fallback/off-topic checks publicly, capture final stats/service parity, and rotate the exposed Groq key.
+After propagation, change the VPS `API_DOMAIN`, `PUBLIC_API_URL`, and `ALLOWED_HOSTS` back to the branded API hostname, recreate API/proxy, restore Vercel `VITE_API_URL`, and redeploy. Then run the remaining public verification matrix and rotate the exposed Groq key.
 
 ## Architecture decisions
 
