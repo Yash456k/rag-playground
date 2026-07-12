@@ -14,6 +14,18 @@ def test_question_is_normalized_and_exact_cap_is_accepted() -> None:
 
     assert normalized.question == "What did Yash build?"
     assert len(capped.question) == 500
+    assert normalized.top_k == 5
+    assert normalized.use_history is True
+
+
+def test_public_optimization_controls_use_bounded_aliases() -> None:
+    request = ChatRequest(question="What did Yash build?", topK=3, useHistory=False, **BASE)
+
+    assert request.top_k == 3
+    assert request.use_history is False
+
+    with pytest.raises(ValidationError):
+        ChatRequest(question="What did Yash build?", topK=12, **BASE)
 
 
 @pytest.mark.parametrize(

@@ -4,12 +4,19 @@ A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's
 
 ## What visitors can inspect
 
-- Four resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5, and Qwen3 Embedding 0.6B.
+- Six resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5,
+  Qwen3 Embedding 0.6B, portfolio-tuned E5 Small, and portfolio-tuned GTE Small.
 - Three Groq generation choices: GPT-OSS 20B, GPT-OSS 120B, and Qwen3.6 27B Preview.
 - Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
 - Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
 
-There are exactly two user controls: the embedding model and the LLM. Retrieval details live in [`config/pipeline.yaml`](config/pipeline.yaml), so future pipeline parameters do not require a new application architecture.
+Visitors control the embedder, generation model, retrieval depth (top 3 or top 5),
+and whether recent user turns expand follow-up retrieval. The UI also exposes the
+active query transform, score threshold, and whether the route is portfolio-tuned.
+Retrieval defaults live in [`config/pipeline.yaml`](config/pipeline.yaml).
+
+For a ground-up explanation of RAG and this exact system, read
+[`RAG_GUIDE.md`](RAG_GUIDE.md).
 
 ## Architecture
 
@@ -17,24 +24,29 @@ There are exactly two user controls: the embedding model and the LLM. Retrieval 
 flowchart LR
     Browser["React SPA on Vercel"] -->|"POST + SSE"| Caddy["Caddy HTTPS proxy"]
     Caddy --> API["FastAPI · one worker"]
-    API --> Registry["4 resident CPU embedders"]
+    API --> Registry["6 resident CPU embedders"]
     API --> PG["isolated pgvector PostgreSQL"]
     API --> Groq["Groq streaming API"]
     Registry -->|"selected vector space"| PG
 ```
 
-Each chunk row owns four typed columns. The backend maps a validated embedder ID to a fixed SQL identifier; user input never becomes an SQL identifier. Exact cosine scans are intentional for this small corpus: they preserve recall and avoid four HNSW graphs in memory.
+Each chunk row owns six typed columns. The backend maps a validated embedder ID to a
+fixed SQL identifier; user input never becomes an SQL identifier. Exact cosine scans
+are intentional for this small corpus: they preserve recall and avoid six HNSW graphs
+in memory.
 
 ## Repository layout
 
 ```text
 app/                 FastAPI, embedding registry, retrieval, limits, logging, ingestion
 config/pipeline.yaml Model registry and retrieval/generation defaults
-corpus/              Two curated starter documents from the resume and portfolio
+corpus/              Three curated resume, project, and engineering case-study documents
+evaluation/          Retrieval and live-answer cases, gates, and locked checksums
 deploy/Caddyfile     Streaming-safe TLS reverse proxy
 frontend/            Vite + React + TypeScript SPA
 scripts/             Safe ingestion and verification helpers
-sql/schema.sql       pgvector schema, four vector columns, logs, daily counters
+sql/schema.sql       pgvector schema, six vector columns, logs, daily counters
+training/            Reviewed datasets, pinned recipes, and audit contract
 docker-compose.yml   Isolated production stack
 ```
 
@@ -63,11 +75,13 @@ npm --prefix frontend run build
 docker compose --env-file .env.example config --quiet
 ```
 
-The model integration is verified in Docker because all four pinned model revisions must be exercised in the same CPU image used by production.
+The model integration is verified in Docker because all remote revisions and both
+local safetensors artifacts must be exercised in the same CPU image used by production.
 
 ```bash
 docker run --rm --memory=4g --cpus=2.5 \
   -v rag-playground-model-smoke:/models \
+  -v "$PWD/model-artifacts:/model-artifacts:ro" \
   --entrypoint python rag-playground-api:local -m scripts.model_smoke
 ```
 
@@ -87,7 +101,7 @@ docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
 docker compose up -d
 ```
 
-For later corpus refreshes, the wrapper prevents two four-model processes from coexisting:
+For later corpus refreshes, the wrapper prevents two six-model processes from coexisting:
 
 ```bash
 docker compose stop api
@@ -129,12 +143,17 @@ docker compose exec -T api python -m scripts.verify_stream \
 - `sentence-transformers/all-MiniLM-L6-v2` - Apache-2.0
 - `BAAI/bge-small-en-v1.5` and `BAAI/bge-base-en-v1.5` - MIT
 - `Qwen/Qwen3-Embedding-0.6B` - Apache-2.0
+- `intfloat/e5-small-v2` - MIT (base for the portfolio E5 artifact)
+- `thenlper/gte-small` - MIT (base for the portfolio GTE artifact)
 
 All repositories are pinned to immutable Hugging Face commit revisions in the pipeline configuration. Remote model code is disabled and safetensors are required.
 
 ## Corpus provenance
 
-The two starter documents are manually curated from Yash's tracked resume and local portfolio source. Stale claims were reconciled: the AIVID internship is dated September 2024 through September 2025, the current email is `yash456k@gmail.com`, and project links use their verified public repositories. Replace or expand these Markdown files, then re-run ingestion.
+The three documents are manually curated from Yash's tracked resume, portfolio source,
+and this system's verified implementation. Stale claims were reconciled: the AIVID
+internship is dated September 2024 through September 2025, the current email is
+`yash456k@gmail.com`, and project links use their verified public repositories.
 
 ## License
 

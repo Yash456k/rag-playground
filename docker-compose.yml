@@ -59,6 +59,7 @@ services:
       - "127.0.0.1:18080:8000"
     volumes:
       - model_cache:/models
+      - ./model-artifacts:/model-artifacts:ro
     networks:
       - rag_internal
     mem_limit: 3500m

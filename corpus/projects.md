@@ -2,7 +2,7 @@
 
 ## RAG Playground - portfolio question answering
 
-RAG Playground is an interactive public portfolio feature that lets visitors ask grounded questions about Yash. Its corpus contains curated resume facts and project writeups. Visitors can compare four CPU-friendly embedding models - MiniLM L6, BGE Small, BGE Base, and Qwen3 Embedding 0.6B - and choose among Groq-hosted generation models.
+RAG Playground is an interactive public portfolio feature that lets visitors ask grounded questions about Yash. Its corpus contains curated resume facts and project writeups. Visitors can compare six resident embedding routes: MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and portfolio-tuned E5 Small and GTE Small models. They can also choose among Groq-hosted generation models.
 
 The interface streams answers token by token and makes the retrieval process visible. Every response shows the selected embedder and language model, the retrieved source chunks with cosine-similarity scores, and embedding, retrieval, first-token, generation, and total latency. The backend uses FastAPI, PostgreSQL with pgvector, one vector column per embedding space, strict corpus-only prompting, daily per-IP and global rate limits, provider fallback, and query logging. The frontend is a Vite and React TypeScript single-page application.
 
@@ -21,7 +21,7 @@ The platform includes role-based access control, MSG91 OTP verification, JWT aut
 
 ## Real-time MERN Chat Platform
 
-Yash built a full-stack messaging platform with Socket.IO for real-time conversations. The project supports more than 100 users and has handled more than 500 messages. It integrates Google OAuth 2.0 and Firebase authentication, uses React Context for state management, JWTs for security, and MongoDB schemas for users, chats, and messages.
+Yash built a live, event-driven full-stack messaging interface with Socket.IO for real-time conversations. The project supports more than 100 users and has handled more than 500 messages. It integrates Google OAuth 2.0 and Firebase authentication, uses React Context for state management, JWTs for security, and MongoDB schemas for users, chats, and messages.
 
 The application also includes an AI chatbot powered by Google Gemini.
 

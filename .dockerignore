@@ -9,6 +9,7 @@ frontend/dist
 frontend/.vercel
 frontend/output
 output
+model-artifacts
 **/__pycache__
 **/.pytest_cache
 *.md

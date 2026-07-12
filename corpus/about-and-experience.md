@@ -20,7 +20,9 @@ Yash worked at Future AI Power from April through June 2024. He led a four-perso
 
 Yash's languages include JavaScript and TypeScript, Java, C, C++, and Python. His frontend experience includes React, Next.js, Redux, Tailwind CSS, Framer Motion, and Expo. His backend and data experience includes Node.js, Express, Socket.IO, PostgreSQL, MongoDB, Mongoose, Redis, Elasticsearch, JWT, and SQL. He has worked with Firebase, Azure, AWS EC2 and S3, Git, Kibana, Agenda.js, Google OAuth, Google Gemini, and Microsoft Graph API.
 
-Yash has solved more than 150 problems on LeetCode and other coding platforms. His resume reports a LeetCode contest rating of 1619, placing him in the top 20 percent.
+## Competitive programming and problem solving
+
+Yash has sustained algorithm and problem-solving practice through more than 150 problems on LeetCode and other coding platforms. His resume reports a LeetCode contest rating of 1619, placing him in the top 20 percent.
 
 ## Contact
 

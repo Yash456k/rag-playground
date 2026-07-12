@@ -17,6 +17,8 @@ def test_shipped_embedder_ladder_has_unique_schema_backed_columns(pipeline: Pipe
         "bge-small": ("embedding_bge_small", 384),
         "bge-base": ("embedding_bge_base", 768),
         "qwen3-embedding": ("embedding_qwen3", 1024),
+        "portfolio-e5-small": ("embedding_portfolio_e5", 384),
+        "portfolio-gte-small": ("embedding_portfolio_gte", 384),
     }
     actual = {item.id: (item.column, item.dimensions) for item in pipeline.embedders}
 
@@ -42,6 +44,14 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
     assert {item["id"] for item in public["embedders"]} == embedder_ids
     assert {item["id"] for item in public["llms"]} == llm_ids
     assert set(pipeline.fallback_order).issubset(llm_ids)
+    assert public["retrieval"] == {
+        "topK": 5,
+        "selectableTopK": [3, 5],
+        "historyAware": True,
+    }
+    tuned = next(item for item in public["embedders"] if item["id"] == "portfolio-e5-small")
+    assert tuned["optimization"]["portfolioTuned"] is True
+    assert tuned["optimization"]["queryTransform"] == "E5 query/passage prefixes"
 
 
 @pytest.mark.parametrize(
@@ -74,3 +84,24 @@ def test_registry_lookup_fails_closed_for_unknown_ids(pipeline: PipelineConfig) 
         pipeline.embedder("missing-embedder")
     with pytest.raises(KeyError, match="missing-model"):
         pipeline.llm("missing-model")
+
+
+def test_local_portfolio_embedders_allow_no_revision_and_define_expected_prefixes(
+    pipeline: PipelineConfig,
+) -> None:
+    e5 = pipeline.embedder("portfolio-e5-small")
+    gte = pipeline.embedder("portfolio-gte-small")
+
+    assert e5.revision is None
+    assert e5.query_prefix == "query: "
+    assert e5.document_prefix == "passage: "
+    assert gte.revision is None
+    assert gte.query_prefix == ""
+    assert gte.document_prefix == ""
+
+
+def test_remote_embedder_requires_a_pinned_revision(pipeline_data: dict) -> None:
+    pipeline_data["embedders"][0]["revision"] = None
+
+    with pytest.raises(ValidationError, match="remote embedder models require a pinned revision"):
+        PipelineConfig.model_validate(pipeline_data)

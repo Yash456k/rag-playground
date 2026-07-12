@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "corpus_chunks_sha256": "b8574d3306981fe2e39da36f43aa5b7443d7555101a49af23a0e9bbb3fbf8669",
+  "chunk_ids": [
+    "about-and-experience.md#0",
+    "about-and-experience.md#1",
+    "about-and-experience.md#2",
+    "about-and-experience.md#3",
+    "projects.md#0",
+    "projects.md#1",
+    "projects.md#2",
+    "projects.md#3",
+    "projects.md#4",
+    "rag-playground-case-study.md#0",
+    "rag-playground-case-study.md#1",
+    "rag-playground-case-study.md#2",
+    "rag-playground-case-study.md#3",
+    "rag-playground-case-study.md#4",
+    "rag-playground-case-study.md#5",
+    "rag-playground-case-study.md#6",
+    "rag-playground-case-study.md#7"
+  ],
+  "source_file_sha256": {
+    "corpus/about-and-experience.md": "4562a6741ef7e384c5b8671f87ff126605c52308395d0a8c0ad3989781d5899a",
+    "corpus/projects.md": "bcc4aef6545cd0976f612b27f7dd1f10b0b07db7aaa49d4d4ddec901709e8b12",
+    "corpus/rag-playground-case-study.md": "364aeae0d01d50e6623758b7959faa5e11731ef14438e57c9d3fa6ce7adb9518"
+  },
+  "hard_negative_review": {
+    "status": "reviewed",
+    "reviewed_on": "2026-07-12",
+    "rule": "Every negative is topically plausible but does not contain the fact needed to answer its paired question; overlap tails were checked explicitly."
+  }
+}

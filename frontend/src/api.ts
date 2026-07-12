@@ -79,6 +79,8 @@ type ChatInput = {
   embedder: string
   model: string
   history: HistoryItem[]
+  topK: number
+  useHistory: boolean
 }
 
 export async function streamChat(

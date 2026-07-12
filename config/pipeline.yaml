@@ -54,6 +54,28 @@ embedders:
     query_prefix: "Instruct: Retrieve portfolio passages that answer the question.\nQuery: "
     dtype: bfloat16
     minimum_score: 0.30
+  - id: portfolio-e5-small
+    label: Portfolio E5 Small
+    description: Portfolio-tuned E5 retrieval · 384 dimensions
+    model: /model-artifacts/portfolio-e5-small-v1
+    revision: null
+    dimensions: 384
+    column: embedding_portfolio_e5
+    query_prefix: "query: "
+    document_prefix: "passage: "
+    dtype: float32
+    minimum_score: 0.68
+  - id: portfolio-gte-small
+    label: Portfolio GTE Small
+    description: Portfolio-tuned GTE retrieval · 384 dimensions
+    model: /model-artifacts/portfolio-gte-small-v1
+    revision: null
+    dimensions: 384
+    column: embedding_portfolio_gte
+    query_prefix: ""
+    document_prefix: ""
+    dtype: float32
+    minimum_score: 0.77
 
 llms:
   - id: openai/gpt-oss-20b

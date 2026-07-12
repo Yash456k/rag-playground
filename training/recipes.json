@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "seed": 20260712,
+  "models": [
+    {
+      "id": "e5-small-v2",
+      "base_model": "intfloat/e5-small-v2",
+      "base_revision": "ffb93f3bd4047442299a41ebb6fa998a38507c52",
+      "output_directory": "portfolio-e5-small-v1",
+      "loss": "MultipleNegativesRankingLoss",
+      "batch_sampler": "no_duplicates",
+      "query_prefix": "query: ",
+      "document_prefix": "passage: ",
+      "include_hard_negatives": false,
+      "epochs": 3,
+      "batch_size": 12,
+      "learning_rate": 0.00001,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.1,
+      "max_grad_norm": 1.0,
+      "max_sequence_length": 512,
+      "acceptance_gates": {
+        "recall_at_1": 0.55,
+        "recall_at_3": 0.85,
+        "recall_at_5": 0.95,
+        "mrr": 0.72
+      }
+    },
+    {
+      "id": "gte-small",
+      "base_model": "thenlper/gte-small",
+      "base_revision": "17e1f347d17fe144873b1201da91788898c639cd",
+      "output_directory": "portfolio-gte-small-v1",
+      "loss": "MultipleNegativesRankingLoss",
+      "batch_sampler": "no_duplicates",
+      "query_prefix": "",
+      "document_prefix": "",
+      "include_hard_negatives": true,
+      "epochs": 4,
+      "batch_size": 8,
+      "learning_rate": 0.00001,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.1,
+      "max_grad_norm": 1.0,
+      "max_sequence_length": 512,
+      "acceptance_gates": {
+        "recall_at_1": 0.55,
+        "recall_at_3": 0.85,
+        "recall_at_5": 0.95,
+        "mrr": 0.72
+      }
+    }
+  ]
+}

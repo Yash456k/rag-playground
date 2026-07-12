@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,7 @@ from psycopg import AsyncConnection, sql
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
-from app.config import EmbedderConfig
+from app.config import EmbedderConfig, load_pipeline
 
 
 async def _configure_connection(connection) -> None:
@@ -20,8 +21,13 @@ async def _configure_connection(connection) -> None:
 
 
 class Database:
-    def __init__(self, database_url: str) -> None:
+    def __init__(
+        self,
+        database_url: str,
+        embedders: Sequence[EmbedderConfig] | None = None,
+    ) -> None:
         self.database_url = database_url
+        self.embedders = tuple(embedders or load_pipeline().embedders)
         self.pool = AsyncConnectionPool(
             conninfo=database_url,
             min_size=1,
@@ -44,26 +50,22 @@ class Database:
         await self.pool.close()
 
     async def health(self) -> dict[str, Any]:
+        coverage_expressions = [
+            sql.SQL("count(*) FILTER (WHERE {column} IS NOT NULL) AS {alias}").format(
+                column=sql.Identifier(embedder.column),
+                alias=sql.Identifier(embedder.column),
+            )
+            for embedder in self.embedders
+        ]
+        query = sql.SQL("SELECT count(*) AS chunks, {coverage} FROM chunks").format(
+            coverage=sql.SQL(", ").join(coverage_expressions)
+        )
         async with self.pool.connection() as connection:
-            row = await (
-                await connection.execute(
-                    """
-                    SELECT
-                        count(*) AS chunks,
-                        count(*) FILTER (WHERE embedding_minilm IS NOT NULL) AS minilm,
-                        count(*) FILTER (WHERE embedding_bge_small IS NOT NULL) AS bge_small,
-                        count(*) FILTER (WHERE embedding_bge_base IS NOT NULL) AS bge_base,
-                        count(*) FILTER (WHERE embedding_qwen3 IS NOT NULL) AS qwen3
-                    FROM chunks
-                    """
-                )
-            ).fetchone()
+            row = await (await connection.execute(query)).fetchone()
         chunks = int(row["chunks"]) if row else 0
         coverage = {
-            "minilm-l6": int(row["minilm"]) if row else 0,
-            "bge-small": int(row["bge_small"]) if row else 0,
-            "bge-base": int(row["bge_base"]) if row else 0,
-            "qwen3-embedding": int(row["qwen3"]) if row else 0,
+            embedder.id: int(row[embedder.column]) if row else 0
+            for embedder in self.embedders
         }
         return {
             "ok": chunks > 0 and all(count == chunks for count in coverage.values()),
@@ -86,7 +88,7 @@ class Database:
         query_vector: list[float],
         top_k: int,
     ) -> list[dict[str, Any]]:
-        # Column names come exclusively from PipelineConfig's Literal allowlist.
+        # Column names come exclusively from EmbedderConfig's Literal allowlist.
         column = embedder.column
         query = sql.SQL("""
             SELECT id, source, title, chunk_index, content,

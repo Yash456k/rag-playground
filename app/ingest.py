@@ -9,6 +9,7 @@ from pathlib import Path
 
 import psycopg
 from pgvector.psycopg import register_vector
+from psycopg import sql
 from pypdf import PdfReader
 
 from app.config import PipelineConfig, load_pipeline
@@ -94,6 +95,21 @@ def _split_oversized(text: str, maximum: int) -> list[str]:
     return sections
 
 
+def _word_aligned_suffix(text: str, maximum: int) -> str:
+    """Return at most ``maximum`` trailing characters without starting mid-token."""
+    if maximum <= 0:
+        return ""
+    start = max(0, len(text) - maximum)
+    if start == 0:
+        return text
+    if text[start - 1].isspace() or text[start].isspace():
+        return text[start:].lstrip()
+    boundary = re.search(r"\s+", text[start:])
+    if boundary is None:
+        return ""
+    return text[start + boundary.end() :].lstrip()
+
+
 def chunk_document(document: SourceDocument, pipeline: PipelineConfig) -> list[Chunk]:
     config = pipeline.chunking
     raw_sections = [
@@ -116,7 +132,7 @@ def chunk_document(document: SourceDocument, pipeline: PipelineConfig) -> list[C
             texts.append(current)
             available_overlap = max(0, config.max_characters - len(section) - 2)
             overlap_length = min(config.overlap_characters, available_overlap)
-            overlap = current[-overlap_length:].lstrip() if overlap_length else ""
+            overlap = _word_aligned_suffix(current, overlap_length)
             current = f"{overlap}\n\n{section}".strip() if overlap else section
         else:
             current = candidate
@@ -184,27 +200,28 @@ def ingest(corpus_path: Path) -> None:
                         chunk.title,
                         chunk.index,
                         chunk.content,
-                        vectors["minilm-l6"][index],
-                        vectors["bge-small"][index],
-                        vectors["bge-base"][index],
-                        vectors["qwen3-embedding"][index],
+                        *(vectors[config.id][index] for config in pipeline.embedders),
                     )
                 )
+            insert_columns = [
+                "document_id",
+                "source",
+                "title",
+                "chunk_index",
+                "content",
+                *(config.column for config in pipeline.embedders),
+            ]
+            insert_query = sql.SQL("INSERT INTO chunks ({columns}) VALUES ({values})").format(
+                columns=sql.SQL(", ").join(map(sql.Identifier, insert_columns)),
+                values=sql.SQL(", ").join(sql.Placeholder() for _ in insert_columns),
+            )
             with connection.cursor() as cursor:
-                cursor.executemany(
-                    """
-                    INSERT INTO chunks (
-                        document_id, source, title, chunk_index, content,
-                        embedding_minilm, embedding_bge_small,
-                        embedding_bge_base, embedding_qwen3
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """,
-                    rows,
-                )
+                cursor.executemany(insert_query, rows)
     logger.info(
-        "Ingestion complete: %d documents / %d chunks / four vector spaces",
+        "Ingestion complete: %d documents / %d chunks / %d vector spaces",
         len(documents),
         len(chunks),
+        len(pipeline.embedders),
     )
 
 

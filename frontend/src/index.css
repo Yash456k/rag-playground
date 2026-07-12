@@ -364,6 +364,53 @@ main {
   white-space: nowrap;
 }
 
+.toggle-line {
+  display: flex;
+  align-items: center;
+  min-height: 25px;
+  gap: 9px;
+}
+
+.toggle-line input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--lime);
+}
+
+.toggle-line strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.optimization-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--muted);
+  font: 500 9px/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.optimization-readout > span {
+  margin-right: 3px;
+  color: var(--lime);
+}
+
+.optimization-readout b {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .chat-panel {
   position: relative;
   display: grid;

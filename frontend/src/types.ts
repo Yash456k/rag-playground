@@ -6,6 +6,11 @@ export type ModelOption = {
 
 export type EmbedderOption = ModelOption & {
   dimensions: number
+  optimization: {
+    portfolioTuned: boolean
+    queryTransform: string
+    minimumScore: number
+  }
 }
 
 export type PlaygroundConfig = {
@@ -18,6 +23,8 @@ export type PlaygroundConfig = {
   llms: ModelOption[]
   retrieval: {
     topK: number
+    selectableTopK: number[]
+    historyAware: boolean
   }
 }
 
@@ -93,6 +100,8 @@ export type AssistantMessage = {
   status: 'retrieving' | 'streaming' | 'complete' | 'error'
   embedderId: string
   embedderLabel: string
+  topK: number
+  historyAware: boolean
   requestedModelId: string
   requestedModelLabel: string
   servedModelId?: string | null

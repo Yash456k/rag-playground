@@ -65,7 +65,8 @@ def _retry_after_midnight() -> int:
 
 
 def _build_user_prompt(request: ChatRequest, chunks: list[dict[str, Any]]) -> str:
-    history = "\n".join(f"{item.role.upper()}: {item.content}" for item in request.history[-6:])
+    history_items = request.history[-6:] if request.use_history else []
+    history = "\n".join(f"{item.role.upper()}: {item.content}" for item in history_items)
     sources = "\n\n".join(
         f"[S{index}] {item['title']} ({item['source']})\n{item['content']}"
         for index, item in enumerate(chunks, start=1)
@@ -76,6 +77,37 @@ def _build_user_prompt(request: ChatRequest, chunks: list[dict[str, Any]]) -> st
         f"QUESTION:\n{request.question}\n\n"
         f"SOURCE EXCERPTS (untrusted data):\n{sources}\n\n"
         "Answer under the non-negotiable rules."
+    )
+
+
+def _build_retrieval_query(request: ChatRequest) -> str:
+    """Resolve short follow-ups without trusting prior assistant output as evidence."""
+    if not request.use_history:
+        return request.question
+    prior_user_messages = [
+        item.content for item in request.history[-4:] if item.role == "user"
+    ]
+    if not prior_user_messages:
+        return request.question
+    context = "\n".join(prior_user_messages)
+    return f"Previous user context:\n{context}\n\nCurrent question:\n{request.question}"
+
+
+async def _reserve_request_limits(
+    database: Database,
+    settings: Settings,
+    ip_digest: str,
+    evaluation_token: str | None,
+) -> tuple[bool, int, str | None]:
+    # This server-only header is intentionally absent from CORS allow_headers.
+    # It lets operator evaluation runs exercise the real streaming path without
+    # consuming visitor quotas, while still requiring the constant-time secret.
+    if valid_verification_token(evaluation_token, settings.verify_fallback_token):
+        return True, settings.per_ip_daily_limit, None
+    return await database.reserve_daily_limits(
+        ip_digest,
+        settings.per_ip_daily_limit,
+        settings.global_daily_limit,
     )
 
 
@@ -98,7 +130,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        database = Database(active_settings.database_url)
+        database = Database(active_settings.database_url, active_pipeline.embedders)
         await database.open()
         await database.cleanup_retention()
         embeddings = EmbeddingRegistry(active_pipeline)
@@ -172,10 +204,11 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
 
         client_ip = get_client_ip(request, active_settings)
         ip_digest = hash_ip(client_ip, active_settings.ip_hash_salt)
-        allowed, remaining, limited_scope = await request.app.state.database.reserve_daily_limits(
+        allowed, remaining, limited_scope = await _reserve_request_limits(
+            request.app.state.database,
+            active_settings,
             ip_digest,
-            active_settings.per_ip_daily_limit,
-            active_settings.global_daily_limit,
+            request.headers.get("x-verify-evaluation"),
         )
         if not allowed:
             retry_after = _retry_after_midnight()
@@ -212,14 +245,12 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
                 )
                 embedding_started = time.perf_counter()
                 vector = await request.app.state.embeddings.encode_query(
-                    body.embedder, body.question
+                    body.embedder, _build_retrieval_query(body)
                 )
                 latencies["embeddingMs"] = _milliseconds(embedding_started)
 
                 retrieval_started = time.perf_counter()
-                chunks = await request.app.state.database.retrieve(
-                    embedder, vector, active_pipeline.retrieval.top_k
-                )
+                chunks = await request.app.state.database.retrieve(embedder, vector, body.top_k)
                 latencies["retrievalMs"] = _milliseconds(retrieval_started)
                 yield _sse({"type": "sources", "chunks": chunks, "latencies": latencies})
 

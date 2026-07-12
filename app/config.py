@@ -37,17 +37,27 @@ class EmbedderConfig(BaseModel):
     label: str
     description: str
     model: str
-    revision: str = Field(pattern=r"^[0-9a-f]{40}$")
+    revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     dimensions: int = Field(ge=64, le=4096)
     column: Literal[
         "embedding_minilm",
         "embedding_bge_small",
         "embedding_bge_base",
         "embedding_qwen3",
+        "embedding_portfolio_e5",
+        "embedding_portfolio_gte",
     ]
     query_prefix: str = ""
+    document_prefix: str = ""
     dtype: Literal["float32", "bfloat16"] = "float32"
     minimum_score: float = Field(ge=-1.0, le=1.0)
+
+    @model_validator(mode="after")
+    def require_pinned_remote_revision(self) -> EmbedderConfig:
+        is_local = self.model.startswith(("/", "./", "../"))
+        if not is_local and self.revision is None:
+            raise ValueError("remote embedder models require a pinned revision")
+        return self
 
 
 class LlmConfig(BaseModel):
@@ -107,11 +117,26 @@ class PipelineConfig(BaseModel):
                     "label": item.label,
                     "description": item.description,
                     "dimensions": item.dimensions,
+                    "optimization": {
+                        "portfolioTuned": item.id.startswith("portfolio-"),
+                        "queryTransform": (
+                            "E5 query/passage prefixes"
+                            if item.document_prefix
+                            else "retrieval query instruction"
+                            if item.query_prefix
+                            else "symmetric text encoding"
+                        ),
+                        "minimumScore": item.minimum_score,
+                    },
                 }
                 for item in self.embedders
             ],
             "llms": [item.model_dump() for item in self.llms],
-            "retrieval": {"topK": self.retrieval.top_k},
+            "retrieval": {
+                "topK": self.retrieval.top_k,
+                "selectableTopK": [3, 5],
+                "historyAware": True,
+            },
         }
 
 

@@ -23,6 +23,7 @@ COPY config ./config
 COPY corpus ./corpus
 COPY sql ./sql
 COPY scripts ./scripts
+COPY evaluation ./evaluation
 
 RUN useradd --system --uid 10001 --home /app rag \
     && mkdir -p /models \

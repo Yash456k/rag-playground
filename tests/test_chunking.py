@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from app.config import PipelineConfig
-from app.ingest import SourceDocument, _split_oversized, chunk_document
+from app.ingest import SourceDocument, _split_oversized, _word_aligned_suffix, chunk_document
 
 
 def _with_chunking(
@@ -40,7 +40,7 @@ def test_chunk_indices_are_contiguous_and_normal_chunks_respect_hard_limit(
     assert all(0 < len(chunk.content) <= pipeline.chunking.max_characters for chunk in chunks)
 
 
-def test_new_chunk_starts_with_configured_overlap(pipeline_data: dict) -> None:
+def test_new_chunk_starts_with_word_aligned_overlap(pipeline_data: dict) -> None:
     pipeline = _with_chunking(pipeline_data, overlap=24, minimum=20)
     first = " ".join(f"first-{index}" for index in range(18))
     second = " ".join(f"second-{index}" for index in range(10))
@@ -48,8 +48,16 @@ def test_new_chunk_starts_with_configured_overlap(pipeline_data: dict) -> None:
     chunks = chunk_document(_document(f"{first}\n\n{second}"), pipeline)
 
     assert len(chunks) == 2
-    expected_overlap = chunks[0].content[-pipeline.chunking.overlap_characters :].lstrip()
+    expected_overlap = _word_aligned_suffix(
+        chunks[0].content, pipeline.chunking.overlap_characters
+    )
     assert chunks[1].content.startswith(expected_overlap)
+    assert chunks[1].content.split(maxsplit=1)[0] in chunks[0].content.split()
+    assert all(len(chunk.content) <= pipeline.chunking.max_characters for chunk in chunks)
+
+
+def test_overlap_suffix_drops_partial_leading_word() -> None:
+    assert _word_aligned_suffix("alpha product engineering", 15) == "engineering"
 
 
 def test_short_tail_merge_never_exceeds_hard_maximum(pipeline_data: dict) -> None:

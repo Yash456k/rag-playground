@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class HistoryMessage(BaseModel):
@@ -17,10 +17,14 @@ class HistoryMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     question: str = Field(min_length=2, max_length=500)
     embedder: str = Field(min_length=2, max_length=80)
     model: str = Field(min_length=2, max_length=100)
     history: list[HistoryMessage] = Field(default_factory=list, max_length=6)
+    top_k: Literal[3, 5] = Field(default=5, alias="topK")
+    use_history: bool = Field(default=True, alias="useHistory")
 
     @field_validator("question")
     @classmethod

@@ -23,6 +23,8 @@ const QUESTION_LIMIT = 500
 const STORAGE_KEYS = {
   embedder: 'rag-playground:embedder',
   model: 'rag-playground:model',
+  topK: 'rag-playground:top-k',
+  history: 'rag-playground:history-aware',
 }
 
 function newId(prefix: string): string {
@@ -94,18 +96,26 @@ type ModelControlsProps = {
   config: PlaygroundConfig
   embedderId: string
   modelId: string
+  topK: number
+  historyAware: boolean
   disabled: boolean
   onEmbedderChange: (id: string) => void
   onModelChange: (id: string) => void
+  onTopKChange: (value: number) => void
+  onHistoryAwareChange: (value: boolean) => void
 }
 
 function ModelControls({
   config,
   embedderId,
   modelId,
+  topK,
+  historyAware,
   disabled,
   onEmbedderChange,
   onModelChange,
+  onTopKChange,
+  onHistoryAwareChange,
 }: ModelControlsProps) {
   const embedder = config.embedders.find((item) => item.id === embedderId)
   const model = config.llms.find((item) => item.id === modelId)
@@ -139,7 +149,8 @@ function ModelControls({
             </select>
           </span>
           <span className="control-description">
-            {embedder?.description} · {embedder?.dimensions}D vector space
+            {embedder?.description} · {embedder?.dimensions}D ·{' '}
+            {embedder?.optimization.portfolioTuned ? 'portfolio fine-tune' : 'general baseline'}
           </span>
         </label>
 
@@ -163,7 +174,54 @@ function ModelControls({
           </span>
           <span className="control-description">{model?.description}</span>
         </label>
+
+        <label className="model-control">
+          <span className="control-index" aria-hidden="true">
+            03
+          </span>
+          <span className="control-label">Retrieval depth</span>
+          <span className="select-wrap">
+            <select
+              value={topK}
+              onChange={(event) => onTopKChange(Number(event.target.value))}
+              disabled={disabled}
+            >
+              {config.retrieval.selectableTopK.map((value) => (
+                <option key={value} value={value}>
+                  Top {value} passages
+                </option>
+              ))}
+            </select>
+          </span>
+          <span className="control-description">Trade context coverage for a tighter prompt</span>
+        </label>
+
+        <label className="model-control toggle-control">
+          <span className="control-index" aria-hidden="true">
+            04
+          </span>
+          <span className="control-label">Follow-up optimization</span>
+          <span className="toggle-line">
+            <input
+              type="checkbox"
+              checked={historyAware}
+              onChange={(event) => onHistoryAwareChange(event.target.checked)}
+              disabled={disabled}
+            />
+            <strong>{historyAware ? 'History-aware retrieval' : 'Question only'}</strong>
+          </span>
+          <span className="control-description">Use recent user turns to resolve short follow-ups</span>
+        </label>
       </div>
+      {embedder && (
+        <div className="optimization-readout" aria-label="Active retrieval optimizations">
+          <span>ACTIVE OPTIMIZATIONS</span>
+          <b>{embedder.optimization.queryTransform}</b>
+          <b>cosine threshold {embedder.optimization.minimumScore.toFixed(2)}</b>
+          <b>top {topK}</b>
+          <b>{historyAware ? 'history context on' : 'history context off'}</b>
+        </div>
+      )}
     </section>
   )
 }
@@ -244,7 +302,7 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
         <div className="selection-snapshot" aria-label="Models used for this answer">
           <span>
             <small>EMBED</small>
-            {message.embedderLabel}
+            {message.embedderLabel} · K{message.topK} · {message.historyAware ? 'history' : 'question only'}
           </span>
           <span>
             <small>REQUESTED</small>
@@ -411,6 +469,8 @@ function App() {
   const [loadAttempt, setLoadAttempt] = useState(0)
   const [embedderId, setEmbedderId] = useState('')
   const [modelId, setModelId] = useState('')
+  const [topK, setTopK] = useState(5)
+  const [historyAware, setHistoryAware] = useState(true)
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
@@ -432,6 +492,9 @@ function App() {
         setConfig(nextConfig)
         setEmbedderId(nextEmbedder)
         setModelId(nextModel)
+        const savedTopK = Number(window.localStorage.getItem(STORAGE_KEYS.topK))
+        setTopK(nextConfig.retrieval.selectableTopK.includes(savedTopK) ? savedTopK : nextConfig.retrieval.topK)
+        setHistoryAware(window.localStorage.getItem(STORAGE_KEYS.history) !== 'false')
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return
@@ -471,6 +534,16 @@ function App() {
     window.localStorage.setItem(STORAGE_KEYS.model, id)
   }, [])
 
+  const chooseTopK = useCallback((value: number) => {
+    setTopK(value)
+    window.localStorage.setItem(STORAGE_KEYS.topK, String(value))
+  }, [])
+
+  const chooseHistoryAware = useCallback((value: boolean) => {
+    setHistoryAware(value)
+    window.localStorage.setItem(STORAGE_KEYS.history, String(value))
+  }, [])
+
   const submitQuestion = useCallback(async () => {
     const cleanQuestion = question.trim().replace(/\s+/g, ' ')
     if (
@@ -500,6 +573,8 @@ function App() {
       status: 'retrieving',
       embedderId,
       embedderLabel: selectedEmbedder.label,
+      topK,
+      historyAware,
       requestedModelId: modelId,
       requestedModelLabel: selectedModel.label,
       fallbackUsed: false,
@@ -556,7 +631,14 @@ function App() {
 
     try {
       await streamChat(
-        { question: cleanQuestion, embedder: embedderId, model: modelId, history },
+        {
+          question: cleanQuestion,
+          embedder: embedderId,
+          model: modelId,
+          history,
+          topK,
+          useHistory: historyAware,
+        },
         handleEvent,
         controller.signal,
       )
@@ -583,7 +665,18 @@ function App() {
       setIsStreaming(false)
       window.setTimeout(() => inputRef.current?.focus(), 0)
     }
-  }, [config, embedderId, isStreaming, messages, modelId, question, selectedEmbedder, selectedModel])
+  }, [
+    config,
+    embedderId,
+    historyAware,
+    isStreaming,
+    messages,
+    modelId,
+    question,
+    selectedEmbedder,
+    selectedModel,
+    topK,
+  ])
 
   if (!config) {
     return (
@@ -635,9 +728,13 @@ function App() {
           config={config}
           embedderId={embedderId}
           modelId={modelId}
+          topK={topK}
+          historyAware={historyAware}
           disabled={isStreaming}
           onEmbedderChange={chooseEmbedder}
           onModelChange={chooseModel}
+          onTopKChange={chooseTopK}
+          onHistoryAwareChange={chooseHistoryAware}
         />
 
         <section className="chat-panel" aria-label="Conversation">

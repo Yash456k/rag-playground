@@ -1,0 +1,16 @@
+{"id":"holdout-v3-01","question":"What academic signal suggests Yash learns technical material consistently?","relevant_chunk_ids":["about-and-experience.md#0"]}
+{"id":"holdout-v3-02","question":"Where has Yash shipped both data-heavy backend work and reusable frontend components?","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"holdout-v3-03","question":"Give a concrete example of Yash setting standards for other developers.","relevant_chunk_ids":["about-and-experience.md#2"]}
+{"id":"holdout-v3-04","question":"What competitive-coding evidence appears in the candidate profile?","relevant_chunk_ids":["about-and-experience.md#3"]}
+{"id":"holdout-v3-05","question":"How can a technical interviewer compare retrieval behavior rather than see only final prose?","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#0"]}
+{"id":"holdout-v3-06","question":"Which implementation choices protect the sports reservation from a race condition?","relevant_chunk_ids":["projects.md#2"]}
+{"id":"holdout-v3-07","question":"What shows the booking system was operated as a secured production service?","relevant_chunk_ids":["projects.md#3"]}
+{"id":"holdout-v3-08","question":"Which portfolio project combines sockets, federated login, and an AI assistant?","relevant_chunk_ids":["projects.md#3","projects.md#4"]}
+{"id":"holdout-v3-09","question":"How are the specialized retrieval models trained reproducibly without contaminating final evaluation?","relevant_chunk_ids":["rag-playground-case-study.md#2"]}
+{"id":"holdout-v3-10","question":"Why can an untrusted embedding selector not directly alter the vector-column SQL?","relevant_chunk_ids":["rag-playground-case-study.md#3"]}
+{"id":"holdout-v3-11","question":"What resource-management decisions keep repeated embedding requests predictable?","relevant_chunk_ids":["rag-playground-case-study.md#4"]}
+{"id":"holdout-v3-12","question":"Describe the trust boundary between the public TLS endpoint and private data services.","relevant_chunk_ids":["rag-playground-case-study.md#5"]}
+{"id":"holdout-v3-13","question":"How does generation stay responsive without hosting a large language model locally?","relevant_chunk_ids":["rag-playground-case-study.md#5","rag-playground-case-study.md#6"]}
+{"id":"holdout-v3-14","question":"Name the controls that limit cost and hostile input on the public demo.","relevant_chunk_ids":["rag-playground-case-study.md#1","rag-playground-case-study.md#6"]}
+{"id":"holdout-v3-15","question":"What pre-release checks would expose a fake fine-tune or a retrieval regression?","relevant_chunk_ids":["rag-playground-case-study.md#7"]}
+{"id":"holdout-v3-16","question":"Which evidence best supports hiring Yash for end-to-end product engineering?","relevant_chunk_ids":["about-and-experience.md#1","about-and-experience.md#2","projects.md#1","projects.md#2","projects.md#3"]}

@@ -1,0 +1,62 @@
+{"id":"dev-01","question":"Summarize Yash's education, location, and academic result.","relevant_chunk_ids":["about-and-experience.md#0"]}
+{"id":"dev-02","question":"What kind of engineering work and product qualities interest Yash?","relevant_chunk_ids":["about-and-experience.md#0"]}
+{"id":"dev-03","question":"What did Yash's notification platform accomplish at AIVID?","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"dev-04","question":"Give evidence that Yash has worked with high-volume data and analytics dashboards.","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"dev-05","question":"What leadership and process changes did Yash introduce at Future AI Power?","relevant_chunk_ids":["about-and-experience.md#2"]}
+{"id":"dev-06","question":"Does Yash have experience across React, Node, databases, search, and cloud services?","relevant_chunk_ids":["about-and-experience.md#2","about-and-experience.md#3"]}
+{"id":"dev-07","question":"How has Yash performed in competitive programming?","relevant_chunk_ids":["about-and-experience.md#3"]}
+{"id":"dev-08","question":"How should a hiring manager contact or review Yash online?","relevant_chunk_ids":["about-and-experience.md#3"]}
+{"id":"dev-09","question":"What embedding choices are available in the portfolio question-answering demo?","relevant_chunk_ids":["projects.md#0","rag-playground-case-study.md#2"]}
+{"id":"dev-10","question":"What does the streaming UI reveal about retrieval quality and latency?","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#0"]}
+{"id":"dev-11","question":"Describe the storage and API architecture behind the portfolio RAG demo.","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#3"]}
+{"id":"dev-12","question":"What users and sports are supported by the NSK booking platform?","relevant_chunk_ids":["projects.md#2"]}
+{"id":"dev-13","question":"What proves that NSK prevents two buyers from winning the same slot?","relevant_chunk_ids":["projects.md#2","projects.md#3"]}
+{"id":"dev-14","question":"Which production delivery, security, and realtime capabilities does NSK include?","relevant_chunk_ids":["projects.md#3"]}
+{"id":"dev-15","question":"How does the MERN chat app authenticate people and manage realtime conversations?","relevant_chunk_ids":["projects.md#3","projects.md#4"]}
+{"id":"dev-16","question":"Where can I try and inspect the source of Yash's Gemini-enabled chat app?","relevant_chunk_ids":["projects.md#4"]}
+{"id":"dev-17","question":"How does RAG Playground avoid hiding retrieval decisions from visitors?","relevant_chunk_ids":["rag-playground-case-study.md#0"]}
+{"id":"dev-18","question":"How are answers grounded and what privacy-conscious query details are logged?","relevant_chunk_ids":["rag-playground-case-study.md#1"]}
+{"id":"dev-19","question":"What makes the two custom retrieval models genuine portfolio fine-tunes?","relevant_chunk_ids":["rag-playground-case-study.md#2","rag-playground-case-study.md#7"]}
+{"id":"dev-20","question":"How are model-specific vector columns and E5 text prefixes handled safely?","relevant_chunk_ids":["rag-playground-case-study.md#3"]}
+{"id":"dev-21","question":"Explain the decision to use exact vector search and the point where it should change.","relevant_chunk_ids":["rag-playground-case-study.md#3","rag-playground-case-study.md#4"]}
+{"id":"dev-22","question":"How does the constrained host keep embedding inference predictable within memory limits?","relevant_chunk_ids":["rag-playground-case-study.md#4"]}
+{"id":"dev-23","question":"How are HTTPS, private service bindings, browser configuration, and secrets separated?","relevant_chunk_ids":["rag-playground-case-study.md#5"]}
+{"id":"dev-24","question":"Why outsource generation, and what happens when the first provider model fails?","relevant_chunk_ids":["rag-playground-case-study.md#5","rag-playground-case-study.md#6"]}
+{"id":"dev-25","question":"Which controls prevent public visitors from exhausting or abusing the service?","relevant_chunk_ids":["rag-playground-case-study.md#6"]}
+{"id":"dev-26","question":"What evidence is required before a trained embedding route is released?","relevant_chunk_ids":["rag-playground-case-study.md#7"]}
+{"id":"dev-promoted-01","question":"Why should I believe Yash can own a feature from frontend design through backend delivery?","relevant_chunk_ids":["about-and-experience.md#1","about-and-experience.md#2"]}
+{"id":"dev-promoted-02","question":"Which result best demonstrates Yash's ability to protect correctness under heavy concurrency?","relevant_chunk_ids":["projects.md#2","projects.md#3"]}
+{"id":"dev-promoted-03","question":"What evidence shows that Yash has operated software at meaningful data volume?","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"dev-promoted-04","question":"How has Yash demonstrated technical leadership rather than only individual implementation?","relevant_chunk_ids":["about-and-experience.md#2"]}
+{"id":"dev-promoted-05","question":"Which project best demonstrates real-time product engineering and how?","relevant_chunk_ids":["projects.md#3","projects.md#4"]}
+{"id":"dev-promoted-06","question":"What design choice keeps visitor-controlled model names from creating a database injection risk?","relevant_chunk_ids":["rag-playground-case-study.md#3"]}
+{"id":"dev-promoted-07","question":"Why is exact retrieval reasonable today, and what future condition would reverse that decision?","relevant_chunk_ids":["rag-playground-case-study.md#3","rag-playground-case-study.md#4"]}
+{"id":"dev-promoted-08","question":"How does the portfolio assistant prove its answers came from relevant source material?","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#0","rag-playground-case-study.md#1"]}
+{"id":"dev-promoted-09","question":"What failure modes did Yash anticipate in the generation provider integration?","relevant_chunk_ids":["rag-playground-case-study.md#5","rag-playground-case-study.md#6"]}
+{"id":"dev-promoted-10","question":"How was the RAG deployment shaped around a small VPS rather than unlimited infrastructure?","relevant_chunk_ids":["rag-playground-case-study.md#4","rag-playground-case-study.md#5"]}
+{"id":"dev-promoted-11","question":"Which safeguards make this public AI demo appropriate to expose on a portfolio?","relevant_chunk_ids":["rag-playground-case-study.md#1","rag-playground-case-study.md#6"]}
+{"id":"dev-promoted-12","question":"How can an interviewer distinguish the custom embedders from relabeled off-the-shelf models?","relevant_chunk_ids":["rag-playground-case-study.md#2","rag-playground-case-study.md#7"]}
+{"id":"dev-promoted-13","question":"Which project gives the strongest evidence of Yash's database transaction knowledge?","relevant_chunk_ids":["projects.md#2"]}
+{"id":"dev-promoted-14","question":"What experience does Yash have integrating enterprise APIs and access tokens?","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"dev-promoted-15","question":"What can a reviewer inspect while a portfolio answer is being generated?","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#0"]}
+{"id":"dev-promoted-16","question":"How does Yash balance reliability with fast perceived response time in RAG Playground?","relevant_chunk_ids":["rag-playground-case-study.md#0","rag-playground-case-study.md#4","rag-playground-case-study.md#5"]}
+{"id":"dev-promoted-17","question":"Which details support Yash's claim of broad full-stack technical range?","relevant_chunk_ids":["about-and-experience.md#1","about-and-experience.md#2","about-and-experience.md#3"]}
+{"id":"dev-promoted-18","question":"What is the most compelling quantitative evidence across Yash's portfolio?","relevant_chunk_ids":["about-and-experience.md#1","about-and-experience.md#3","projects.md#2"]}
+{"id":"dev-promoted-19","question":"If retrieval quality regressed after fine-tuning, what release process should catch it?","relevant_chunk_ids":["rag-playground-case-study.md#7"]}
+{"id":"dev-promoted-20","question":"How does the deployment prevent databases and operational secrets from becoming public?","relevant_chunk_ids":["rag-playground-case-study.md#5","rag-playground-case-study.md#6"]}
+{"id":"dev-promoted-v2-01","question":"Prepare an interview brief on Yash's academic profile and present location.","relevant_chunk_ids":["about-and-experience.md#0"]}
+{"id":"dev-promoted-v2-02","question":"Which internship combines enterprise integration work with measurable production scale?","relevant_chunk_ids":["about-and-experience.md#1"]}
+{"id":"dev-promoted-v2-03","question":"What would reassure a hiring manager that Yash can improve a team's engineering process?","relevant_chunk_ids":["about-and-experience.md#2"]}
+{"id":"dev-promoted-v2-04","question":"Which documented results indicate sustained algorithm and problem-solving practice?","relevant_chunk_ids":["about-and-experience.md#3"]}
+{"id":"dev-promoted-v2-05","question":"Which part of the portfolio lets a reviewer inspect how AI retrieval reached a decision?","relevant_chunk_ids":["projects.md#1","rag-playground-case-study.md#0"]}
+{"id":"dev-promoted-v2-06","question":"Which design prevents a dropdown selection from choosing arbitrary SQL identifiers?","relevant_chunk_ids":["rag-playground-case-study.md#3"]}
+{"id":"dev-promoted-v2-07","question":"What concrete project evidence shows correctness under simultaneous booking pressure?","relevant_chunk_ids":["projects.md#2","projects.md#3"]}
+{"id":"dev-promoted-v2-08","question":"How did the sports-booking application combine authentication controls with production delivery?","relevant_chunk_ids":["projects.md#3"]}
+{"id":"dev-promoted-v2-09","question":"What demonstrates Yash's experience building live event-driven interfaces?","relevant_chunk_ids":["projects.md#3","projects.md#4"]}
+{"id":"dev-promoted-v2-10","question":"How does the RAG service fit six retrieval models onto modest infrastructure?","relevant_chunk_ids":["rag-playground-case-study.md#4"]}
+{"id":"dev-promoted-v2-11","question":"What happens when Groq's first selected generation route cannot serve a request?","relevant_chunk_ids":["rag-playground-case-study.md#5","rag-playground-case-study.md#6"]}
+{"id":"dev-promoted-v2-12","question":"What diagnostic data is retained while avoiding storage of a sensitive network identifier?","relevant_chunk_ids":["rag-playground-case-study.md#1"]}
+{"id":"dev-promoted-v2-13","question":"Why has this small portfolio corpus not adopted HNSW vector indexes yet?","relevant_chunk_ids":["rag-playground-case-study.md#3","rag-playground-case-study.md#4"]}
+{"id":"dev-promoted-v2-14","question":"What evidence proves the two portfolio retrieval models were optimized instead of copied?","relevant_chunk_ids":["rag-playground-case-study.md#2","rag-playground-case-study.md#7"]}
+{"id":"dev-promoted-v2-15","question":"How are the web client, HTTPS edge, private API, and database separated in deployment?","relevant_chunk_ids":["rag-playground-case-study.md#5"]}
+{"id":"dev-promoted-v2-16","question":"Which safeguards constrain an internet-facing portfolio assistant?","relevant_chunk_ids":["rag-playground-case-study.md#1","rag-playground-case-study.md#6"]}

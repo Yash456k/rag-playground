@@ -28,13 +28,16 @@ class EmbeddingRegistry:
             model_kwargs["dtype"] = torch.bfloat16
             model_kwargs["attn_implementation"] = "eager"
         logger.info("Loading resident embedder %s from %s", config.id, config.model)
-        model = SentenceTransformer(
-            config.model,
-            revision=config.revision,
-            device="cpu",
-            model_kwargs=model_kwargs,
-            trust_remote_code=False,
-        )
+        loader_kwargs: dict[str, Any] = {
+            "device": "cpu",
+            "model_kwargs": model_kwargs,
+            "trust_remote_code": False,
+        }
+        # Local fine-tuned artifacts do not have a Hugging Face commit revision.
+        # Omit the argument instead of forwarding revision=None.
+        if config.revision is not None:
+            loader_kwargs["revision"] = config.revision
+        model = SentenceTransformer(config.model, **loader_kwargs)
         model.max_seq_length = min(int(model.max_seq_length), 512)
         self._encode_sync(model, ["resident model warm-up"], prefix=config.query_prefix)
         return model
@@ -90,7 +93,10 @@ class EmbeddingRegistry:
     ) -> np.ndarray:
         config = self.pipeline.embedder(embedder_id)
         result = self._encode_sync(
-            self.models[embedder_id], texts, prefix="", batch_size=batch_size
+            self.models[embedder_id],
+            texts,
+            prefix=config.document_prefix,
+            batch_size=batch_size,
         )
         if result.shape[1] != config.dimensions:
             raise RuntimeError(

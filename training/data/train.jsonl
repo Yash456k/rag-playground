@@ -1,0 +1,102 @@
+{"id":"train-ae0-01","question":"Where is Yash Khambhatta currently based?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-ae0-02","question":"What degree is Yash pursuing and when does it run?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"about-and-experience.md#2"}
+{"id":"train-ae0-03","question":"What CGPA does Yash report in his resume?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-ae0-04","question":"Which engineering qualities and technical areas does Yash prioritize?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"rag-playground-case-study.md#0"}
+{"id":"train-ae1-01","question":"When did Yash work at AIVID Techvision?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"about-and-experience.md#2"}
+{"id":"train-ae1-02","question":"How large was the audience for Yash's AIVID notification system?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-ae1-03","question":"What Microsoft Graph and OneDrive workflow did Yash build?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-ae1-04","question":"What data scale and frontend delivery did Yash handle at AIVID?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"about-and-experience.md#2"}
+{"id":"train-ae2-01","question":"What were Yash's dates at Future AI Power?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-ae2-02","question":"How did Yash lead and improve the frontend team at Future AI Power?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-ae2-03","question":"What product-discovery interface did Yash build with React and Redux?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-ae2-04","question":"Which frontend, backend, and data technologies has Yash used?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-ae3-01","question":"Which cloud, analytics, scheduling, and identity tools has Yash worked with?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-ae3-02","question":"How many coding problems has Yash solved?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-ae3-03","question":"What is Yash's LeetCode contest rating and percentile?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-ae3-04","question":"Where can a recruiter find Yash's portfolio, GitHub, LinkedIn, and email?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-p0-01","question":"What is the purpose of the RAG Playground portfolio feature?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-p0-02","question":"How many resident embedding routes can visitors compare?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-p0-03","question":"Which portfolio-tuned embedding families appear in the selector?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-p0-04","question":"Can visitors choose both an embedding route and a Groq generation model?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-p1-01","question":"What retrieval evidence and timing does each streamed response display?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-p1-02","question":"Which backend components power RAG Playground?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-p1-03","question":"How does RAG Playground enforce grounding and control public usage?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-p1-04","question":"Where is the RAG Playground source repository?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-p2-01","question":"Which sports, roles, and booking horizon does NSK support?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-p2-02","question":"What database techniques prevent races in bulk NSK bookings?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-p2-03","question":"How was the NSK single-slot concurrency behavior load tested?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-p2-04","question":"What integrity and latency result did the 500-user NSK test report?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-p3-01","question":"What security and authentication features protect the NSK platform?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-p3-02","question":"How is NSK delivered and hosted with TLS and WebSockets?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-p3-03","question":"What real-time technology and usage scale characterize Yash's chat platform?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-p3-04","question":"Which authentication and client-state approaches does the chat platform use?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-p4-01","question":"Which AI provider powers the chatbot in Yash's messaging project?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-p4-02","question":"What is the live URL for Yash's MERN chat application?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-p4-03","question":"Where is the Socket.IO MERN chat source code published?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-p4-04","question":"Does the messaging project combine Firebase authentication with a Gemini chatbot?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-c0-01","question":"Why did Yash make RAG Playground inspectable instead of a black box?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c0-02","question":"What model choices does the RAG Playground browser expose?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-c0-03","question":"Which requested and served model details are shown with an answer?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"rag-playground-case-study.md#3"}
+{"id":"train-c0-04","question":"How does the interface make fallback state and stage latency visible?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-c1-01","question":"Why is the question-answering system limited to a curated corpus?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"rag-playground-case-study.md#3"}
+{"id":"train-c1-02","question":"How does the prompt treat questions, history, and retrieved passages?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c1-03","question":"What retrieval and provider information is recorded for each query?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-c1-04","question":"Does RAG Playground store a visitor's raw IP address in query logs?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c2-01","question":"What dimensional range do the six production embedding routes cover?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-c2-02","question":"Which four pinned general-purpose embedders are compared?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"rag-playground-case-study.md#3"}
+{"id":"train-c2-03","question":"Which two base models are fine-tuned for hiring questions?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-c2-04","question":"What data separation and reproducibility choices govern embedder training?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c3-01","question":"How are six incompatible embedding spaces represented in pgvector?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-c3-02","question":"How does the server stop a model identifier from becoming arbitrary SQL?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c3-03","question":"Which query and passage prefixes are required by the tuned E5 route?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#2"}
+{"id":"train-c3-04","question":"Why are exact cosine scans used instead of approximate indexes?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c4-01","question":"When should RAG Playground consider an approximate vector index?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"rag-playground-case-study.md#2"}
+{"id":"train-c4-02","question":"Why are all embedding models loaded sequentially and kept resident?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-c4-03","question":"Why does the API serialize embedding encoding with a lock?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c4-04","question":"What CPU and memory limits constrain the API, database, and Caddy?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-c5-01","question":"Which services bind only to loopback on the VPS?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-c5-02","question":"What role does the Caddy container play in public HTTPS streaming?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-c5-03","question":"Which secrets remain server-side rather than entering the Vite bundle?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"rag-playground-case-study.md#3"}
+{"id":"train-c5-04","question":"Why does generation run on Groq and how is provider failure handled?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-c6-01","question":"What does the backend record when it tries fallback generation models?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-c6-02","question":"How are per-IP and global daily limits enforced safely?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-c6-03","question":"What origin policy protects the public API?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"rag-playground-case-study.md#5"}
+{"id":"train-c6-04","question":"Which request, container, and secret controls reduce abuse risk?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"rag-playground-case-study.md#2"}
+{"id":"train-c7-01","question":"Which test layers verify the deployed RAG system?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c7-02","question":"How are prompt injection, fallback, rate limits, and query logs checked?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"rag-playground-case-study.md#1"}
+{"id":"train-c7-03","question":"What gate must a fine-tuned embedder pass before entering the selector?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"rag-playground-case-study.md#2"}
+{"id":"train-c7-04","question":"Would a renamed but untrained base model satisfy the release criteria?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-ae0-05","question":"What facts belong in Yash's academic candidate summary?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-ae0-06","question":"Which details establish Yash's location and degree timeline?","positive_chunk_id":"about-and-experience.md#0","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-ae1-05","question":"Which internship demonstrates enterprise API integration and access-token handling?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-ae1-06","question":"What portfolio evidence shows production data volume beyond small demos?","positive_chunk_id":"about-and-experience.md#1","hard_negative_chunk_id":"about-and-experience.md#0"}
+{"id":"train-ae2-05","question":"Which experience proves Yash can guide a frontend team and raise engineering standards?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-ae2-06","question":"What work connects React delivery with team leadership?","positive_chunk_id":"about-and-experience.md#2","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-ae3-05","question":"What objective signals show that Yash practices algorithms?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-ae3-06","question":"Which verified links should a hiring panel use to review Yash?","positive_chunk_id":"about-and-experience.md#3","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-p0-05","question":"Which project is Yash's transparent AI portfolio demonstration?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-p0-06","question":"Which retrieval models can a technical reviewer compare in the portfolio?","positive_chunk_id":"projects.md#0","hard_negative_chunk_id":"about-and-experience.md#2"}
+{"id":"train-p1-05","question":"Which project demonstrates end-to-end FastAPI, pgvector, and React delivery?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-p1-06","question":"What live evidence lets a reviewer audit each generated portfolio answer?","positive_chunk_id":"projects.md#1","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-p2-05","question":"Which project best demonstrates transaction design under booking contention?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-p2-06","question":"What mechanisms and load-test result protect a single sports-booking slot?","positive_chunk_id":"projects.md#2","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-p3-05","question":"Which project combines production authentication, CI, EC2, TLS, and realtime behavior?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"projects.md#1"}
+{"id":"train-p3-06","question":"What portfolio evidence shows Yash has built realtime product systems?","positive_chunk_id":"projects.md#3","hard_negative_chunk_id":"about-and-experience.md#0"}
+{"id":"train-p4-05","question":"Which messaging project adds Gemini intelligence to Socket.IO conversations?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-p4-06","question":"Where are the live demo and repository for Yash's realtime chat project?","positive_chunk_id":"projects.md#4","hard_negative_chunk_id":"about-and-experience.md#3"}
+{"id":"train-c0-05","question":"What makes RAG answer generation auditable for an interviewer?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"about-and-experience.md#0"}
+{"id":"train-c0-06","question":"Which visible traces support source accountability in the AI portfolio?","positive_chunk_id":"rag-playground-case-study.md#0","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-c1-05","question":"What guardrails prevent unsupported claims about Yash's background?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"rag-playground-case-study.md#4"}
+{"id":"train-c1-06","question":"Which privacy design avoids retaining a visitor's raw IP address?","positive_chunk_id":"rag-playground-case-study.md#1","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-c2-05","question":"How can a reviewer verify that the custom embeddings were actually optimized?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-c2-06","question":"Which two tuned bases extend the four general retrieval models?","positive_chunk_id":"rag-playground-case-study.md#2","hard_negative_chunk_id":"about-and-experience.md#2"}
+{"id":"train-c3-05","question":"How does fixed model mapping prevent selector values from becoming SQL injection?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"rag-playground-case-study.md#6"}
+{"id":"train-c3-06","question":"What storage layout supports six incompatible vector dimensions safely?","positive_chunk_id":"rag-playground-case-study.md#3","hard_negative_chunk_id":"projects.md#3"}
+{"id":"train-c4-05","question":"How did modest VPS limits drive model residency and encoding-concurrency decisions?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-c4-06","question":"What future scale signal would justify approximate vector indexes?","positive_chunk_id":"rag-playground-case-study.md#4","hard_negative_chunk_id":"rag-playground-case-study.md#1"}
+{"id":"train-c5-05","question":"What deployment boundaries keep the database and operational secrets private?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"rag-playground-case-study.md#2"}
+{"id":"train-c5-06","question":"Which remote-provider dependency shapes the public RAG deployment?","positive_chunk_id":"rag-playground-case-study.md#5","hard_negative_chunk_id":"projects.md#2"}
+{"id":"train-c6-05","question":"How does the system react when the selected generation model is unavailable?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"about-and-experience.md#1"}
+{"id":"train-c6-06","question":"Which controls keep a public AI demonstration from being abused?","positive_chunk_id":"rag-playground-case-study.md#6","hard_negative_chunk_id":"projects.md#4"}
+{"id":"train-c7-05","question":"What release evidence proves an embedding is more than a relabeled base model?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"projects.md#0"}
+{"id":"train-c7-06","question":"Which tests catch retrieval regressions before an embedding is deployed?","positive_chunk_id":"rag-playground-case-study.md#7","hard_negative_chunk_id":"about-and-experience.md#2"}

@@ -20,11 +20,17 @@ CREATE TABLE IF NOT EXISTS chunks (
     embedding_bge_small vector(384),
     embedding_bge_base vector(768),
     embedding_qwen3 vector(1024),
+    embedding_portfolio_e5 vector(384),
+    embedding_portfolio_gte vector(384),
     created_at timestamptz NOT NULL DEFAULT now(),
     UNIQUE(document_id, chunk_index)
 );
 
--- The portfolio corpus is deliberately small. Exact scans avoid four HNSW graphs,
+-- CREATE TABLE IF NOT EXISTS does not add columns to an existing deployment.
+ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding_portfolio_e5 vector(384);
+ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding_portfolio_gte vector(384);
+
+-- The portfolio corpus is deliberately small. Exact scans avoid HNSW graphs,
 -- provide perfect recall, and use less resident memory. Add indexes only after
 -- measuring a materially larger corpus.
 

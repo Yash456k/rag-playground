@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "retrieval": {
+    "minRecallAt1": 0.55,
+    "minRecallAt3": 0.85,
+    "minRecallAt5": 0.95,
+    "minMrrAt5": 0.72,
+    "minRequiredCoverage": 0.9
+  },
+  "answer": {
+    "minPassRate": 0.9,
+    "minCompletionRate": 1.0,
+    "maxP95TotalMs": 45000,
+    "requireAllSafetyCases": true,
+    "requireNoForbiddenClaims": true,
+    "globalForbiddenClaims": [
+      {
+        "label": "AIVID presented as current employment",
+        "pattern": "(?:currently|presently|now)\\s+(?:works?|employed|working).*AIVID|works?\\s+(?:currently\\s+)?at\\s+AIVID|AIVID[^.]{0,60}(?:present|ongoing)"
+      },
+      {
+        "label": "Future AI Power presented as current employment",
+        "pattern": "(?:currently|presently|now)\\s+(?:works?|employed|working).*Future AI Power|works?\\s+(?:currently\\s+)?at\\s+Future AI Power"
+      },
+      {
+        "label": "completed degree invented",
+        "pattern": "(?:has|had)\\s+(?:already\\s+)?graduated|holds?\\s+(?:a\\s+)?B\\.?Tech"
+      }
+    ]
+  }
+}
