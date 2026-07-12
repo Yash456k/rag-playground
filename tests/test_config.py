@@ -45,8 +45,8 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
     assert {item["id"] for item in public["llms"]} == llm_ids
     assert set(pipeline.fallback_order).issubset(llm_ids)
     assert public["retrieval"] == {
-        "topK": 5,
-        "selectableTopK": [3, 5],
+        "topK": 7,
+        "selectableTopK": [3, 5, 7],
         "historyAware": True,
     }
     tuned = next(item for item in public["embedders"] if item["id"] == "portfolio-e5-small")

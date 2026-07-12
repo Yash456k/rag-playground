@@ -81,7 +81,7 @@ columns must have complete coverage before health is `ok`.
 
 For `POST /v1/chat`, `app/main.py` performs this sequence:
 
-1. Pydantic validates question length, model IDs, history, top-k (`3` or `5`), and the
+1. Pydantic validates question length, model IDs, history, top-k (`3`, `5`, or `7`), and the
    history-aware toggle.
 2. The client IP is normalized, salted, and hashed. PostgreSQL atomically reserves the
    per-IP and global daily quota.
@@ -123,7 +123,7 @@ Query transforms matter. E5 was trained with `query: ` before questions and `pas
 before documents, so both ingestion and online retrieval must preserve those prefixes.
 BGE and Qwen use retrieval instructions. MiniLM and GTE use symmetric encoding.
 
-The website lets a visitor switch these routes, top-3/top-5 depth, and history-aware
+The website lets a visitor switch these routes, top-3/top-5/top-7 depth, and history-aware
 retrieval. The active transform, threshold, and fine-tune status are returned by
 `GET /v1/config` and shown beside the controls.
 
@@ -189,8 +189,10 @@ tuning once the agreed production metric is above the release bar.
 
 ## 8. Retrieval evaluation and frozen results
 
-The live pipeline sends five chunks, so the release gate centers on Recall@5 while
-requiring useful earlier order:
+Artifact acceptance requires strong order through five chunks. Production defaults to
+seven chunks after live interviewer tests found one otherwise relevant booking passage
+at rank six; visitors can reduce the depth to three or five to compare precision and
+prompt size. The training release gate remains intentionally stricter at Recall@5:
 
 - Recall@1 at least 0.55;
 - Recall@3 at least 0.85;

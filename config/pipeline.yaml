@@ -6,7 +6,7 @@ chunking:
   minimum_characters: 120
 
 retrieval:
-  top_k: 5
+  top_k: 7
 
 generation:
   temperature: 0.15

@@ -134,7 +134,7 @@ class PipelineConfig(BaseModel):
             "llms": [item.model_dump() for item in self.llms],
             "retrieval": {
                 "topK": self.retrieval.top_k,
-                "selectableTopK": [3, 5],
+                "selectableTopK": [3, 5, 7],
                 "historyAware": True,
             },
         }

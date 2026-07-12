@@ -10,7 +10,7 @@ A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's
 - Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
 - Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
 
-Visitors control the embedder, generation model, retrieval depth (top 3 or top 5),
+Visitors control the embedder, generation model, retrieval depth (top 3, 5, or 7),
 and whether recent user turns expand follow-up retrieval. The UI also exposes the
 active query transform, score threshold, and whether the route is portfolio-tuned.
 Retrieval defaults live in [`config/pipeline.yaml`](config/pipeline.yaml).
