@@ -14,7 +14,11 @@ from urllib.parse import urlsplit
 
 import httpx
 
-from evaluation.eval_lib import (
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from evaluation.eval_lib import (  # noqa: E402
     EVALUATION_ROOT,
     EvaluationDataError,
     evidence_group_ranks,
