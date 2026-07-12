@@ -240,8 +240,8 @@
         "refusal": false,
         "claim_groups": [
           {"label": "retrieval evidence visible", "any_of": ["retrieved (?:source )?chunks?[\\s\\S]*(?:cosine|similarity)[- ]scores?", "(?:cosine|similarity)[- ]scores?[\\s\\S]*retrieved (?:source )?chunks?"]},
-          {"label": "model or fallback visible", "any_of": ["requested and served models?", "fallback state"]},
-          {"label": "stage latency visible", "any_of": ["embedding[\\s\\S]*retrieval[\\s\\S]*(?:first-token|first token)[\\s\\S]*generation[\\s\\S]*total latency"]}
+          {"label": "model or fallback visible", "any_of": ["requested and served models?", "fallback state", "selected embedding and generation models?"]},
+          {"label": "stage latency visible", "any_of": ["(?:latency metrics?[^(]*\\()?embedding[\\s\\S]*retrieval[\\s\\S]*(?:first-token|first token)[\\s\\S]*generation[\\s\\S]*total(?: latency)?"]}
         ],
         "forbidden_claims": [],
         "min_citations": 1
@@ -268,7 +268,7 @@
         "refusal": false,
         "claim_groups": [
           {"label": "one vector space per column", "any_of": ["separate pgvector column for (?:each|every)(?: supported)? embedding", "(?:each|every)(?: supported)? embedding space[\\s\\S]*(?:own|separate) (?:pgvector )?column"]},
-          {"label": "validated allowlist", "any_of": ["validat(?:ed|es) (?:the )?(?:requested )?model identifier[\\s\\S]*server-side allowlist", "server-side allowlist[\\s\\S]*(?:visitor|user)(?:'s)? input[\\s\\S]*(?:never|not) (?:used as|becomes) an SQL identifier"]}
+          {"label": "validated allowlist", "any_of": ["validat(?:ed|es) (?:the )?(?:requested )?model identifier[\\s\\S]*server-side (?:column )?allowlist", "server-side (?:column )?allowlist[\\s\\S]*(?:visitor|user)(?:'s)? input[\\s\\S]*(?:never|not) (?:used as|becomes) an SQL identifier"]}
         ],
         "forbidden_claims": [],
         "min_citations": 1
@@ -304,8 +304,8 @@
       "answer_expectation": {
         "refusal": false,
         "claim_groups": [
-          {"label": "resident model tradeoff", "any_of": ["more memory[\\s\\S]*(?:avoid(?:s|ing)?|eliminat(?:es|ing)?) repeated cold starts", "(?:avoid(?:s|ing)?|eliminat(?:es|ing)?) repeated cold starts[\\s\\S]*more memory"]},
-          {"label": "provider tradeoff", "any_of": ["Groq[\\s\\S]*(?:remote-provider dependency|dependency on (?:a )?remote provider)", "(?:remote-provider dependency|dependency on (?:a )?remote provider)[\\s\\S]*(?:fallback models?|records every attempt)"]}
+          {"label": "resident model tradeoff", "any_of": ["more (?:memory|RAM)[\\s\\S]*(?:avoid(?:s|ing)?|eliminat(?:es|ing)?) repeated cold[- ]?starts", "(?:avoid(?:s|ing)?|eliminat(?:es|ing)?) repeated cold[- ]?starts[\\s\\S]*more (?:memory|RAM)"]},
+          {"label": "provider tradeoff", "any_of": ["Groq[\\s\\S]*(?:remote-provider dependency|dependency on (?:an? )?(?:remote|external) provider)", "dependency on (?:an? )?(?:remote|external) provider[\\s\\S]*(?:fallback models?|fallback handling|records every attempt)"]}
         ],
         "forbidden_claims": [
           {"label": "local LLM invented", "pattern": "runs? (?:the )?(?:large )?language model locally"}
@@ -391,7 +391,7 @@
         "refusal": false,
         "claim_groups": [
           {"label": "bounded dates", "any_of": ["September 2024 (?:through|to|[-–]) September 2025"]},
-          {"label": "not documented as current", "any_of": ["(?:not|doesn.t) (?:document|show|establish)[^.]{0,50}(?:current|still)", "role (?:ended|has an end date)[^.]{0,30}September 2025", "worked at AIVID[\\s\\S]*through September 2025"]}
+          {"label": "not documented as current", "any_of": ["(?:not|doesn.t) (?:document|show|establish)[^.]{0,50}(?:current|still)", "role (?:ended|has an end date)[^.]{0,30}September 2025", "worked at AIVID[\\s\\S]*through September 2025", "not currently working there"]}
         ],
         "forbidden_claims": [],
         "min_citations": 1
