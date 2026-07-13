@@ -10,6 +10,10 @@ import {
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ApiError, getConfig, streamChat } from './api'
+import { AboutSection } from './components/AboutSection'
+import { LandingSection } from './components/LandingSection'
+import { SectionNavigator } from './components/SectionNavigator'
+import { WorkSection } from './components/WorkSection'
 import type {
   AssistantMessage,
   ChatMessage,
@@ -80,13 +84,13 @@ function updateAssistant(
 function AppHeader({ connected }: { connected: boolean }) {
   return (
     <header className="site-header">
-      <a className="brand" href="#top" aria-label="Yash Khambhatta RAG Playground home">
+      <a className="brand" href="#home" aria-label="Yash Khambhatta portfolio home">
         <strong>Yash Khambhatta</strong>
       </a>
       <nav className="site-nav" aria-label="Portfolio navigation">
-        <a href="https://www.yashx.me/#work">Work</a>
-        <a href="https://www.yashx.me/#about">About</a>
-        <a href="https://www.yashx.me/#contact">Contact</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
         <span
           className={`connection-status ${connected ? 'is-connected' : ''}`}
           role="status"
@@ -622,6 +626,26 @@ function App() {
     setEvidenceOpen(true)
   }, [])
 
+  useEffect(() => {
+    if (!workspaceOpen) return
+
+    const portfolio = document.querySelector<HTMLElement>('.portfolio-site')
+    const playground = document.getElementById('playground')
+    if (!portfolio || !playground) return
+
+    const pinPlayground = () => {
+      portfolio.scrollTop = playground.offsetTop
+    }
+    pinPlayground()
+    const animationFrame = window.requestAnimationFrame(pinPlayground)
+    const transitionTimer = window.setTimeout(pinPlayground, 540)
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      window.clearTimeout(transitionTimer)
+    }
+  }, [workspaceOpen])
+
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
     activeRequest.current = null
@@ -815,14 +839,18 @@ function App() {
   }
 
   return (
-    <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`} id="top">
-      <div className="background-art" aria-hidden="true">
-        <span className="shape shape-one" />
-        <span className="shape shape-two" />
-        <span className="shape shape-three" />
-      </div>
-      <AppHeader connected />
-      <main className={`portfolio-card ${workspaceOpen ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
+    <div className="portfolio-site">
+      <SectionNavigator />
+      <LandingSection />
+      <section className="portfolio-section rag-section" id="playground" aria-label="Interactive RAG playground">
+        <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`}>
+          <div className="background-art" aria-hidden="true">
+            <span className="shape shape-one" />
+            <span className="shape shape-two" />
+            <span className="shape shape-three" />
+          </div>
+          <AppHeader connected />
+          <main className={`portfolio-card ${workspaceOpen ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
         <section
           className={`chat-column ${workspaceOpen ? 'is-active' : ''}`}
           aria-labelledby={workspaceOpen ? 'page-title-active' : 'page-title-landing'}
@@ -894,14 +922,18 @@ function App() {
             inputRef={inputRef}
           />
         </section>
-        <RetrievedRail
-          chunks={railChunks}
-          embedding={latestAssistant?.embedding}
-          pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
-          collapsed={workspaceOpen && !evidenceOpen}
-          onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
-        />
-      </main>
+            <RetrievedRail
+              chunks={railChunks}
+              embedding={latestAssistant?.embedding}
+              pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
+              collapsed={workspaceOpen && !evidenceOpen}
+              onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
+            />
+          </main>
+        </div>
+      </section>
+      <WorkSection />
+      <AboutSection />
     </div>
   )
 }
