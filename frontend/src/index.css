@@ -1633,7 +1633,10 @@ a:focus-visible {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+  }
+  .source-rail.is-expanded .source-list::-webkit-scrollbar {
+    display: none;
   }
   .source-rail.is-expanded .source-card {
     flex: 0 0 215px;
