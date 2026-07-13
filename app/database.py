@@ -81,6 +81,10 @@ class Database:
             await connection.execute(
                 "DELETE FROM rate_limit_buckets WHERE bucket_date < current_date - 3"
             )
+            await connection.execute(
+                "DELETE FROM monthly_budget_buckets "
+                "WHERE bucket_month < date_trunc('month', current_date)::date - interval '3 months'"
+            )
 
     async def retrieve(
         self,
@@ -113,16 +117,48 @@ class Database:
             for row in rows
         ]
 
-    async def reserve_daily_limits(
+    async def reserve_request_limits(
         self,
         ip_hash: str,
         per_ip_limit: int,
         global_limit: int,
+        monthly_budget_micro_usd: int,
+        request_reserve_micro_usd: int,
+        *,
+        bypass_daily: bool = False,
     ) -> tuple[bool, int, str | None]:
         today = datetime.now(UTC).date()
+        month = today.replace(day=1)
         global_key = "all"
         async with self.pool.connection() as connection, connection.transaction():
-            # Stable locks make the two-counter check/increment atomic across workers.
+            # Stable locks make budget and daily counters atomic across workers.
+            await connection.execute(
+                "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (f"budget:{month}",)
+            )
+            budget_cursor = await connection.execute(
+                "SELECT reserved_micro_usd FROM monthly_budget_buckets WHERE bucket_month = %s",
+                (month,),
+            )
+            budget_row = await budget_cursor.fetchone()
+            reserved = int(budget_row["reserved_micro_usd"]) if budget_row else 0
+            if reserved + request_reserve_micro_usd > monthly_budget_micro_usd:
+                return False, 0, "monthly_budget"
+
+            if bypass_daily:
+                await connection.execute(
+                    """
+                    INSERT INTO monthly_budget_buckets (bucket_month, reserved_micro_usd)
+                    VALUES (%s, %s)
+                    ON CONFLICT (bucket_month) DO UPDATE
+                    SET reserved_micro_usd =
+                            monthly_budget_buckets.reserved_micro_usd
+                            + EXCLUDED.reserved_micro_usd,
+                        updated_at = now()
+                    """,
+                    (month, request_reserve_micro_usd),
+                )
+                return True, per_ip_limit, None
+
             await connection.execute(
                 "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (f"global:{today}",)
             )
@@ -151,6 +187,18 @@ class Database:
                 SET request_count = rate_limit_buckets.request_count + 1, updated_at = now()
                 """,
                 (today, global_key, today, ip_hash),
+            )
+            await connection.execute(
+                """
+                INSERT INTO monthly_budget_buckets (bucket_month, reserved_micro_usd)
+                VALUES (%s, %s)
+                ON CONFLICT (bucket_month) DO UPDATE
+                SET reserved_micro_usd =
+                        monthly_budget_buckets.reserved_micro_usd
+                        + EXCLUDED.reserved_micro_usd,
+                    updated_at = now()
+                """,
+                (month, request_reserve_micro_usd),
             )
             remaining = per_ip_limit - counts.get("ip", 0) - 1
             return True, max(0, remaining), None

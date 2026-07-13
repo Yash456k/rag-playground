@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -65,6 +66,15 @@ class LlmConfig(BaseModel):
     label: str
     description: str
     provider: Literal["groq", "openrouter"] = "groq"
+    input_usd_per_million: float = Field(ge=0)
+    output_usd_per_million: float = Field(ge=0)
+
+    def reserve_micro_usd(self, input_tokens: int, output_tokens: int) -> int:
+        # $/million-token pricing is numerically equal to micro-USD/token.
+        return math.ceil(
+            input_tokens * self.input_usd_per_million
+            + output_tokens * self.output_usd_per_million
+        )
 
 
 class PipelineConfig(BaseModel):
@@ -103,6 +113,18 @@ class PipelineConfig(BaseModel):
         except StopIteration as exc:
             raise KeyError(llm_id) from exc
 
+    def request_cost_reserve_micro_usd(self, llm_id: str, input_tokens: int) -> int:
+        candidates = dict.fromkeys([llm_id, *self.fallback_order])
+        # Reserve every possible attempt. A provider may consume input before an
+        # empty/error stream causes the client to try the fallback.
+        return sum(
+            self.llm(candidate).reserve_micro_usd(
+                input_tokens,
+                self.generation.max_tokens,
+            )
+            for candidate in candidates
+        )
+
     def public_dict(self) -> dict:
         return {
             "version": self.version,
@@ -132,7 +154,15 @@ class PipelineConfig(BaseModel):
                 }
                 for item in self.embedders
             ],
-            "llms": [item.model_dump() for item in self.llms],
+            "llms": [
+                {
+                    "id": item.id,
+                    "label": item.label,
+                    "description": item.description,
+                    "provider": item.provider,
+                }
+                for item in self.llms
+            ],
             "retrieval": {
                 "topK": self.retrieval.top_k,
                 "selectableTopK": [3, 5, 7],

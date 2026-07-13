@@ -6,8 +6,8 @@ A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's
 
 - Six resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5,
   Qwen3 Embedding 0.6B, portfolio-tuned E5 Small, and portfolio-tuned GTE Small.
-- Three Groq generation choices plus the OpenRouter free-model router. Provider keys
-  remain server-side.
+- Three Groq generation choices, the OpenRouter free-model router, and DeepSeek V4
+  Flash through OpenRouter. Provider keys remain server-side.
 - Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
 - Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
 
@@ -48,7 +48,7 @@ evaluation/          Retrieval and live-answer cases, gates, and locked checksum
 deploy/Caddyfile     Streaming-safe TLS reverse proxy
 frontend/            Vite + React + TypeScript SPA
 scripts/             Safe ingestion and verification helpers
-sql/schema.sql       pgvector schema, six vector columns, logs, daily counters
+sql/schema.sql       pgvector schema, six vector columns, logs, usage counters
 training/            Reviewed datasets, pinned recipes, and audit contract
 docker-compose.yml   Isolated production stack
 ```
@@ -59,7 +59,12 @@ docker-compose.yml   Isolated production stack
 - The API and database host ports bind to loopback; only Caddy binds the VPS public IPv4 on ports 80/443.
 - The system prompt allows answers only from supplied excerpts and treats the question, history, and corpus as untrusted data.
 - Questions are capped at 500 characters and history at six short messages.
-- PostgreSQL atomically enforces a salted per-IP daily bucket and a global daily bucket.
+- PostgreSQL atomically enforces a five-query per-IP daily bucket, a 120-query global
+  daily burst ceiling, and a model-weighted $1.80 monthly cost reservation ceiling.
+- Every request pre-reserves a conservative 32,000 input tokens plus the configured
+  600-token output maximum for both the selected model and every possible fallback
+  attempt. Expensive choices therefore consume the allowance faster, and the
+  application stops before the requested $2 worst-case budget.
 - Query logs record selections, retrieved source IDs/scores, latency, fallback attempts, and a salted IP hash. Raw IP addresses are not stored.
 - The Groq key and verification token exist only in the VPS `.env`. Neither belongs in the frontend or Vercel.
 - The API container drops Linux capabilities, runs as UID 10001, and has a 3,500 MiB hard memory limit.
@@ -151,7 +156,9 @@ llms:
 
 `openrouter/free` is registered for zero-cost routing. OpenRouter selects a currently
 available free model for each request, and the UI reports the resolved model once
-generation starts.
+generation starts. `deepseek/deepseek-v4-flash` is the low-cost paid OpenRouter choice.
+Fallback is limited to GPT-OSS 20B so a provider failure cannot silently escalate to a
+more expensive model.
 
 ## API overview
 

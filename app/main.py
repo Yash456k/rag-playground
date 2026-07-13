@@ -76,6 +76,15 @@ def _retry_after_midnight() -> int:
     return max(1, int((tomorrow - now).total_seconds()))
 
 
+def _retry_after_next_month() -> int:
+    now = datetime.now(UTC)
+    if now.month == 12:
+        next_month = datetime(now.year + 1, 1, 1, tzinfo=UTC)
+    else:
+        next_month = datetime(now.year, now.month + 1, 1, tzinfo=UTC)
+    return max(1, int((next_month - now).total_seconds()))
+
+
 def _build_user_prompt(request: ChatRequest, chunks: list[dict[str, Any]]) -> str:
     history_items = request.history[-6:] if request.use_history else []
     history = "\n".join(f"{item.role.upper()}: {item.content}" for item in history_items)
@@ -144,16 +153,21 @@ async def _reserve_request_limits(
     settings: Settings,
     ip_digest: str,
     evaluation_token: str | None,
+    request_reserve_micro_usd: int,
 ) -> tuple[bool, int, str | None]:
     # This server-only header is intentionally absent from CORS allow_headers.
-    # It lets operator evaluation runs exercise the real streaming path without
-    # consuming visitor quotas, while still requiring the constant-time secret.
-    if valid_verification_token(evaluation_token, settings.verify_fallback_token):
-        return True, settings.per_ip_daily_limit, None
-    return await database.reserve_daily_limits(
+    # It lets operator evaluation runs bypass visitor/day quotas. All real provider
+    # calls still consume the hard monthly budget, including operator checks.
+    return await database.reserve_request_limits(
         ip_digest,
         settings.per_ip_daily_limit,
         settings.global_daily_limit,
+        settings.global_monthly_budget_micro_usd,
+        request_reserve_micro_usd,
+        bypass_daily=valid_verification_token(
+            evaluation_token,
+            settings.verify_fallback_token,
+        ),
     )
 
 
@@ -260,12 +274,20 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
             active_settings,
             ip_digest,
             request.headers.get("x-verify-evaluation"),
+            active_pipeline.request_cost_reserve_micro_usd(
+                body.model,
+                active_settings.budget_input_token_reserve,
+            ),
         )
         if not allowed:
-            retry_after = _retry_after_midnight()
+            retry_after = (
+                _retry_after_next_month()
+                if limited_scope == "monthly_budget"
+                else _retry_after_midnight()
+            )
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=f"{limited_scope}_daily_rate_limit_exceeded",
+                detail=f"{limited_scope}_rate_limit_exceeded",
                 headers={"Retry-After": str(retry_after), "X-RateLimit-Remaining": "0"},
             )
 

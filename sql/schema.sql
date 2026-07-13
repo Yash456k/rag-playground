@@ -43,6 +43,13 @@ CREATE TABLE IF NOT EXISTS rate_limit_buckets (
     PRIMARY KEY (bucket_date, scope, key_hash)
 );
 
+CREATE TABLE IF NOT EXISTS monthly_budget_buckets (
+    bucket_month date PRIMARY KEY,
+    reserved_micro_usd bigint NOT NULL DEFAULT 0 CHECK (reserved_micro_usd >= 0),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    CHECK (date_trunc('month', bucket_month)::date = bucket_month)
+);
+
 CREATE TABLE IF NOT EXISTS query_logs (
     id uuid PRIMARY KEY,
     created_at timestamptz NOT NULL DEFAULT now(),
@@ -63,3 +70,4 @@ CREATE TABLE IF NOT EXISTS query_logs (
 
 CREATE INDEX IF NOT EXISTS query_logs_created_at_idx ON query_logs (created_at DESC);
 CREATE INDEX IF NOT EXISTS rate_limit_updated_at_idx ON rate_limit_buckets (updated_at);
+CREATE INDEX IF NOT EXISTS monthly_budget_updated_at_idx ON monthly_budget_buckets (updated_at);

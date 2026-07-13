@@ -59,7 +59,6 @@ def _client(pipeline: PipelineConfig, responses: list[_Response]) -> tuple[GroqC
     transport = _HttpClient(responses)
     client = object.__new__(GroqClient)
     client.api_key = "unit-test-key"
-    client.api_keys = {"groq": "unit-test-key", "openrouter": "unit-test-openrouter-key"}
     client.api_keys = {"groq": "unit-test-key", "openrouter": "openrouter-test-key"}
     client.pipeline = pipeline
     client.client = transport
@@ -79,18 +78,16 @@ def test_candidates_preserve_selection_then_deduplicated_fallback_order(
     pipeline: PipelineConfig,
 ) -> None:
     client, _ = _client(pipeline, [])
-    selected = pipeline.fallback_order[1]
+    selected = "openai/gpt-oss-120b"
 
     assert client.candidates(selected, force_failure=False) == [
         selected,
-        pipeline.fallback_order[0],
-        *pipeline.fallback_order[2:],
+        *pipeline.fallback_order,
     ]
     assert client.candidates(selected, force_failure=True) == [
         "verification/forced-provider-error",
         selected,
-        pipeline.fallback_order[0],
-        *pipeline.fallback_order[2:],
+        *pipeline.fallback_order,
     ]
 
 

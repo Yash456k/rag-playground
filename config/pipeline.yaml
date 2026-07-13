@@ -82,20 +82,32 @@ llms:
     label: GPT-OSS 20B
     description: Fast, efficient reasoning
     provider: groq
+    input_usd_per_million: 0.075
+    output_usd_per_million: 0.30
   - id: openai/gpt-oss-120b
     label: GPT-OSS 120B
     description: Highest-capability production model
     provider: groq
+    input_usd_per_million: 0.15
+    output_usd_per_million: 0.60
   - id: qwen/qwen3.6-27b
     label: Qwen3.6 27B
     description: Preview · strong multilingual reasoning
     provider: groq
+    input_usd_per_million: 0.60
+    output_usd_per_million: 3.00
   - id: openrouter/free
     label: Free Models Router
     description: OpenRouter · free model selected per request
     provider: openrouter
+    input_usd_per_million: 0
+    output_usd_per_million: 0
+  - id: deepseek/deepseek-v4-flash
+    label: DeepSeek V4 Flash
+    description: OpenRouter · fast, economical reasoning
+    provider: openrouter
+    input_usd_per_million: 0.09
+    output_usd_per_million: 0.18
 
 fallback_order:
   - openai/gpt-oss-20b
-  - openai/gpt-oss-120b
-  - qwen/qwen3.6-27b

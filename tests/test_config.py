@@ -38,7 +38,7 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
     embedder_ids = {item.id for item in pipeline.embedders}
     llm_ids = {item.id for item in pipeline.llms}
 
-    assert 3 <= len(llm_ids) <= 4
+    assert 3 <= len(llm_ids) <= 5
     assert public["defaults"]["embedder"] in embedder_ids
     assert public["defaults"]["llm"] in llm_ids
     assert {item["id"] for item in public["embedders"]} == embedder_ids
@@ -52,6 +52,20 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
     tuned = next(item for item in public["embedders"] if item["id"] == "portfolio-e5-small")
     assert tuned["optimization"]["portfolioTuned"] is True
     assert tuned["optimization"]["queryTransform"] == "E5 query/passage prefixes"
+
+
+def test_deepseek_flash_and_model_weighted_budget_reserves(pipeline: PipelineConfig) -> None:
+    deepseek = pipeline.llm("deepseek/deepseek-v4-flash")
+
+    assert deepseek.provider == "openrouter"
+    assert deepseek.input_usd_per_million == 0.09
+    assert deepseek.output_usd_per_million == 0.18
+    # Reserve both DeepSeek and the paid GPT-OSS fallback attempt.
+    assert pipeline.request_cost_reserve_micro_usd(deepseek.id, 32_000) == 5_568
+    # The expensive selectable Qwen model consumes the monthly allowance much faster.
+    assert pipeline.request_cost_reserve_micro_usd("qwen/qwen3.6-27b", 32_000) == 23_580
+    # Free routing still reserves for the paid GPT-OSS fallback.
+    assert pipeline.request_cost_reserve_micro_usd("openrouter/free", 32_000) == 2_580
 
 
 @pytest.mark.parametrize(

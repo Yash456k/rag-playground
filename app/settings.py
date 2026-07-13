@@ -22,8 +22,14 @@ class Settings(BaseSettings):
     ]
     ip_hash_salt: str = Field(min_length=24)
     verify_fallback_token: str = Field(min_length=24)
-    per_ip_daily_limit: int = Field(default=30, ge=5, le=1000)
-    global_daily_limit: int = Field(default=500, ge=10, le=100000)
+    per_ip_daily_limit: int = Field(default=5, ge=1, le=1000)
+    global_daily_limit: int = Field(default=120, ge=10, le=100000)
+    global_monthly_budget_micro_usd: int = Field(
+        default=1_800_000,
+        ge=100_000,
+        le=100_000_000,
+    )
+    budget_input_token_reserve: int = Field(default=32_000, ge=1_000, le=100_000)
     log_level: str = "INFO"
 
     @field_validator("frontend_origins", "allowed_hosts", "trusted_proxy_cidrs", mode="before")

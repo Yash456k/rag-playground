@@ -8,6 +8,7 @@ from app.main import (
     _milliseconds,
     _reserve_request_limits,
     _retry_after_midnight,
+    _retry_after_next_month,
     _select_diverse_chunks,
     _sse,
 )
@@ -30,6 +31,7 @@ def test_sse_is_single_compact_unicode_data_frame() -> None:
 def test_latency_helper_reports_rounded_milliseconds() -> None:
     assert _milliseconds(10.0, 10.01234) == 12.3
     assert 1 <= _retry_after_midnight() <= 86_400
+    assert 1 <= _retry_after_next_month() <= 31 * 86_400
 
 
 def test_user_prompt_numbers_sources_and_marks_context_untrusted() -> None:
@@ -122,13 +124,24 @@ class _LimitDatabase:
     def __init__(self) -> None:
         self.calls = 0
 
-    async def reserve_daily_limits(
-        self, ip_hash: str, per_ip_limit: int, global_limit: int
+    async def reserve_request_limits(
+        self,
+        ip_hash: str,
+        per_ip_limit: int,
+        global_limit: int,
+        monthly_budget_micro_usd: int,
+        request_reserve_micro_usd: int,
+        *,
+        bypass_daily: bool,
     ) -> tuple[bool, int, str | None]:
         self.calls += 1
         assert ip_hash == "hashed-ip"
-        assert per_ip_limit == 30
-        assert global_limit == 500
+        assert per_ip_limit == 5
+        assert global_limit == 120
+        assert monthly_budget_micro_usd == 1_800_000
+        assert request_reserve_micro_usd == 5_568
+        if bypass_daily:
+            return True, per_ip_limit, None
         return False, 0, "ip"
 
 
@@ -152,16 +165,23 @@ async def test_valid_operator_evaluation_token_does_not_consume_visitor_limit() 
         settings,
         "hashed-ip",
         settings.verify_fallback_token,
+        5_568,
     )
 
-    assert result == (True, 30, None)
-    assert database.calls == 0
+    assert result == (True, 5, None)
+    assert database.calls == 1
 
 
 async def test_missing_operator_token_uses_atomic_database_limit() -> None:
     database = _LimitDatabase()
 
-    result = await _reserve_request_limits(database, _test_settings(), "hashed-ip", None)
+    result = await _reserve_request_limits(
+        database,
+        _test_settings(),
+        "hashed-ip",
+        None,
+        5_568,
+    )
 
     assert result == (False, 0, "ip")
     assert database.calls == 1

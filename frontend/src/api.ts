@@ -36,7 +36,7 @@ async function errorFromResponse(response: Response): Promise<ApiError> {
 
   if (response.status === 429) {
     const wait = retryAfter && Number.isFinite(retryAfter) ? formatWait(retryAfter) : 'later'
-    return new ApiError(`This demo's daily query limit has been reached. Please try again ${wait}.`, 429, retryAfter)
+    return new ApiError(`This demo's shared usage limit has been reached. Please try again ${wait}.`, 429, retryAfter)
   }
   if (response.status === 422) {
     return new ApiError('That request could not be validated. Shorten the question and try again.', 422)
@@ -50,7 +50,8 @@ async function errorFromResponse(response: Response): Promise<ApiError> {
 function formatWait(seconds: number): string {
   if (seconds < 60) return `in ${seconds} seconds`
   if (seconds < 3600) return `in about ${Math.ceil(seconds / 60)} minutes`
-  return 'after the daily limit resets at 00:00 UTC'
+  if (seconds < 86_400) return `in about ${Math.ceil(seconds / 3600)} hours`
+  return `in about ${Math.ceil(seconds / 86_400)} days`
 }
 
 export async function getConfig(signal?: AbortSignal): Promise<PlaygroundConfig> {
