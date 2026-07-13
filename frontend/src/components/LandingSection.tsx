@@ -29,7 +29,7 @@ export function LandingSection() {
           <p className="section-kicker"><span /> Full-stack engineer · Applied AI</p>
           <h1 id="landing-title">
             I build the useful,
-            <em>difficult things.</em>
+            <em>difficult <br className="mobile-title-break" />things.</em>
           </h1>
           <p className="landing-summary">
             Production-minded software across real-time products, search systems,

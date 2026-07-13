@@ -5,8 +5,9 @@ const projects = [
     summary: 'An inspectable portfolio assistant with six embedding routes, streamed answers, source receipts, and provider fallback.',
     tags: ['React', 'FastAPI', 'pgvector', 'LLM systems'],
     metric: '6 retrieval routes',
-    href: 'https://github.com/Yash456k/rag-playground',
-    linkLabel: 'View repository',
+    href: '#playground',
+    linkLabel: 'Open live lab',
+    newTab: false,
   },
   {
     number: '02',
@@ -16,6 +17,7 @@ const projects = [
     metric: '500-user race test',
     href: 'https://www.nashiksportsklub.com',
     linkLabel: 'Visit live product',
+    newTab: true,
   },
   {
     number: '03',
@@ -25,6 +27,7 @@ const projects = [
     metric: '500+ messages',
     href: 'https://yashchatapp.vercel.app',
     linkLabel: 'Open live demo',
+    newTab: true,
   },
 ] as const
 
@@ -58,7 +61,12 @@ export function WorkSection() {
                   {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
                 </ul>
               </div>
-              <a href={project.href} target="_blank" rel="noreferrer" aria-label={`${project.linkLabel}: ${project.title}`}>
+              <a
+                href={project.href}
+                target={project.newTab ? '_blank' : undefined}
+                rel={project.newTab ? 'noreferrer' : undefined}
+                aria-label={`${project.linkLabel}: ${project.title}`}
+              >
                 <span>{project.linkLabel}</span>
                 <b aria-hidden="true">↗</b>
               </a>

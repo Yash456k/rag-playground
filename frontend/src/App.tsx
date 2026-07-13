@@ -104,7 +104,12 @@ function AppHeader({ connected }: { connected: boolean }) {
 
 function LoadingScreen({ error, onRetry }: { error?: string; onRetry: () => void }) {
   return (
-    <div className="app-shell" id="top">
+    <div className="app-shell">
+      <div className="background-art" aria-hidden="true">
+        <span className="shape shape-one" />
+        <span className="shape shape-two" />
+        <span className="shape shape-three" />
+      </div>
       <AppHeader connected={false} />
       <main className="load-state">
         <div className="load-orbit" aria-hidden="true">
@@ -519,7 +524,7 @@ function Composer({ value, disabled, onChange, onSubmit, onFocus, inputRef }: Co
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={onFocus}
-          placeholder="Ask me anything about my work…"
+          placeholder="Ask about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
           disabled={disabled}
@@ -826,24 +831,13 @@ function App() {
     topK,
   ])
 
-  if (!config) {
-    return (
-      <LoadingScreen
-        error={configError}
-        onRetry={() => {
-          setConfigError(undefined)
-          setLoadAttempt((attempt) => attempt + 1)
-        }}
-      />
-    )
-  }
-
   return (
     <div className="portfolio-site">
       <SectionNavigator />
       <LandingSection />
       <section className="portfolio-section rag-section" id="playground" aria-label="Interactive RAG playground">
-        <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`}>
+        {config ? (
+          <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`}>
           <div className="background-art" aria-hidden="true">
             <span className="shape shape-one" />
             <span className="shape shape-two" />
@@ -930,7 +924,16 @@ function App() {
               onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
             />
           </main>
-        </div>
+          </div>
+        ) : (
+          <LoadingScreen
+            error={configError}
+            onRetry={() => {
+              setConfigError(undefined)
+              setLoadAttempt((attempt) => attempt + 1)
+            }}
+          />
+        )}
       </section>
       <WorkSection />
       <AboutSection />
