@@ -214,10 +214,11 @@ function ModelControls({
   onHistoryAwareChange,
 }: ModelControlsProps) {
   const embedder = config.embedders.find((item) => item.id === embedderId)
+  const panelTitleId = compact ? 'model-panel-title-compact' : 'model-panel-title'
 
   return (
-    <section className={`model-panel ${compact ? 'is-compact' : ''}`} aria-labelledby="model-panel-title">
-      <h2 className="visually-hidden" id="model-panel-title">Choose the route</h2>
+    <section className={`model-panel ${compact ? 'is-compact' : ''}`} aria-labelledby={panelTitleId}>
+      <h2 className="visually-hidden" id={panelTitleId}>Choose the route</h2>
       <div className="model-grid">
         <ThemeSelect
           label="Embedding"
@@ -483,10 +484,12 @@ type ComposerProps = {
   disabled: boolean
   onChange: (value: string) => void
   onSubmit: () => void
+  onFocus: () => void
+  onBlur: (nextTarget: EventTarget | null) => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-function Composer({ value, disabled, onChange, onSubmit, inputRef }: ComposerProps) {
+function Composer({ value, disabled, onChange, onSubmit, onFocus, onBlur, inputRef }: ComposerProps) {
   const canSubmit = value.trim().length >= 2 && !disabled
 
   const submit = (event: FormEvent) => {
@@ -511,6 +514,8 @@ function Composer({ value, disabled, onChange, onSubmit, inputRef }: ComposerPro
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
+          onBlur={(event) => onBlur(event.relatedTarget)}
           placeholder="Ask me anything about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
@@ -545,6 +550,7 @@ function App() {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
+  const [workspaceOpen, setWorkspaceOpen] = useState(false)
   const [evidenceOpen, setEvidenceOpen] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -607,10 +613,24 @@ function App() {
       ),
     [messages],
   )
-  const isActive = messages.length > 0
+  const hasConversation = messages.length > 0
   const railChunks = latestAssistant && latestAssistant.chunks.length > 0
     ? latestAssistant.chunks
-    : isActive ? [] : PREVIEW_CHUNKS
+    : hasConversation ? [] : PREVIEW_CHUNKS
+
+  const openWorkspace = useCallback(() => {
+    setWorkspaceOpen(true)
+    setEvidenceOpen(true)
+  }, [])
+
+  const closeEmptyWorkspace = useCallback((nextTarget: EventTarget | null) => {
+    const nextElement = nextTarget instanceof Element ? nextTarget : null
+    if (nextElement?.closest('.portfolio-card')) return
+    if (!question.trim() && messages.length === 0 && !isStreaming) {
+      setWorkspaceOpen(false)
+      setEvidenceOpen(false)
+    }
+  }, [isStreaming, messages.length, question])
 
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
@@ -618,8 +638,8 @@ function App() {
     setMessages([])
     setQuestion('')
     setIsStreaming(false)
+    setWorkspaceOpen(false)
     setEvidenceOpen(false)
-    window.setTimeout(() => inputRef.current?.focus(), 0)
   }, [])
 
   const chooseEmbedder = useCallback((id: string) => {
@@ -682,6 +702,7 @@ function App() {
     }
     const controller = new AbortController()
     activeRequest.current = controller
+    setWorkspaceOpen(true)
     setQuestion('')
     setIsStreaming(true)
     setMessages((current) => [...current, userMessage, assistantMessage])
@@ -804,18 +825,21 @@ function App() {
   }
 
   return (
-    <div className={`app-shell ${isActive ? 'is-active' : ''}`} id="top">
+    <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`} id="top">
       <div className="background-art" aria-hidden="true">
         <span className="shape shape-one" />
         <span className="shape shape-two" />
         <span className="shape shape-three" />
       </div>
       <AppHeader connected />
-      <main className={`portfolio-card ${isActive ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
-        <section className={`chat-column ${isActive ? 'is-active' : ''}`} aria-labelledby="page-title">
-          {isActive ? (
-            <header className="active-chat-bar">
-              <h1 id="page-title"><span aria-hidden="true">✦</span> Chat with <em>my portfolio</em></h1>
+      <main className={`portfolio-card ${workspaceOpen ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
+        <section
+          className={`chat-column ${workspaceOpen ? 'is-active' : ''}`}
+          aria-labelledby={workspaceOpen ? 'page-title-active' : 'page-title-landing'}
+        >
+          <div className="header-stage">
+            <header className="active-chat-bar" aria-hidden={!workspaceOpen} inert={!workspaceOpen}>
+              <h1 id="page-title-active"><span aria-hidden="true">✦</span> Chat with <em>my portfolio</em></h1>
               <ModelControls
                 compact
                 config={config}
@@ -829,20 +853,20 @@ function App() {
                 onTopKChange={chooseTopK}
                 onHistoryAwareChange={chooseHistoryAware}
               />
-              <button className="clear-chat is-active" type="button" onClick={clearChat}>
+              <button className="clear-chat is-active" type="button" aria-label="Clear chat" onClick={clearChat}>
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
                 </svg>
                 <span>Clear</span>
               </button>
             </header>
-          ) : (
-            <header className="card-intro">
+            <header className="card-intro" aria-hidden={workspaceOpen} inert={workspaceOpen}>
               <div className="intro-bar">
                 <span className="sparkle-mark" aria-hidden="true">✦</span>
                 <button
                   className="clear-chat"
                   type="button"
+                  aria-label="Clear chat"
                   onClick={clearChat}
                   disabled={messages.length === 0 && !question}
                 >
@@ -852,7 +876,7 @@ function App() {
                   <span>Clear chat</span>
                 </button>
               </div>
-              <h1 id="page-title">Chat with <em>my portfolio</em></h1>
+              <h1 id="page-title-landing">Chat with <em>my portfolio</em></h1>
               <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
               <ModelControls
                 config={config}
@@ -867,7 +891,7 @@ function App() {
                 onHistoryAwareChange={chooseHistoryAware}
               />
             </header>
-          )}
+          </div>
           <div className="chat-scroll" ref={chatScrollRef}>
             <ChatTranscript messages={messages} onShowSources={() => setEvidenceOpen(true)} />
           </div>
@@ -876,6 +900,8 @@ function App() {
             disabled={isStreaming}
             onChange={setQuestion}
             onSubmit={() => void submitQuestion()}
+            onFocus={openWorkspace}
+            onBlur={closeEmptyWorkspace}
             inputRef={inputRef}
           />
         </section>
@@ -883,8 +909,8 @@ function App() {
           chunks={railChunks}
           embedding={latestAssistant?.embedding}
           pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
-          collapsed={isActive && !evidenceOpen}
-          onToggle={isActive ? () => setEvidenceOpen((open) => !open) : undefined}
+          collapsed={workspaceOpen && !evidenceOpen}
+          onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
         />
       </main>
     </div>
