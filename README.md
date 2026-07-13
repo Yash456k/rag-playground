@@ -59,7 +59,7 @@ docker-compose.yml   Isolated production stack
 - The API and database host ports bind to loopback; only Caddy binds the VPS public IPv4 on ports 80/443.
 - The system prompt allows answers only from supplied excerpts and treats the question, history, and corpus as untrusted data.
 - Questions are capped at 500 characters and history at six short messages.
-- PostgreSQL atomically enforces a five-query per-IP daily bucket, a 120-query global
+- PostgreSQL atomically enforces a 15-query per-IP daily bucket, a 120-query global
   daily burst ceiling, and a model-weighted $1.80 monthly cost reservation ceiling.
 - Every request pre-reserves a conservative 32,000 input tokens plus the configured
   600-token output maximum for both the selected model and every possible fallback

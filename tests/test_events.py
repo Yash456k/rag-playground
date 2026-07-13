@@ -136,7 +136,7 @@ class _LimitDatabase:
     ) -> tuple[bool, int, str | None]:
         self.calls += 1
         assert ip_hash == "hashed-ip"
-        assert per_ip_limit == 5
+        assert per_ip_limit == 15
         assert global_limit == 120
         assert monthly_budget_micro_usd == 1_800_000
         assert request_reserve_micro_usd == 5_568
@@ -168,7 +168,7 @@ async def test_valid_operator_evaluation_token_does_not_consume_visitor_limit() 
         5_568,
     )
 
-    assert result == (True, 5, None)
+    assert result == (True, 15, None)
     assert database.calls == 1
 
 

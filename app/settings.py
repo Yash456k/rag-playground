@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     ]
     ip_hash_salt: str = Field(min_length=24)
     verify_fallback_token: str = Field(min_length=24)
-    per_ip_daily_limit: int = Field(default=5, ge=1, le=1000)
+    per_ip_daily_limit: int = Field(default=15, ge=1, le=1000)
     global_daily_limit: int = Field(default=120, ge=10, le=100000)
     global_monthly_budget_micro_usd: int = Field(
         default=1_800_000,
