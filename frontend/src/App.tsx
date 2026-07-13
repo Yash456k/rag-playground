@@ -235,7 +235,12 @@ function ModelControls({
         />
       </div>
       <details className="route-advanced">
-        <summary>Retrieval settings</summary>
+        <summary>
+          <span>Retrieval settings</span>
+          <svg className="route-settings-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 4h10M3 12h10M5.5 2.5v3M10.5 10.5v3" />
+          </svg>
+        </summary>
         <div className="advanced-content">
           <label>
             Context

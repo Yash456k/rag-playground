@@ -438,6 +438,10 @@ a:focus-visible {
   display: none;
 }
 
+.route-settings-icon {
+  display: none;
+}
+
 .advanced-content {
   position: absolute;
   top: 23px;
@@ -1035,14 +1039,26 @@ a:focus-visible {
   overflow: hidden;
   border: 1px solid #e5d5c9;
   border-radius: 50%;
-  color: transparent;
+  color: #8a7770;
   text-decoration: none;
 }
 
-.model-panel.is-compact .route-advanced summary::after {
-  color: #8a7770;
-  content: '⌘';
-  font: 500 14px/1 'DM Sans', sans-serif;
+.model-panel.is-compact .route-advanced summary span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.model-panel.is-compact .route-settings-icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.35;
 }
 
 .model-panel.is-compact .advanced-content {
