@@ -213,6 +213,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
     application.add_middleware(
         CORSMiddleware,
         allow_origins=active_settings.frontend_origins,
+        allow_origin_regex=active_settings.frontend_origin_regex,
         allow_credentials=False,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type"],

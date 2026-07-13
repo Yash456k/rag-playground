@@ -1,3 +1,4 @@
+import re
 from functools import lru_cache
 from typing import Annotated
 
@@ -12,6 +13,7 @@ class Settings(BaseSettings):
     openrouter_api_key: str | None = Field(default=None, min_length=20)
     database_url: str = Field(min_length=20)
     frontend_origins: Annotated[list[str], NoDecode]
+    frontend_origin_regex: str | None = None
     public_api_url: str
     allowed_hosts: Annotated[list[str], NoDecode]
     trusted_proxy_cidrs: Annotated[list[str], NoDecode] = [
@@ -38,6 +40,20 @@ class Settings(BaseSettings):
             raise ValueError("FRONTEND_ORIGINS must be an explicit non-wildcard list")
         if any(not origin.startswith("https://") for origin in value):
             raise ValueError("all production frontend origins must use HTTPS")
+        return value
+
+    @field_validator("frontend_origin_regex")
+    @classmethod
+    def validate_origin_regex(cls, value: str | None) -> str | None:
+        if value is None or not value.strip():
+            return None
+        value = value.strip()
+        if not value.startswith("^https://") or not value.endswith("$") or "*" == value:
+            raise ValueError("FRONTEND_ORIGIN_REGEX must be an anchored HTTPS pattern")
+        try:
+            re.compile(value)
+        except re.error as error:
+            raise ValueError("FRONTEND_ORIGIN_REGEX must be a valid regular expression") from error
         return value
 
 
