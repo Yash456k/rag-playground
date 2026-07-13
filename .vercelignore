@@ -1,0 +1,35 @@
+# This Vercel project builds from the frontend/ root directory. Keep CLI
+# previews focused on that tree so backend models and training data are never
+# included in the upload bundle.
+.github/
+.pytest_cache/
+.ruff_cache/
+.venv/
+app/
+config/
+corpus/
+deploy/
+evaluation/
+model-artifacts/
+output/
+scripts/
+sql/
+tests/
+training/
+
+frontend/.vercel/
+frontend/dist/
+frontend/node_modules/
+
+.dockerignore
+.env.example
+docker-compose.yml
+Dockerfile
+LICENSE
+PROGRESS.md
+pyproject.toml
+RAG_GUIDE.md
+README.md
+requirements-dev.txt
+requirements-train.txt
+requirements.txt

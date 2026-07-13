@@ -752,16 +752,21 @@ function App() {
       <AppHeader connected />
       <main className="portfolio-card">
         <section className="chat-column" aria-labelledby="page-title">
-          <button
-            className="clear-chat"
-            type="button"
-            onClick={clearChat}
-            disabled={messages.length === 0 && !question}
-          >
-            Clear chat
-          </button>
           <header className="card-intro">
-            <span className="sparkle-mark" aria-hidden="true">✦</span>
+            <div className="intro-bar">
+              <span className="sparkle-mark" aria-hidden="true">✦</span>
+              <button
+                className="clear-chat"
+                type="button"
+                onClick={clearChat}
+                disabled={messages.length === 0 && !question}
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
+                </svg>
+                <span>Clear chat</span>
+              </button>
+            </div>
             <h1 id="page-title">Chat with <em>my portfolio</em></h1>
             <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
             <ModelControls
