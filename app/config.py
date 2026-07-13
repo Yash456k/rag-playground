@@ -115,14 +115,15 @@ class PipelineConfig(BaseModel):
 
     def request_cost_reserve_micro_usd(self, llm_id: str, input_tokens: int) -> int:
         candidates = dict.fromkeys([llm_id, *self.fallback_order])
-        # Reserve every possible attempt. A provider may consume input before an
-        # empty/error stream causes the client to try the fallback.
+        # The Groq account used by this deployment is free. Only OpenRouter
+        # attempts consume the application's dollar-denominated monthly budget.
         return sum(
             self.llm(candidate).reserve_micro_usd(
                 input_tokens,
                 self.generation.max_tokens,
             )
             for candidate in candidates
+            if self.llm(candidate).provider == "openrouter"
         )
 
     def public_dict(self) -> dict:

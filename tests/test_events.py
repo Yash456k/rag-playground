@@ -139,7 +139,7 @@ class _LimitDatabase:
         assert per_ip_limit == 15
         assert global_limit == 120
         assert monthly_budget_micro_usd == 1_800_000
-        assert request_reserve_micro_usd == 5_568
+        assert request_reserve_micro_usd == 2_988
         if bypass_daily:
             return True, per_ip_limit, None
         return False, 0, "ip"
@@ -165,7 +165,7 @@ async def test_valid_operator_evaluation_token_does_not_consume_visitor_limit() 
         settings,
         "hashed-ip",
         settings.verify_fallback_token,
-        5_568,
+        2_988,
     )
 
     assert result == (True, 15, None)
@@ -180,7 +180,7 @@ async def test_missing_operator_token_uses_atomic_database_limit() -> None:
         _test_settings(),
         "hashed-ip",
         None,
-        5_568,
+        2_988,
     )
 
     assert result == (False, 0, "ip")
