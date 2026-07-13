@@ -270,6 +270,16 @@ function ModelControls({
 }
 
 function SourceCard({ chunk, index }: { chunk: RetrievedChunk; index: number }) {
+  const preview = chunk.content
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
+    .replace(/\|/g, ' · ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
   return (
     <article className="source-card">
       <div className="source-title">
@@ -279,7 +289,7 @@ function SourceCard({ chunk, index }: { chunk: RetrievedChunk; index: number }) 
         <strong>{chunk.title}</strong>
       </div>
       <span className="source-file">Source: {chunk.source}</span>
-      <p>{chunk.content}</p>
+      <p>{preview}</p>
       <footer className="source-meta">
         <span>Chunk {index + 1}</span>
         <strong aria-label={`Similarity score ${chunk.score.toFixed(2)}`}>
