@@ -29,7 +29,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  height: 100dvh;
+  height: 100svh;
   overflow: hidden;
   background:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.66), transparent 27%),
@@ -86,7 +86,7 @@ a:focus-visible {
   --page-bottom: clamp(14px, 4vh, 84px);
   position: relative;
   isolation: isolate;
-  height: 100dvh;
+  height: 100svh;
   min-height: 0;
   padding: 0 60px var(--page-bottom);
   overflow: hidden;
@@ -157,21 +157,13 @@ a:focus-visible {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 34px;
   color: var(--ink);
   text-decoration: none;
 }
 
-.brand-mark {
-  color: var(--red);
-  font: 400 40px/1 'Newsreader', serif;
-  letter-spacing: -0.04em;
-}
-
 .brand strong {
-  font: 500 15px/1 'Newsreader', serif;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
+  font: 400 21px/1 'Newsreader', serif;
+  letter-spacing: 0.08em;
 }
 
 .site-nav {
@@ -211,7 +203,7 @@ a:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 740px) 300px;
   width: min(1040px, calc(100vw - 120px));
-  height: min(740px, calc(100dvh - var(--header-height) - var(--page-bottom)));
+  height: min(740px, calc(100svh - var(--header-height) - var(--page-bottom)));
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.78);
@@ -337,14 +329,14 @@ a:focus-visible {
 .model-panel {
   position: relative;
   z-index: 10;
-  width: min(100%, 624px);
-  margin: 29px auto 0;
+  width: min(100%, 594px);
+  margin: 22px auto 0;
 }
 
 .model-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
-  gap: 22px;
+  gap: 14px;
 }
 
 .theme-select {
@@ -352,13 +344,13 @@ a:focus-visible {
   display: flex;
   align-items: center;
   min-width: 0;
-  height: 48px;
-  padding: 0 14px 0 25px;
+  height: 42px;
+  padding: 0 13px 0 21px;
   border: 1px solid #e5d5c9;
   border-radius: 999px;
   background: rgba(255, 252, 248, 0.5);
   color: #3f3a36;
-  font: 400 16px/1 'Newsreader', serif;
+  font: 400 14px/1 'Newsreader', serif;
 }
 
 .control-label {
@@ -454,7 +446,7 @@ a:focus-visible {
 
 .route-advanced {
   position: relative;
-  width: max-content;
+  width: fit-content;
   max-width: 100%;
   margin: 8px auto 0;
   color: #8a7770;
@@ -462,12 +454,15 @@ a:focus-visible {
 }
 
 .route-advanced summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   width: max-content;
   margin: 0 auto;
+  padding: 5px 9px;
   list-style: none;
-  text-decoration: underline;
-  text-decoration-color: rgba(184, 61, 50, 0.24);
-  text-underline-offset: 3px;
+  border-radius: 999px;
+  transition: color 160ms ease, background 160ms ease;
 }
 
 .route-advanced summary::-webkit-details-marker {
@@ -475,24 +470,36 @@ a:focus-visible {
 }
 
 .route-settings-icon {
-  display: none;
+  display: block;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.35;
+}
+
+.route-advanced summary:hover,
+.route-advanced[open] summary {
+  color: var(--red-dark);
+  background: rgba(184, 61, 50, 0.06);
 }
 
 .advanced-content {
   position: absolute;
-  top: 23px;
+  top: calc(100% + 8px);
   left: 50%;
   z-index: 5;
-  display: flex;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
   align-items: center;
-  gap: 15px;
-  width: max-content;
-  max-width: min(620px, calc(100vw - 40px));
-  padding: 12px 16px;
+  gap: 13px 18px;
+  width: min(520px, calc(100vw - 40px));
+  padding: 16px 18px 14px;
   border: 1px solid #e3d2c7;
-  border-radius: 15px;
-  background: #fffaf4;
-  box-shadow: 0 14px 30px rgba(88, 57, 39, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 250, 244, 0.98);
+  box-shadow: 0 18px 38px rgba(88, 57, 39, 0.16);
   transform: translateX(-50%);
 }
 
@@ -500,22 +507,42 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 7px;
+  color: #5f554f;
+  font-size: 11px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .advanced-content select {
+  min-height: 30px;
+  padding: 4px 26px 4px 9px;
   border: 1px solid #decfc3;
   border-radius: 8px;
   background: #fffdf9;
+  color: #3f3732;
+  font-size: 11px;
+}
+
+.advanced-toggle {
+  justify-self: end;
 }
 
 .advanced-toggle input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
   accent-color: var(--red);
 }
 
 .optimization-readout {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding-top: 11px;
+  border-top: 1px solid rgba(151, 113, 91, 0.14);
   color: #9b837a;
-  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .chat-scroll {
@@ -739,8 +766,8 @@ a:focus-visible {
 .composer-input {
   display: flex;
   align-items: center;
-  min-height: 70px;
-  padding: 7px 7px 7px 28px;
+  min-height: 58px;
+  padding: 6px 6px 6px 24px;
   border: 1px solid #dfd0c5;
   border-radius: 999px;
   background: rgba(255, 253, 249, 0.78);
@@ -782,8 +809,8 @@ a:focus-visible {
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 54px;
-  height: 54px;
+  width: 46px;
+  height: 46px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -822,7 +849,7 @@ a:focus-visible {
 
 .source-rail {
   min-width: 0;
-  padding: 36px 23px 28px;
+  padding: 28px 20px 24px;
   overflow: hidden;
   border-left: 1px solid rgba(174, 139, 117, 0.18);
 }
@@ -830,19 +857,20 @@ a:focus-visible {
 .embedding-confirmation {
   display: flex;
   align-items: center;
-  gap: 9px;
-  min-height: 22px;
-  margin: 8px 12px 79px;
-  padding: 0;
-  border: 0;
+  gap: 11px;
+  min-height: 42px;
+  margin: 0 2px 30px;
+  padding: 7px 10px;
+  border: 1px solid rgba(174, 139, 117, 0.18);
+  border-radius: 13px;
   color: #887a72;
-  background: transparent;
+  background: rgba(255, 251, 246, 0.48);
 }
 
 .embedding-confirmation > span {
   flex: 0 0 auto;
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #b7aaa0;
 }
@@ -858,15 +886,15 @@ a:focus-visible {
 }
 
 .embedding-confirmation small {
-  font: 500 7px/1.2 'DM Sans', sans-serif;
-  letter-spacing: 0.06em;
+  font: 600 8px/1.25 'DM Sans', sans-serif;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .embedding-confirmation strong {
   overflow: hidden;
   color: #4d443f;
-  font: 400 10px/1.3 'DM Sans', sans-serif;
+  font: 500 10.5px/1.35 'DM Sans', sans-serif;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -897,15 +925,15 @@ a:focus-visible {
 
 .source-list {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .source-card {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-  height: 148px;
+  grid-template-rows: auto auto auto auto;
+  height: 136px;
   min-height: 0;
-  padding: 15px 14px 12px 18px;
+  padding: 12px 13px 10px 15px;
   overflow: hidden;
   border: 1px solid #e5d8ce;
   border-radius: 15px;
@@ -918,7 +946,7 @@ a:focus-visible {
   gap: 10px;
   min-width: 0;
   color: var(--red);
-  font: 400 16px/1.1 'Newsreader', serif;
+  font: 400 14.5px/1.1 'Newsreader', serif;
 }
 
 .source-title strong {
@@ -941,20 +969,21 @@ a:focus-visible {
 
 .source-file {
   display: block;
-  margin-top: 8px;
+  margin-top: 6px;
   overflow: hidden;
   color: #817770;
-  font: 400 10px/1.2 'DM Sans', sans-serif;
+  font: 400 9px/1.2 'DM Sans', sans-serif;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .source-card p {
   display: -webkit-box;
-  margin: 9px 0 7px;
+  min-height: 2.7em;
+  margin: 6px 0;
   overflow: hidden;
   color: #282421;
-  font: 400 13px/1.35 'Newsreader', serif;
+  font: 400 12.5px/1.35 'Newsreader', serif;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   max-height: 2.7em;
@@ -975,7 +1004,7 @@ a:focus-visible {
 
 /* Conversation mode: the landing composition folds into a focused workspace. */
 .app-shell.is-active {
-  --header-height: max(36px, calc((100dvh - 820px) / 2));
+  --header-height: max(36px, calc((100svh - 820px) / 2));
   --page-bottom: var(--header-height);
   padding-inline: 36px;
 }
@@ -998,7 +1027,7 @@ a:focus-visible {
 .app-shell.is-active .portfolio-card {
   grid-template-columns: minmax(0, 1fr) 58px;
   width: min(1160px, calc(100vw - 72px));
-  height: min(820px, calc(100dvh - 72px));
+  height: min(820px, calc(100svh - 72px));
   border-radius: 32px;
   box-shadow:
     0 23px 42px rgba(93, 62, 42, 0.12),
@@ -1303,8 +1332,10 @@ a:focus-visible {
 
 .source-rail.is-expanded {
   position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
   padding: 22px 18px 18px;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .source-rail.is-expanded .embedding-confirmation {
@@ -1313,6 +1344,32 @@ a:focus-visible {
 
 .source-rail.is-expanded .rail-heading {
   padding: 0 4px 15px;
+}
+
+.source-rail.is-expanded .source-list {
+  align-content: start;
+  grid-auto-rows: max-content;
+  min-height: 0;
+  padding-right: 4px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 61, 50, 0.24) transparent;
+}
+
+.source-rail.is-expanded .source-card p {
+  min-height: 1.35em;
+  max-height: 1.35em;
+  -webkit-line-clamp: 1;
+}
+
+.source-rail.is-expanded .source-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.source-rail.is-expanded .source-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(184, 61, 50, 0.22);
 }
 
 .evidence-close {
@@ -1442,7 +1499,7 @@ a:focus-visible {
   .rail-heading { padding-left: 0; }
   .source-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .app-shell.is-active {
-    height: 100dvh;
+    height: 100svh;
     min-height: 0;
     padding: 10px;
     overflow: hidden;
@@ -1451,7 +1508,7 @@ a:focus-visible {
   .app-shell.is-active .portfolio-card {
     grid-template-columns: minmax(0, 1fr) 50px;
     width: 100%;
-    height: calc(100dvh - 20px);
+    height: calc(100svh - 20px);
     min-height: 0;
   }
   .app-shell.is-active .portfolio-card.evidence-open {
@@ -1475,27 +1532,25 @@ a:focus-visible {
 
 @media (max-width: 680px) {
   body {
-    height: 100dvh;
+    height: 100svh;
     min-height: 0;
     overflow: hidden;
   }
   .app-shell { padding: 0 14px 10px; }
   .app-shell {
-    height: 100dvh;
+    height: 100svh;
     min-height: 0;
     overflow: hidden;
   }
   .site-header { height: 72px; }
-  .brand { gap: 14px; }
-  .brand-mark { font-size: 32px; }
-  .brand strong { font-size: 12px; letter-spacing: 0.2em; }
+  .brand strong { font-size: 17px; letter-spacing: 0.06em; }
   .site-nav { gap: 18px; }
   .site-nav a { display: none; }
   .connection-status { margin-left: 0; }
   .portfolio-card,
   .load-state { width: 100%; border-radius: 28px; }
   .app-shell:not(.is-active) .portfolio-card {
-    height: calc(100dvh - 82px);
+    height: calc(100svh - 82px);
     min-height: 0;
   }
   .app-shell:not(.is-active) .chat-column {
@@ -1525,7 +1580,15 @@ a:focus-visible {
   .composer-input { min-height: 62px; padding-left: 21px; }
   .composer button { width: 48px; height: 48px; }
   .source-list { grid-template-columns: 1fr; }
-  .advanced-content { flex-direction: column; align-items: flex-start; }
+  .advanced-content {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    width: min(320px, calc(100vw - 42px));
+  }
+  .advanced-content label,
+  .advanced-toggle { justify-self: stretch; }
+  .advanced-toggle { justify-content: flex-start; }
+  .optimization-readout { grid-column: 1; }
   .app-shell.is-active {
     --header-height: 0px;
     --page-bottom: 0px;
@@ -1535,7 +1598,7 @@ a:focus-visible {
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) 42px;
     width: 100%;
-    height: calc(100dvh - 16px);
+    height: calc(100svh - 16px);
     border-radius: 22px;
   }
   .app-shell.is-active .portfolio-card.evidence-open {
@@ -1664,16 +1727,14 @@ a:focus-visible {
   .shape-one { width: 760px; height: 336px; right: -172px; bottom: -172px; }
   .shape-two { width: 520px; height: 264px; right: -84px; bottom: -152px; }
   .shape-three { width: 592px; height: 144px; left: -168px; bottom: -34px; }
-  .brand { gap: 27px; }
-  .brand-mark { font-size: 32px; }
-  .brand strong { font-size: 12px; }
+  .brand strong { font-size: 17px; }
   .site-nav { gap: 35px; }
   .site-nav a { font-size: 14px; }
   .connection-status { width: 11px; height: 11px; margin-left: -6px; }
   .portfolio-card {
     grid-template-columns: minmax(0, 592px) 240px;
     width: min(832px, calc(100vw - 96px));
-    height: min(592px, calc(100dvh - var(--header-height) - var(--page-bottom)));
+    height: min(592px, calc(100svh - var(--header-height) - var(--page-bottom)));
     border-radius: 32px;
   }
   .chat-column { padding: 40px 18px 24px 36px; }
@@ -1697,21 +1758,19 @@ a:focus-visible {
   .composer textarea { font-size: 14px; }
   .composer button { width: 43px; height: 43px; }
   .composer button svg { width: 18px; height: 18px; }
-  .source-rail { position: relative; padding: 120px 18px 14px; }
+  .source-rail { position: relative; padding: 102px 18px 14px; }
   .embedding-confirmation {
     position: absolute;
-    top: 78px;
+    top: 42px;
     right: 18px;
     left: 18px;
-    min-height: 22px;
+    min-height: 42px;
     margin: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
+    padding: 7px 10px;
   }
-  .embedding-confirmation > span { width: 5px; height: 5px; }
-  .embedding-confirmation small { display: none; }
-  .embedding-confirmation strong { font: 400 9px/1.25 'DM Sans', sans-serif; }
+  .embedding-confirmation > span { width: 7px; height: 7px; }
+  .embedding-confirmation small { display: block; font-size: 9px; }
+  .embedding-confirmation strong { font: 500 11px/1.3 'DM Sans', sans-serif; }
   .rail-heading { gap: 9px; padding: 0 6px 13px; }
   .rail-heading > svg { width: 18px; height: 18px; }
   .rail-heading h2 { font-size: 14px; }
@@ -1722,9 +1781,16 @@ a:focus-visible {
   .source-file { margin-top: 5px; }
   .source-card p { margin: 7px 0 5px; font-size: 11px; }
   .source-meta { font-size: 9px; }
+  .source-rail.is-expanded { padding: 18px 14px; }
+  .source-rail.is-expanded .embedding-confirmation {
+    position: static;
+    inset: auto;
+    min-height: 42px;
+    margin: 0 0 12px;
+  }
   .load-state {
     width: min(832px, calc(100vw - 96px));
-    height: min(592px, calc(100dvh - var(--header-height) - var(--page-bottom)));
+    height: min(592px, calc(100svh - var(--header-height) - var(--page-bottom)));
     border-radius: 32px;
   }
   .load-state h1 { font-size: 40px; }

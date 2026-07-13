@@ -81,7 +81,6 @@ function AppHeader({ connected }: { connected: boolean }) {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Yash Khambhatta RAG Playground home">
-        <span className="brand-mark" aria-hidden="true">YK</span>
         <strong>Yash Khambhatta</strong>
       </a>
       <nav className="site-nav" aria-label="Portfolio navigation">
@@ -235,44 +234,46 @@ function ModelControls({
           onChange={onModelChange}
         />
       </div>
-      <details className="route-advanced">
-        <summary>
-          <span>Retrieval settings</span>
-          <svg className="route-settings-icon" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M3 4h10M3 12h10M5.5 2.5v3M10.5 10.5v3" />
-          </svg>
-        </summary>
-        <div className="advanced-content">
-          <label>
-            Context
-            <select
-              value={topK}
-              onChange={(event) => onTopKChange(Number(event.target.value))}
-              disabled={disabled}
-            >
-              {config.retrieval.selectableTopK.map((value) => (
-                <option key={value} value={value}>Top {value}</option>
-              ))}
-            </select>
-          </label>
-          <label className="advanced-toggle">
-            <input
-              type="checkbox"
-              checked={historyAware}
-              onChange={(event) => onHistoryAwareChange(event.target.checked)}
-              disabled={disabled}
-            />
-            Use recent questions for follow-ups
-          </label>
-          {embedder && (
-            <span className="optimization-readout">
-              {embedder.optimization.portfolioTuned ? 'Fine-tuned' : 'Baseline'} ·{' '}
-              {embedder.optimization.queryTransform} · threshold{' '}
-              {embedder.optimization.minimumScore.toFixed(2)}
-            </span>
-          )}
-        </div>
-      </details>
+      {compact && (
+        <details className="route-advanced">
+          <summary>
+            <span>Retrieval settings</span>
+            <svg className="route-settings-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3 4h10M3 12h10M5.5 2.5v3M10.5 10.5v3" />
+            </svg>
+          </summary>
+          <div className="advanced-content">
+            <label>
+              Context
+              <select
+                value={topK}
+                onChange={(event) => onTopKChange(Number(event.target.value))}
+                disabled={disabled}
+              >
+                {config.retrieval.selectableTopK.map((value) => (
+                  <option key={value} value={value}>Top {value}</option>
+                ))}
+              </select>
+            </label>
+            <label className="advanced-toggle">
+              <input
+                type="checkbox"
+                checked={historyAware}
+                onChange={(event) => onHistoryAwareChange(event.target.checked)}
+                disabled={disabled}
+              />
+              Use recent questions for follow-ups
+            </label>
+            {embedder && (
+              <span className="optimization-readout">
+                {embedder.optimization.portfolioTuned ? 'Fine-tuned' : 'Baseline'} ·{' '}
+                {embedder.optimization.queryTransform} · threshold{' '}
+                {embedder.optimization.minimumScore.toFixed(2)}
+              </span>
+            )}
+          </div>
+        </details>
+      )}
     </section>
   )
 }
@@ -321,7 +322,7 @@ function RetrievedRail({
   collapsed?: boolean
   onToggle?: () => void
 }) {
-  const visibleChunks = chunks.slice(0, 3)
+  const visibleChunks = chunks
   const bestScore = visibleChunks[0]?.score
   const confirmationLabel = embedding
     ? 'Embedding confirmed'
@@ -485,11 +486,10 @@ type ComposerProps = {
   onChange: (value: string) => void
   onSubmit: () => void
   onFocus: () => void
-  onBlur: (nextTarget: EventTarget | null) => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-function Composer({ value, disabled, onChange, onSubmit, onFocus, onBlur, inputRef }: ComposerProps) {
+function Composer({ value, disabled, onChange, onSubmit, onFocus, inputRef }: ComposerProps) {
   const canSubmit = value.trim().length >= 2 && !disabled
 
   const submit = (event: FormEvent) => {
@@ -515,7 +515,6 @@ function Composer({ value, disabled, onChange, onSubmit, onFocus, onBlur, inputR
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={onFocus}
-          onBlur={(event) => onBlur(event.relatedTarget)}
           placeholder="Ask me anything about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
@@ -622,15 +621,6 @@ function App() {
     setWorkspaceOpen(true)
     setEvidenceOpen(true)
   }, [])
-
-  const closeEmptyWorkspace = useCallback((nextTarget: EventTarget | null) => {
-    const nextElement = nextTarget instanceof Element ? nextTarget : null
-    if (nextElement?.closest('.portfolio-card')) return
-    if (!question.trim() && messages.length === 0 && !isStreaming) {
-      setWorkspaceOpen(false)
-      setEvidenceOpen(false)
-    }
-  }, [isStreaming, messages.length, question])
 
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
@@ -901,7 +891,6 @@ function App() {
             onChange={setQuestion}
             onSubmit={() => void submitQuestion()}
             onFocus={openWorkspace}
-            onBlur={closeEmptyWorkspace}
             inputRef={inputRef}
           />
         </section>

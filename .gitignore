@@ -17,3 +17,4 @@ coverage/
 output/
 *.log
 .DS_Store
+.vercel

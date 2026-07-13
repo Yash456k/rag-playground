@@ -145,6 +145,15 @@ def _select_diverse_chunks(
         selected_terms.append(terms)
         if len(selected) == top_k:
             break
+    if len(selected) < top_k:
+        # Preserve diversity when possible, then backfill by similarity so a
+        # requested Top 3/5/7 route always returns that many available chunks.
+        for candidate in candidates:
+            if candidate in selected:
+                continue
+            selected.append(candidate)
+            if len(selected) == top_k:
+                break
     return selected
 
 

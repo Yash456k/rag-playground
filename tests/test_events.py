@@ -115,9 +115,25 @@ def test_diverse_chunk_selection_drops_adjacent_repeated_claims() -> None:
         },
     ]
 
-    selected = _select_diverse_chunks(candidates, 3)
+    selected = _select_diverse_chunks(candidates, 2)
 
     assert [item["id"] for item in selected] == ["1", "3"]
+
+
+def test_diverse_chunk_selection_backfills_to_requested_count() -> None:
+    candidates = [
+        {
+            "id": str(index),
+            "source": "resume.md",
+            "chunkIndex": index,
+            "content": "Repeated evidence about reusable React components.",
+        }
+        for index in range(7)
+    ]
+
+    selected = _select_diverse_chunks(candidates, 7)
+
+    assert [item["id"] for item in selected] == [str(index) for index in range(7)]
 
 
 class _LimitDatabase:
