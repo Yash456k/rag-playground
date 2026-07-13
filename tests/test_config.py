@@ -40,7 +40,7 @@ def test_public_registry_defaults_and_fallbacks_only_reference_visible_choices(
 
     assert 3 <= len(llm_ids) <= 5
     assert public["defaults"]["embedder"] in embedder_ids
-    assert public["defaults"]["llm"] in llm_ids
+    assert public["defaults"]["llm"] == "deepseek/deepseek-v4-flash"
     assert {item["id"] for item in public["embedders"]} == embedder_ids
     assert {item["id"] for item in public["llms"]} == llm_ids
     assert set(pipeline.fallback_order).issubset(llm_ids)
@@ -72,6 +72,7 @@ def test_deepseek_flash_and_model_weighted_budget_reserves(pipeline: PipelineCon
         ("duplicate_embedder_id", "embedder ids must be unique"),
         ("duplicate_embedder_column", "each embedder must have its own vector column"),
         ("duplicate_llm_id", "LLM ids must be unique"),
+        ("unknown_default_llm", "default_llm must reference a configured LLM id"),
         ("unknown_fallback", "fallback_order may only contain configured LLM ids"),
     ],
 )
@@ -84,6 +85,8 @@ def test_registry_rejects_ambiguous_or_unknown_mappings(
         pipeline_data["embedders"][1]["column"] = pipeline_data["embedders"][0]["column"]
     elif mutation == "duplicate_llm_id":
         pipeline_data["llms"][1]["id"] = pipeline_data["llms"][0]["id"]
+    elif mutation == "unknown_default_llm":
+        pipeline_data["default_llm"] = "not/a-configured-model"
     else:
         pipeline_data["fallback_order"].append("not/a-configured-model")
 

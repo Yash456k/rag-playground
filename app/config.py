@@ -79,6 +79,7 @@ class LlmConfig(BaseModel):
 
 class PipelineConfig(BaseModel):
     version: int
+    default_llm: str
     chunking: ChunkingConfig
     retrieval: RetrievalConfig
     generation: GenerationConfig
@@ -97,6 +98,8 @@ class PipelineConfig(BaseModel):
             raise ValueError("each embedder must have its own vector column")
         if len(llm_ids) != len(set(llm_ids)):
             raise ValueError("LLM ids must be unique")
+        if self.default_llm not in llm_ids:
+            raise ValueError("default_llm must reference a configured LLM id")
         if not set(self.fallback_order).issubset(llm_ids):
             raise ValueError("fallback_order may only contain configured LLM ids")
         return self
@@ -133,7 +136,7 @@ class PipelineConfig(BaseModel):
                 "embedder": (
                     self.embedders[1].id if len(self.embedders) > 1 else self.embedders[0].id
                 ),
-                "llm": self.llms[0].id,
+                "llm": self.default_llm,
             },
             "embedders": [
                 {
