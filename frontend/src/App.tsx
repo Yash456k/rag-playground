@@ -127,6 +127,7 @@ type ModelControlsProps = {
   topK: number
   historyAware: boolean
   disabled: boolean
+  compact?: boolean
   onEmbedderChange: (id: string) => void
   onModelChange: (id: string) => void
   onTopKChange: (value: number) => void
@@ -206,6 +207,7 @@ function ModelControls({
   topK,
   historyAware,
   disabled,
+  compact = false,
   onEmbedderChange,
   onModelChange,
   onTopKChange,
@@ -214,7 +216,7 @@ function ModelControls({
   const embedder = config.embedders.find((item) => item.id === embedderId)
 
   return (
-    <section className="model-panel" aria-labelledby="model-panel-title">
+    <section className={`model-panel ${compact ? 'is-compact' : ''}`} aria-labelledby="model-panel-title">
       <h2 className="visually-hidden" id="model-panel-title">Choose the route</h2>
       <div className="model-grid">
         <ThemeSelect
@@ -304,11 +306,17 @@ function RetrievedRail({
   chunks,
   embedding,
   pendingEmbedding,
+  collapsed = false,
+  onToggle,
 }: {
   chunks: RetrievedChunk[]
   embedding?: EmbeddingConfirmation
   pendingEmbedding?: string
+  collapsed?: boolean
+  onToggle?: () => void
 }) {
+  const visibleChunks = chunks.slice(0, 3)
+  const bestScore = visibleChunks[0]?.score
   const confirmationLabel = embedding
     ? 'Embedding confirmed'
     : pendingEmbedding
@@ -320,8 +328,28 @@ function RetrievedRail({
       ? `${pendingEmbedding} · embedding queued`
       : 'Vector receipt appears here'
 
+  if (collapsed) {
+    return (
+      <aside className="source-rail is-collapsed" aria-label="Retrieved evidence">
+        <button
+          className="evidence-rail-toggle"
+          type="button"
+          onClick={onToggle}
+          aria-expanded="false"
+          aria-label={`Show ${visibleChunks.length} retrieved chunks`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
+          </svg>
+          <span>{visibleChunks.length} chunks · {bestScore?.toFixed(2) ?? '—'}</span>
+          <svg className="rail-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="m4 2.5 3.5 3.5L4 9.5" /></svg>
+        </button>
+      </aside>
+    )
+  }
+
   return (
-    <aside className="source-rail" aria-label="Retrieved chunks">
+    <aside className={`source-rail ${onToggle ? 'is-expanded' : ''}`} aria-label="Retrieved chunks">
       <div className={`embedding-confirmation ${embedding ? 'is-confirmed' : ''}`} role="status">
         <span aria-hidden="true" />
         <div>
@@ -334,17 +362,23 @@ function RetrievedRail({
           <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
         </svg>
         <h2>Retrieved chunks</h2>
+        {onToggle && (
+          <button className="evidence-close" type="button" onClick={onToggle} aria-label="Collapse retrieved chunks">
+            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m8 2.5-3.5 3.5L8 9.5" /></svg>
+          </button>
+        )}
       </header>
       <div className="source-list">
-        {chunks.slice(0, 3).map((chunk, index) => (
+        {visibleChunks.map((chunk, index) => (
           <SourceCard key={`${chunk.id ?? chunk.source}-${index}`} chunk={chunk} index={index} />
         ))}
+        {visibleChunks.length === 0 && <p className="source-empty">Evidence will appear when retrieval completes.</p>}
       </div>
     </aside>
   )
 }
 
-function AssistantAnswer({ message }: { message: AssistantMessage }) {
+function AssistantAnswer({ message, onShowSources }: { message: AssistantMessage; onShowSources?: () => void }) {
   const isWorking = message.status === 'retrieving' || message.status === 'streaming'
   const servedLabel =
     message.servedModelLabel ??
@@ -383,12 +417,20 @@ function AssistantAnswer({ message }: { message: AssistantMessage }) {
               : `${Math.round(message.latencies.totalMs)} ms`}
           </span>
         </div>
+        {message.chunks.length > 0 && onShowSources && (
+          <button className="answer-sources" type="button" onClick={onShowSources}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
+            </svg>
+            {message.chunks.length} sources · {message.chunks[0]?.score.toFixed(2)}
+          </button>
+        )}
       </div>
     </article>
   )
 }
 
-function ChatTranscript({ messages }: { messages: ChatMessage[] }) {
+function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; onShowSources?: () => void }) {
   if (messages.length === 0) {
     return (
       <div className="transcript demo-transcript">
@@ -424,7 +466,7 @@ function ChatTranscript({ messages }: { messages: ChatMessage[] }) {
             <time>Now</time>
           </article>
         ) : (
-          <AssistantAnswer key={message.id} message={message} />
+          <AssistantAnswer key={message.id} message={message} onShowSources={onShowSources} />
         ),
       )}
     </div>
@@ -498,6 +540,7 @@ function App() {
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
+  const [evidenceOpen, setEvidenceOpen] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const activeRequest = useRef<AbortController | null>(null)
@@ -559,8 +602,10 @@ function App() {
       ),
     [messages],
   )
-  const railChunks =
-    latestAssistant && latestAssistant.chunks.length > 0 ? latestAssistant.chunks : PREVIEW_CHUNKS
+  const isActive = messages.length > 0
+  const railChunks = latestAssistant && latestAssistant.chunks.length > 0
+    ? latestAssistant.chunks
+    : isActive ? [] : PREVIEW_CHUNKS
 
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
@@ -568,6 +613,7 @@ function App() {
     setMessages([])
     setQuestion('')
     setIsStreaming(false)
+    setEvidenceOpen(false)
     window.setTimeout(() => inputRef.current?.focus(), 0)
   }, [])
 
@@ -753,47 +799,72 @@ function App() {
   }
 
   return (
-    <div className="app-shell" id="top">
+    <div className={`app-shell ${isActive ? 'is-active' : ''}`} id="top">
       <div className="background-art" aria-hidden="true">
         <span className="shape shape-one" />
         <span className="shape shape-two" />
         <span className="shape shape-three" />
       </div>
       <AppHeader connected />
-      <main className="portfolio-card">
-        <section className="chat-column" aria-labelledby="page-title">
-          <header className="card-intro">
-            <div className="intro-bar">
-              <span className="sparkle-mark" aria-hidden="true">✦</span>
-              <button
-                className="clear-chat"
-                type="button"
-                onClick={clearChat}
-                disabled={messages.length === 0 && !question}
-              >
+      <main className={`portfolio-card ${isActive ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
+        <section className={`chat-column ${isActive ? 'is-active' : ''}`} aria-labelledby="page-title">
+          {isActive ? (
+            <header className="active-chat-bar">
+              <h1 id="page-title"><span aria-hidden="true">✦</span> Chat with <em>my portfolio</em></h1>
+              <ModelControls
+                compact
+                config={config}
+                embedderId={embedderId}
+                modelId={modelId}
+                topK={topK}
+                historyAware={historyAware}
+                disabled={isStreaming}
+                onEmbedderChange={chooseEmbedder}
+                onModelChange={chooseModel}
+                onTopKChange={chooseTopK}
+                onHistoryAwareChange={chooseHistoryAware}
+              />
+              <button className="clear-chat is-active" type="button" onClick={clearChat}>
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
                 </svg>
-                <span>Clear chat</span>
+                <span>Clear</span>
               </button>
-            </div>
-            <h1 id="page-title">Chat with <em>my portfolio</em></h1>
-            <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
-            <ModelControls
-              config={config}
-              embedderId={embedderId}
-              modelId={modelId}
-              topK={topK}
-              historyAware={historyAware}
-              disabled={isStreaming}
-              onEmbedderChange={chooseEmbedder}
-              onModelChange={chooseModel}
-              onTopKChange={chooseTopK}
-              onHistoryAwareChange={chooseHistoryAware}
-            />
-          </header>
+            </header>
+          ) : (
+            <header className="card-intro">
+              <div className="intro-bar">
+                <span className="sparkle-mark" aria-hidden="true">✦</span>
+                <button
+                  className="clear-chat"
+                  type="button"
+                  onClick={clearChat}
+                  disabled={messages.length === 0 && !question}
+                >
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
+                  </svg>
+                  <span>Clear chat</span>
+                </button>
+              </div>
+              <h1 id="page-title">Chat with <em>my portfolio</em></h1>
+              <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
+              <ModelControls
+                config={config}
+                embedderId={embedderId}
+                modelId={modelId}
+                topK={topK}
+                historyAware={historyAware}
+                disabled={isStreaming}
+                onEmbedderChange={chooseEmbedder}
+                onModelChange={chooseModel}
+                onTopKChange={chooseTopK}
+                onHistoryAwareChange={chooseHistoryAware}
+              />
+            </header>
+          )}
           <div className="chat-scroll" ref={chatScrollRef}>
-            <ChatTranscript messages={messages} />
+            <ChatTranscript messages={messages} onShowSources={() => setEvidenceOpen(true)} />
           </div>
           <Composer
             value={question}
@@ -807,6 +878,8 @@ function App() {
           chunks={railChunks}
           embedding={latestAssistant?.embedding}
           pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
+          collapsed={isActive && !evidenceOpen}
+          onToggle={isActive ? () => setEvidenceOpen((open) => !open) : undefined}
         />
       </main>
     </div>
