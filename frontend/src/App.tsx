@@ -26,11 +26,6 @@ import type {
 } from './types'
 
 const QUESTION_LIMIT = 500
-const STARTER_PROMPTS = [
-  'What has Yash shipped to production?',
-  'Why would Yash be a strong hire?',
-  'Show me his applied AI work',
-] as const
 const STORAGE_KEYS = {
   embedder: 'rag-playground:embedder',
   model: 'rag-playground:model',
@@ -499,11 +494,11 @@ type ComposerProps = {
   disabled: boolean
   onChange: (value: string) => void
   onSubmit: () => void
-  onEngage: () => void
+  onFocus: () => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: ComposerProps) {
+function Composer({ value, disabled, onChange, onSubmit, onFocus, inputRef }: ComposerProps) {
   const canSubmit = value.trim().length >= 2 && !disabled
 
   const submit = (event: FormEvent) => {
@@ -528,7 +523,7 @@ function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: C
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          onPointerDown={onEngage}
+          onFocus={onFocus}
           placeholder="Ask about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
@@ -636,13 +631,6 @@ function App() {
     setEvidenceOpen(true)
   }, [])
 
-  const startWithPrompt = useCallback((prompt: string) => {
-    setQuestion(prompt)
-    setWorkspaceOpen(true)
-    setEvidenceOpen(true)
-    window.requestAnimationFrame(() => inputRef.current?.focus())
-  }, [])
-
   useEffect(() => {
     if (!workspaceOpen) return
 
@@ -662,20 +650,6 @@ function App() {
       window.clearTimeout(transitionTimer)
     }
   }, [workspaceOpen])
-
-  useEffect(() => {
-    if (!workspaceOpen || question.trim() || messages.length > 0 || isStreaming) return
-
-    const collapseEmptyWorkspace = (event: PointerEvent) => {
-      const target = event.target instanceof Element ? event.target : null
-      if (target?.closest('.portfolio-card')) return
-      setWorkspaceOpen(false)
-      setEvidenceOpen(false)
-    }
-
-    document.addEventListener('pointerdown', collapseEmptyWorkspace)
-    return () => document.removeEventListener('pointerdown', collapseEmptyWorkspace)
-  }, [isStreaming, messages.length, question, workspaceOpen])
 
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
@@ -899,13 +873,23 @@ function App() {
               </button>
             </header>
             <header className="card-intro" aria-hidden={workspaceOpen} inert={workspaceOpen}>
-              <div className="compact-brand">
+              <div className="intro-bar">
                 <span className="sparkle-mark" aria-hidden="true">✦</span>
-                <div>
-                  <h1 id="page-title-landing">Chat with <em>my portfolio</em></h1>
-                  <p>Source-grounded answers from my work.</p>
-                </div>
+                <button
+                  className="clear-chat"
+                  type="button"
+                  aria-label="Clear chat"
+                  onClick={clearChat}
+                  disabled={messages.length === 0 && !question}
+                >
+                  <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
+                  </svg>
+                  <span>Clear chat</span>
+                </button>
               </div>
+              <h1 id="page-title-landing">Chat with <em>my portfolio</em></h1>
+              <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
               <ModelControls
                 config={config}
                 embedderId={embedderId}
@@ -921,42 +905,24 @@ function App() {
             </header>
           </div>
           <div className="chat-scroll" ref={chatScrollRef}>
-            {workspaceOpen ? (
-              <ChatTranscript messages={messages} onShowSources={() => setEvidenceOpen(true)} />
-            ) : (
-              <div className="compact-welcome">
-                <span className="compact-eyebrow">RAG-POWERED · SOURCE-GROUNDED</span>
-                <h2>Ask what the résumé leaves out.</h2>
-                <p>Explore how I build, what I&apos;ve shipped, and the decisions behind the work.</p>
-                <div className="starter-prompts" aria-label="Suggested questions">
-                  {STARTER_PROMPTS.map((prompt) => (
-                    <button type="button" key={prompt} onClick={() => startWithPrompt(prompt)}>
-                      <span>{prompt}</span>
-                      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 3 5 5-5 5" /></svg>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ChatTranscript messages={messages} onShowSources={() => setEvidenceOpen(true)} />
           </div>
           <Composer
             value={question}
             disabled={isStreaming}
             onChange={setQuestion}
             onSubmit={() => void submitQuestion()}
-            onEngage={openWorkspace}
+            onFocus={openWorkspace}
             inputRef={inputRef}
           />
         </section>
-            {workspaceOpen && (
-              <RetrievedRail
-                chunks={railChunks}
-                embedding={latestAssistant?.embedding}
-                pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
-                collapsed={!evidenceOpen}
-                onToggle={() => setEvidenceOpen((open) => !open)}
-              />
-            )}
+            <RetrievedRail
+              chunks={railChunks}
+              embedding={latestAssistant?.embedding}
+              pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
+              collapsed={workspaceOpen && !evidenceOpen}
+              onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
+            />
           </main>
           </div>
         ) : (
