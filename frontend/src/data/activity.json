@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-14T07:28:09Z",
+  "generatedAt": "2026-07-14T07:29:25Z",
   "period": {
     "start": "2025-07-14",
     "end": "2026-07-14"
   },
   "codex": {
-    "total": 2206481776,
+    "total": 2207333540,
     "activeDays": 66,
     "peak": {
       "date": "2026-07-12",
@@ -534,10 +534,10 @@
       },
       {
         "date": "2026-07-14",
-        "tokens": 104517454,
-        "cachedInput": 98147072,
-        "output": 355395,
-        "calls": 1004,
+        "tokens": 105369218,
+        "cachedInput": 98967296,
+        "output": 356679,
+        "calls": 1012,
         "threads": 17
       }
     ]
