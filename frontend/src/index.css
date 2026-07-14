@@ -2094,9 +2094,9 @@ a:focus-visible {
 
 .landing-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 315px);
-  align-items: end;
-  gap: clamp(42px, 7vw, 120px);
+  grid-template-columns: minmax(0, 1fr) minmax(390px, 470px);
+  align-items: center;
+  gap: clamp(42px, 5vw, 86px);
   width: min(1370px, 100%);
   margin: auto;
   padding: 4vh 0 5vh;
@@ -2182,58 +2182,302 @@ a:focus-visible {
   text-decoration: none;
 }
 
-.landing-note {
+.activity-deck {
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
+.activity-switch {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-self: flex-end;
+  width: 166px;
+  margin: 0 8px 14px 0;
+  padding: 3px;
+  border: 1px solid rgba(85, 67, 57, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 250, 244, 0.54);
+  box-shadow: 0 7px 20px rgba(93, 62, 42, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.activity-switch button {
+  position: relative;
+  z-index: 2;
+  padding: 8px 10px;
+  border: 0;
+  color: #74675f;
+  background: transparent;
+  font: 500 9px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 260ms ease;
+}
+
+.activity-switch button[aria-pressed='true'] {
+  color: #fffaf3;
+}
+
+.activity-switch-glider {
+  position: absolute;
+  inset: 3px auto 3px 3px;
+  z-index: 1;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: #282523;
+  box-shadow: 0 5px 12px rgba(48, 36, 30, 0.18);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), background 260ms ease;
+}
+
+.activity-switch-glider.is-github {
+  background: #176b36;
+  transform: translateX(100%);
+}
+
+.activity-card-stack {
+  position: relative;
+  height: 294px;
+}
+
+.activity-card {
+  --activity-bg: #282523;
+  --activity-border: rgba(255, 255, 255, 0.12);
+  --activity-text: #fff8ef;
+  --activity-muted: rgba(255, 248, 239, 0.56);
+  --activity-empty: rgba(255, 255, 255, 0.075);
+  --activity-one: #69352f;
+  --activity-two: #914039;
+  --activity-three: #bf493e;
+  --activity-four: #e15a49;
+  --activity-five: #ff7a63;
+  position: absolute;
+  inset: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 22px 23px 19px;
+  overflow: hidden;
+  border: 1px solid var(--activity-border);
+  border-radius: 24px;
+  color: var(--activity-text);
+  background:
+    radial-gradient(circle at 92% -15%, rgba(225, 90, 73, 0.18), transparent 38%),
+    var(--activity-bg);
+  box-shadow: 0 25px 54px rgba(67, 45, 34, 0.2);
+  transition:
+    top 540ms cubic-bezier(0.22, 1, 0.36, 1),
+    right 540ms cubic-bezier(0.22, 1, 0.36, 1),
+    left 540ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 360ms ease;
+}
+
+.activity-card--github {
+  --activity-bg: #101813;
+  --activity-border: rgba(240, 255, 243, 0.12);
+  --activity-text: #effbf1;
+  --activity-muted: rgba(226, 246, 231, 0.56);
+  --activity-empty: rgba(236, 255, 241, 0.07);
+  --activity-one: #123b22;
+  --activity-two: #196c34;
+  --activity-three: #238c43;
+  --activity-four: #31bd58;
+  --activity-five: #54e178;
+  background:
+    radial-gradient(circle at 92% -15%, rgba(48, 191, 87, 0.16), transparent 38%),
+    var(--activity-bg);
+}
+
+.activity-card.is-active {
+  z-index: 2;
+  top: 0;
+  right: 0;
+  left: 0;
+  opacity: 1;
+}
+
+.activity-card.is-behind {
+  z-index: 1;
+  top: 17px;
+  right: 8px;
+  left: 8px;
+  opacity: 0.64;
+}
+
+.activity-card-header,
+.activity-card-footer,
+.activity-card-identity,
+.activity-total,
+.activity-live {
+  display: flex;
+  align-items: center;
+}
+
+.activity-card-header,
+.activity-card-footer {
   justify-content: space-between;
-  min-height: 330px;
-  padding: 24px 25px 22px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 150px 150px 26px 26px;
-  background: rgba(255, 251, 246, 0.52);
-  box-shadow: 0 28px 65px rgba(107, 68, 43, 0.1);
-  backdrop-filter: blur(9px);
 }
 
-.note-index {
-  align-self: center;
-  color: #9e8e84;
-  font: 500 9px/1 'DM Sans', sans-serif;
-  letter-spacing: 0.13em;
+.activity-card-identity {
+  gap: 9px;
 }
 
-.landing-note > div {
-  padding: 0 8px;
+.activity-card-mark {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--activity-border);
+  border-radius: 9px;
+  color: var(--activity-four);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.note-spark {
-  color: var(--red);
-  font-size: 25px;
+.activity-card-mark svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
 }
 
-.landing-note p {
-  margin: 12px 0 5px;
-  color: #8b7d74;
-  font: 500 9px/1 'DM Sans', sans-serif;
-  letter-spacing: 0.09em;
+.activity-card--codex .activity-card-mark svg {
+  fill: currentColor;
+  stroke: none;
+}
+
+.activity-card-identity p {
+  margin: 0;
+  font: 500 11px/1 'DM Sans', sans-serif;
+}
+
+.activity-card-identity div > span,
+.activity-live,
+.activity-total span,
+.activity-card-footer {
+  color: var(--activity-muted);
+  font: 400 8px/1.2 'DM Sans', sans-serif;
+}
+
+.activity-card-identity div > span {
+  display: block;
+  margin-top: 4px;
+}
+
+.activity-live {
+  gap: 6px;
+}
+
+.activity-live i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--activity-four);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--activity-four) 12%, transparent);
+}
+
+.activity-total {
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.activity-total strong {
+  font: 400 33px/0.9 'Newsreader', serif;
+  letter-spacing: -0.025em;
+}
+
+.activity-total span {
+  padding-top: 5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.landing-note strong {
-  display: block;
-  color: #312b27;
-  font: 400 25px/1.06 'Newsreader', serif;
+.activity-calendar {
+  position: relative;
+  margin-top: 19px;
+  padding-left: 25px;
 }
 
-.landing-note > a {
+.activity-months {
+  display: grid;
+  grid-template-columns: repeat(53, minmax(0, 1fr));
+  height: 13px;
+  margin-bottom: 4px;
+  color: var(--activity-muted);
+  font: 400 6px/1 'DM Sans', sans-serif;
+}
+
+.activity-months span {
+  white-space: nowrap;
+}
+
+.activity-weekdays {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  bottom: 0;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: space-around;
+  color: var(--activity-muted);
+  font: 400 6px/1 'DM Sans', sans-serif;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(53, minmax(0, 1fr));
+  grid-auto-flow: column;
+  gap: 2px;
+}
+
+.activity-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 1.5px;
+  background: var(--activity-empty);
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.activity-cell.level-1 { background: var(--activity-one); }
+.activity-cell.level-2 { background: var(--activity-two); }
+.activity-cell.level-3 { background: var(--activity-three); }
+.activity-cell.level-4 { background: var(--activity-four); }
+.activity-cell.level-5 { background: var(--activity-five); }
+.activity-cell.is-future { opacity: 0.16; }
+.activity-cell:not(.level-0):hover { transform: scale(1.6); }
+
+.activity-card-footer {
+  margin-top: auto;
   padding-top: 14px;
-  border-top: 1px solid rgba(130, 94, 72, 0.15);
-  color: var(--red-dark);
-  font: 500 10px/1 'DM Sans', sans-serif;
-  text-decoration: none;
+  border-top: 1px solid var(--activity-border);
+}
+
+.activity-card-footer strong {
+  color: var(--activity-text);
+  font-weight: 500;
+}
+
+.activity-caption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: center;
+  margin: 13px 0 0;
+  color: #8d7f76;
+  font: 400 8px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.025em;
+}
+
+.activity-caption span {
+  color: var(--red);
+  font-size: 12px;
 }
 
 .landing-footer {
@@ -2648,8 +2892,7 @@ a:focus-visible {
 
 @media (max-width: 1100px) {
   .section-navigator { display: none; }
-  .landing-hero { grid-template-columns: minmax(0, 1fr) 250px; gap: 42px; }
-  .landing-note { min-height: 290px; }
+  .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(360px, 410px); gap: 34px; }
   .landing-footer { grid-template-columns: 1fr 2fr; }
   .scroll-cue { display: none; }
   .work-layout { grid-template-columns: minmax(250px, 0.62fr) minmax(500px, 1.38fr); gap: 45px; }
@@ -2666,8 +2909,8 @@ a:focus-visible {
   .landing-section,
   .work-section,
   .about-section { padding-inline: 28px; }
-  .landing-hero { grid-template-columns: 1fr; align-items: center; padding-block: 6vh 4vh; }
-  .landing-note { display: none; }
+  .landing-hero { grid-template-columns: 1fr; align-items: center; padding-block: 5vh 4vh; }
+  .activity-deck { justify-self: center; width: min(470px, 100%); margin-top: 16px; }
   .landing-copy h1 { font-size: clamp(64px, 13vw, 102px); }
   .landing-summary,
   .landing-actions { margin-left: 0; }
@@ -2695,12 +2938,23 @@ a:focus-visible {
   .portfolio-nav nav { gap: 12px; }
   .portfolio-nav nav a { display: none; }
   .portfolio-nav nav .nav-contact { display: inline-flex; padding: 8px 12px; font-size: 10px; }
-  .landing-hero { margin: 0; padding: 10vh 0 7vh; }
+  .landing-hero { margin: 0; padding: 5vh 0 5vh; }
   .section-kicker { margin-bottom: 16px; font-size: 8px; }
   .landing-copy h1 { font-size: clamp(55px, 17vw, 76px); line-height: 0.86; }
   .mobile-title-break { display: block; }
   .landing-summary { margin-top: 24px; font-size: 14px; }
   .landing-actions { align-items: flex-start; flex-direction: column; gap: 17px; margin-top: 23px; }
+  .activity-deck { margin-top: 8px; }
+  .activity-switch { width: 150px; margin-bottom: 10px; }
+  .activity-switch button { padding-block: 7px; font-size: 8px; }
+  .activity-card-stack { height: 262px; }
+  .activity-card { bottom: 12px; padding: 18px 17px 15px; border-radius: 20px; }
+  .activity-total { margin-top: 14px; }
+  .activity-total strong { font-size: 29px; }
+  .activity-calendar { margin-top: 15px; padding-left: 21px; }
+  .activity-grid { gap: 1.5px; }
+  .activity-card-footer { padding-top: 11px; }
+  .activity-caption { margin-top: 10px; }
   .highlight-strip { grid-template-columns: repeat(2, 1fr); gap: 15px; }
   .highlight-strip dt { font-size: 20px; }
   .highlight-strip dd { white-space: normal; }
@@ -2742,7 +2996,7 @@ a:focus-visible {
   .section-header > a:last-child { font-size: 10px; }
   .portfolio-nav .nav-contact { padding: 8px 12px; }
   .landing-hero {
-    grid-template-columns: minmax(0, 1fr) 220px;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 370px);
     gap: 34px;
     padding: 1vh 0 1.5vh;
   }
@@ -2761,16 +3015,24 @@ a:focus-visible {
     margin-left: clamp(2px, 6vw, 72px);
   }
   .primary-link { padding: 10px 14px 10px 16px; font-size: 10px; }
-  .landing-note {
-    min-height: 220px;
-    padding: 16px 17px 15px;
-    border-radius: 110px 110px 20px 20px;
-  }
-  .landing-note > div { padding-inline: 4px; }
-  .note-spark { font-size: 19px; }
-  .landing-note p { margin-top: 8px; font-size: 7px; }
-  .landing-note strong { font-size: 19px; }
-  .landing-note > a { padding-top: 10px; font-size: 8px; }
+  .activity-switch { width: 144px; margin-bottom: 7px; }
+  .activity-switch button { padding-block: 6px; font-size: 7px; }
+  .activity-card-stack { height: 224px; }
+  .activity-card { bottom: 9px; padding: 14px 15px 12px; border-radius: 18px; }
+  .activity-card-mark { width: 24px; height: 24px; }
+  .activity-card-identity p { font-size: 9px; }
+  .activity-card-identity div > span,
+  .activity-live,
+  .activity-total span,
+  .activity-card-footer { font-size: 6.5px; }
+  .activity-total { margin-top: 10px; }
+  .activity-total strong { font-size: 25px; }
+  .activity-calendar { margin-top: 10px; padding-left: 21px; }
+  .activity-months { height: 10px; margin-bottom: 3px; font-size: 5px; }
+  .activity-weekdays { top: 14px; font-size: 5px; }
+  .activity-grid { gap: 1.5px; }
+  .activity-card-footer { padding-top: 8px; }
+  .activity-caption { margin-top: 7px; font-size: 6.5px; }
   .landing-footer {
     grid-template-columns: 1fr;
     padding-top: 9px;
@@ -2822,4 +3084,12 @@ a:focus-visible {
   .contact-footer > div p { font-size: 6.5px; }
   .contact-footer > div a { font-size: 22px; }
   .contact-footer nav a { font-size: 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-card,
+  .activity-switch-glider,
+  .activity-cell {
+    transition: none;
+  }
 }

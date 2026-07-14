@@ -1,3 +1,5 @@
+import { ActivityDeck } from './ActivityDeck'
+
 const highlights = [
   { value: '9.66', label: 'CGPA / 10' },
   { value: '100K+', label: 'records handled daily' },
@@ -41,15 +43,7 @@ export function LandingSection() {
           </div>
         </div>
 
-        <aside className="landing-note" aria-label="Current focus">
-          <span className="note-index">01 — 04</span>
-          <div>
-            <span className="note-spark" aria-hidden="true">✦</span>
-            <p>Currently exploring</p>
-            <strong>Retrieval systems that explain themselves.</strong>
-          </div>
-          <a href="#playground">Open the live RAG lab <span aria-hidden="true">→</span></a>
-        </aside>
+        <ActivityDeck />
       </div>
 
       <div className="landing-footer">
