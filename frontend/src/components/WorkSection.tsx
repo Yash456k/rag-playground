@@ -1,143 +1,90 @@
 import { useState } from 'react'
 
-type TimelineEvent = {
+type ExperienceItem = {
   id: string
   date: string
   title: string
-  eyebrow: string
+  organization: string
   detail: string
   tags: readonly string[]
-  position: number
-  href?: string
-  linkLabel?: string
   milestone?: boolean
 }
 
-const experienceEvents: readonly TimelineEvent[] = [
+type ProjectItem = {
+  id: string
+  number: string
+  date: string
+  title: string
+  eyebrow: string
+  summary: string
+  detail: string
+  tags: readonly string[]
+  href: string
+  linkLabel: string
+  external?: boolean
+}
+
+const experienceItems: readonly ExperienceItem[] = [
   {
     id: 'aivid-internship',
-    date: 'Sep 2024',
+    date: 'Sep 2024 → Sep 2025',
     title: 'Full-stack internship',
-    eyebrow: 'AIVID Techvision',
-    detail: 'Built multi-tenant notifications, Microsoft Graph workflows, analytics APIs, dashboards, and shared React systems.',
+    organization: 'AIVID Techvision',
+    detail: 'Built a notification platform serving more than 1,000 roles a day, Microsoft Graph workflows, analytics APIs handling over 100,000 records daily, and shared React systems.',
     tags: ['React', 'Node.js', 'Elasticsearch'],
-    position: 15,
   },
   {
     id: 'aivid-fulltime',
     date: 'Sep 2025 → Present',
     title: 'Full-stack engineer',
-    eyebrow: 'AIVID Techvision',
-    detail: 'Moved into a full-time engineering role and continued shipping production product and platform work.',
-    tags: ['Product engineering', 'Platform work'],
-    position: 55,
+    organization: 'AIVID Techvision',
+    detail: 'Moved into a full-time engineering role, continuing to own production product work across frontend systems, backend services, platform reliability, and developer experience.',
+    tags: ['Product engineering', 'Platform', 'Production systems'],
   },
   {
     id: 'graduation',
     date: '2026',
     title: 'Graduated college',
-    eyebrow: 'Indus University',
-    detail: 'Completed a B.Tech in Computer Engineering after maintaining a 9.66/10 CGPA while building production software.',
+    organization: 'Indus University',
+    detail: 'Completed a B.Tech in Computer Engineering with a 9.66/10 CGPA while building and shipping production software.',
     tags: ['Computer Engineering', '9.66 CGPA'],
-    position: 88,
     milestone: true,
   },
 ]
 
-const projectEvents: readonly TimelineEvent[] = [
+const projectItems: readonly ProjectItem[] = [
   {
     id: 'nsk',
+    number: '01',
     date: '2025',
     title: 'Nashik Sports Klub',
-    eyebrow: 'Production booking platform',
-    detail: 'Built race-safe booking, role-specific workflows, live inventory, automated delivery, and AWS production infrastructure.',
-    tags: ['MERN', 'Transactions', 'AWS'],
-    position: 32,
+    eyebrow: 'Live product',
+    summary: 'A race-safe booking platform for real sports inventory.',
+    detail: 'Built multi-tenant booking for Pickleball and Cricket with temporary holds, MongoDB transactions, role-specific workflows, real-time availability, and AWS deployment. A 500-user concurrency test committed exactly one booking for the final slot.',
+    tags: ['React', 'Node.js', 'MongoDB', 'AWS'],
     href: 'https://www.nashiksportsklub.com',
     linkLabel: 'Visit live product',
+    external: true,
   },
   {
     id: 'portfolio-rag',
+    number: '02',
     date: '2026 → Now',
     title: 'This portfolio + RAG',
     eyebrow: 'Current build',
-    detail: 'Designed an inspectable portfolio with trained retrieval routes, streamed answers, provider fallback, and visible evidence.',
-    tags: ['React', 'FastAPI', 'pgvector'],
-    position: 79,
+    summary: 'An inspectable portfolio that can answer for itself.',
+    detail: 'Designed trained retrieval routes, streamed answers, model fallback, visible evidence and timing receipts. The system combines a React interface, FastAPI services, PostgreSQL with pgvector, and provider-aware limits.',
+    tags: ['React', 'FastAPI', 'pgvector', 'RAG'],
     href: '#playground',
     linkLabel: 'Open the RAG lab',
   },
 ]
 
-function TimelineLane({
-  label,
-  events,
-  activeId,
-  onSelect,
-}: {
-  label: string
-  events: readonly TimelineEvent[]
-  activeId: string
-  onSelect: (id: string) => void
-}) {
-  const activeEvent = events.find((event) => event.id === activeId) ?? events[0]
-
-  return (
-    <section className="timeline-lane" aria-label={`${label} timeline`}>
-      <header className="timeline-lane-heading">
-        <h3>{label}</h3>
-        <span>Hover or focus a point</span>
-      </header>
-
-      <div className="timeline-track" role="group" aria-label={`${label} milestones`}>
-        <span className="timeline-axis-label is-start" aria-hidden="true">2024</span>
-        <span className="timeline-axis-label is-end" aria-hidden="true">2026</span>
-        {events.map((event) => (
-          <button
-            className={`timeline-node ${event.id === activeEvent.id ? 'is-active' : ''} ${event.milestone ? 'is-milestone' : ''}`}
-            type="button"
-            key={event.id}
-            style={{ left: `${event.position}%` }}
-            aria-pressed={event.id === activeEvent.id}
-            onMouseEnter={() => onSelect(event.id)}
-            onFocus={() => onSelect(event.id)}
-            onClick={() => onSelect(event.id)}
-          >
-            <span className="timeline-dot" aria-hidden="true" />
-            <time>{event.date}</time>
-            <strong>{event.title}</strong>
-          </button>
-        ))}
-      </div>
-
-      <article className="timeline-detail" aria-live="polite">
-        <div>
-          <span>{activeEvent.eyebrow}</span>
-          <h4>{activeEvent.title}</h4>
-        </div>
-        <p>{activeEvent.detail}</p>
-        <footer>
-          <ul aria-label={`${activeEvent.title} technologies and details`}>
-            {activeEvent.tags.map((tag) => <li key={tag}>{tag}</li>)}
-          </ul>
-          {activeEvent.href && (
-            <a
-              href={activeEvent.href}
-              target={activeEvent.href.startsWith('http') ? '_blank' : undefined}
-              rel={activeEvent.href.startsWith('http') ? 'noreferrer' : undefined}
-            >
-              {activeEvent.linkLabel} <span aria-hidden="true">↗</span>
-            </a>
-          )}
-        </footer>
-      </article>
-    </section>
-  )
-}
-
 export function WorkSection() {
   const [activeExperience, setActiveExperience] = useState('aivid-fulltime')
   const [activeProject, setActiveProject] = useState('portfolio-rag')
+  const selectedExperience = experienceItems.find((item) => item.id === activeExperience) ?? experienceItems[0]
+  const selectedProject = projectItems.find((item) => item.id === activeProject) ?? projectItems[0]
 
   return (
     <section className="portfolio-section work-section" id="work" aria-labelledby="work-title">
@@ -145,31 +92,94 @@ export function WorkSection() {
         <p><span>02</span> Experience + projects</p>
       </header>
 
-      <div className="journey-layout">
-        <header className="journey-intro">
-          <div>
-            <p className="section-kicker"><span /> Built over time</p>
+      <div className="split-work-layout">
+        <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
+          <header className="split-panel-intro">
+            <p className="section-kicker"><span /> Experience</p>
             <h2 id="work-title">The work,<br /><em>in sequence.</em></h2>
-          </div>
-          <p>
-            Two tracks for the roles and projects that shaped how I build. Move across a point to inspect the work behind it.
-          </p>
-        </header>
+            <p>One company, growing responsibility, and a degree completed along the way.</p>
+          </header>
 
-        <div className="timeline-board">
-          <TimelineLane
-            label="Experience"
-            events={experienceEvents}
-            activeId={activeExperience}
-            onSelect={setActiveExperience}
-          />
-          <TimelineLane
-            label="Projects"
-            events={projectEvents}
-            activeId={activeProject}
-            onSelect={setActiveProject}
-          />
-        </div>
+          <div className="experience-stage">
+            <nav className="experience-rail" aria-label="Experience timeline">
+              {experienceItems.map((item) => (
+                <button
+                  type="button"
+                  className={`experience-stop ${item.id === selectedExperience.id ? 'is-active' : ''} ${item.milestone ? 'is-milestone' : ''}`}
+                  key={item.id}
+                  aria-pressed={item.id === selectedExperience.id}
+                  onMouseEnter={() => setActiveExperience(item.id)}
+                  onFocus={() => setActiveExperience(item.id)}
+                  onClick={() => setActiveExperience(item.id)}
+                >
+                  <span className="experience-node" aria-hidden="true" />
+                  <time>{item.date}</time>
+                  <strong>{item.title}</strong>
+                </button>
+              ))}
+            </nav>
+
+            <article className="experience-detail-card" aria-live="polite">
+              <p>{selectedExperience.organization}</p>
+              <h3>{selectedExperience.title}</h3>
+              <time>{selectedExperience.date}</time>
+              <p>{selectedExperience.detail}</p>
+              <ul aria-label={`${selectedExperience.title} details`}>
+                {selectedExperience.tags.map((tag) => <li key={tag}>{tag}</li>)}
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section className="work-mobile-panel projects-panel" aria-labelledby="projects-title">
+          <header className="split-panel-intro projects-intro">
+            <p className="section-kicker"><span /> Selected builds</p>
+            <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
+            <p>Two production builds. Select one to see what was actually engineered.</p>
+          </header>
+
+          <nav className="project-index" aria-label="Selected projects">
+            {projectItems.map((project) => (
+              <button
+                type="button"
+                className={`project-index-row ${project.id === selectedProject.id ? 'is-active' : ''}`}
+                key={project.id}
+                aria-pressed={project.id === selectedProject.id}
+                onMouseEnter={() => setActiveProject(project.id)}
+                onFocus={() => setActiveProject(project.id)}
+                onClick={() => setActiveProject(project.id)}
+              >
+                <span>{project.number}</span>
+                <span>
+                  <time>{project.date}</time>
+                  <strong>{project.title}</strong>
+                  <small>{project.summary}</small>
+                </span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            ))}
+          </nav>
+
+          <article className="project-detail-card" aria-live="polite">
+            <header>
+              <p>{selectedProject.eyebrow}</p>
+              <h3>{selectedProject.title}</h3>
+            </header>
+            <p>{selectedProject.detail}</p>
+            <footer>
+              <ul aria-label={`${selectedProject.title} technologies`}>
+                {selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}
+              </ul>
+              <a
+                href={selectedProject.href}
+                target={selectedProject.external ? '_blank' : undefined}
+                rel={selectedProject.external ? 'noreferrer' : undefined}
+              >
+                {selectedProject.linkLabel} <span aria-hidden="true">↗</span>
+              </a>
+            </footer>
+          </article>
+        </section>
       </div>
     </section>
   )

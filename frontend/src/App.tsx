@@ -686,29 +686,39 @@ function App() {
     const portfolio = document.querySelector<HTMLElement>('.portfolio-site')
     if (!portfolio) return
 
-    const sections = Array.from(portfolio.querySelectorAll<HTMLElement>('.portfolio-section'))
+    const sectionSelector = window.matchMedia('(max-width: 680px)').matches
+      ? '.portfolio-section:not(.work-section), .work-mobile-panel'
+      : '.portfolio-section'
+    const sections = Array.from(portfolio.querySelectorAll<HTMLElement>(sectionSelector))
     const snapZone = 0.44
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let settleTimer = 0
     let releaseTimer = 0
     let isSnapping = false
 
+    const getSectionTop = (section: HTMLElement) => (
+      portfolio.scrollTop
+      + section.getBoundingClientRect().top
+      - portfolio.getBoundingClientRect().top
+    )
+
     const settleNearSection = () => {
       if (workspaceOpen || isSnapping || sections.length === 0) return
 
       const nearest = sections.reduce((closest, section) => (
-        Math.abs(section.offsetTop - portfolio.scrollTop)
-          < Math.abs(closest.offsetTop - portfolio.scrollTop)
+        Math.abs(getSectionTop(section) - portfolio.scrollTop)
+          < Math.abs(getSectionTop(closest) - portfolio.scrollTop)
           ? section
           : closest
       ))
-      const distance = Math.abs(nearest.offsetTop - portfolio.scrollTop)
+      const nearestTop = getSectionTop(nearest)
+      const distance = Math.abs(nearestTop - portfolio.scrollTop)
 
       if (distance < 2 || distance > portfolio.clientHeight * snapZone) return
 
       isSnapping = true
       portfolio.scrollTo({
-        top: nearest.offsetTop,
+        top: nearestTop,
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
       })
       releaseTimer = window.setTimeout(() => {
