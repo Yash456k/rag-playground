@@ -249,7 +249,7 @@ export function ActivityDeck() {
     const fallback = window.setTimeout(() => {
       setActive(swap.to)
       setSwap(null)
-    }, 650)
+    }, 460)
     return () => window.clearTimeout(fallback)
   }, [swap])
 

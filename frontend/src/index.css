@@ -201,9 +201,9 @@ a:focus-visible {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 740px) 300px;
-  width: min(1040px, calc(100vw - 120px));
-  height: min(740px, calc(100svh - var(--header-height) - var(--page-bottom)));
+  grid-template-columns: minmax(0, 650px) 270px;
+  width: min(920px, calc(100vw - 120px));
+  height: min(620px, calc(100svh - var(--header-height) - var(--page-bottom)));
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.78);
@@ -764,7 +764,35 @@ a:focus-visible {
 }
 
 .composer {
+  position: relative;
   padding-top: 8px;
+}
+
+.chat-mode-invite {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  margin: 0 auto 7px;
+  padding: 6px 11px;
+  border: 1px solid rgba(184, 61, 50, 0.2);
+  border-radius: 999px;
+  color: var(--red-dark);
+  background: rgba(255, 250, 244, 0.86);
+  box-shadow: 0 7px 18px rgba(115, 62, 42, 0.07);
+  font: 500 9px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.04em;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.chat-mode-invite:hover {
+  border-color: rgba(184, 61, 50, 0.42);
+  background: #fffaf4;
+  transform: translateY(-1px);
+}
+
+.chat-mode-invite span {
+  font-size: 12px;
 }
 
 .composer-input {
@@ -1607,8 +1635,11 @@ a:focus-visible {
   .portfolio-card,
   .load-state { width: 100%; border-radius: 28px; }
   .app-shell:not(.is-active) .portfolio-card {
-    height: calc(100svh - 82px);
+    height: min(720px, calc(100svh - 112px));
     min-height: 0;
+  }
+  .app-shell:not(.is-active) .portfolio-card.evidence-open {
+    grid-template-rows: minmax(0, 1fr) 190px;
   }
   .app-shell:not(.is-active) .portfolio-card:not(.evidence-open) {
     grid-template-rows: 1fr;
@@ -1619,6 +1650,9 @@ a:focus-visible {
   }
   .app-shell:not(.is-active) .source-rail {
     display: none;
+  }
+  .app-shell:not(.is-active) .source-rail.is-expanded {
+    display: grid;
   }
   .app-shell:not(.is-active) .demo-transcript {
     display: none;
@@ -1809,21 +1843,21 @@ a:focus-visible {
   .site-nav a { font-size: 14px; }
   .connection-status { width: 11px; height: 11px; margin-left: -6px; }
   .portfolio-card {
-    grid-template-columns: minmax(0, 592px) 240px;
-    width: min(832px, calc(100vw - 96px));
-    height: min(592px, calc(100svh - var(--header-height) - var(--page-bottom)));
-    border-radius: 32px;
+    grid-template-columns: minmax(0, 540px) 220px;
+    width: min(760px, calc(100vw - 96px));
+    height: min(540px, calc(100svh - var(--header-height) - var(--page-bottom)));
+    border-radius: 30px;
   }
-  .chat-column { padding: 40px 18px 24px 36px; }
+  .chat-column { padding: 30px 16px 18px 28px; }
   .intro-bar { min-height: 34px; }
   .sparkle-mark { font-size: 29px; }
   .card-intro h1 { margin: 6px 0 4px; font-size: 38px; }
   .card-intro > p { font-size: 14px; }
-  .model-panel { width: min(100%, 500px); margin-top: 22px; }
-  .model-grid { gap: 17px; }
+  .model-panel { width: min(100%, 470px); margin-top: 15px; }
+  .model-grid { gap: 10px; }
   .theme-select { height: 34px; padding: 0 10px 0 17px; font-size: 12px; }
   .route-advanced { margin-top: 4px; }
-  .transcript { gap: 22px; padding-top: 28px; padding-bottom: 12px; }
+  .transcript { gap: 16px; padding-top: 18px; padding-bottom: 9px; }
   .user-message { width: min(244px, 72%); padding: 13px 20px 11px; border-radius: 16px 16px 3px 16px; }
   .user-message p { font-size: 14px; }
   .assistant-message { grid-template-columns: 37px minmax(0, 347px); gap: 12px; }
@@ -1835,12 +1869,12 @@ a:focus-visible {
   .composer textarea { font-size: 13px; }
   .composer button { width: 39px; height: 39px; }
   .composer button svg { width: 18px; height: 18px; }
-  .source-rail { position: relative; padding: 102px 18px 14px; }
+  .source-rail { position: relative; padding: 86px 14px 12px; }
   .embedding-confirmation {
     position: absolute;
-    top: 42px;
-    right: 18px;
-    left: 18px;
+    top: 28px;
+    right: 14px;
+    left: 14px;
     min-height: 42px;
     margin: 0;
     padding: 7px 10px;
@@ -1866,9 +1900,9 @@ a:focus-visible {
     margin: 0 0 12px;
   }
   .load-state {
-    width: min(832px, calc(100vw - 96px));
-    height: min(592px, calc(100svh - var(--header-height) - var(--page-bottom)));
-    border-radius: 32px;
+    width: min(760px, calc(100vw - 96px));
+    height: min(540px, calc(100svh - var(--header-height) - var(--page-bottom)));
+    border-radius: 30px;
   }
   .load-state h1 { font-size: 40px; }
 }
@@ -2276,7 +2310,7 @@ a:focus-visible {
   border-radius: 999px;
   background: #282523;
   box-shadow: 0 5px 12px rgba(48, 36, 30, 0.18);
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), background 260ms ease;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background 200ms ease;
 }
 
 .activity-switch-glider.is-github {
@@ -2352,11 +2386,11 @@ a:focus-visible {
 }
 
 .activity-card.is-swapping-out {
-  animation: activity-card-out 520ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation: activity-card-out 360ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
 
 .activity-card.is-swapping-in {
-  animation: activity-card-in 520ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation: activity-card-in 360ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
 
 @keyframes activity-card-out {

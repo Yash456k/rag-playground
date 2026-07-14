@@ -525,13 +525,14 @@ function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; 
 type ComposerProps = {
   value: string
   disabled: boolean
+  expanded: boolean
   onChange: (value: string) => void
   onSubmit: () => void
   onEngage: () => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: ComposerProps) {
+function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inputRef }: ComposerProps) {
   const canSubmit = value.trim().length >= 2 && !disabled
 
   const submit = (event: FormEvent) => {
@@ -549,6 +550,11 @@ function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: C
   return (
     <form className="composer" onSubmit={submit} aria-label="Ask Yash's portfolio">
       <label className="visually-hidden" htmlFor="question-input">Ask about Yash</label>
+      {!expanded && (
+        <button className="chat-mode-invite" type="button" onClick={() => inputRef.current?.focus()}>
+          Click here to enter chat mode <span aria-hidden="true">↗</span>
+        </button>
+      )}
       <div className="composer-input">
         <textarea
           id="question-input"
@@ -557,7 +563,7 @@ function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: C
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={onEngage}
-          placeholder="Ask about my work…"
+          placeholder={expanded ? 'Ask about my work…' : 'Ask a question to begin…'}
           rows={1}
           maxLength={QUESTION_LIMIT}
           disabled={disabled}
@@ -592,7 +598,7 @@ function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
-  const [evidenceOpen, setEvidenceOpen] = useState(false)
+  const [evidenceOpen, setEvidenceOpen] = useState(true)
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const activeRequest = useRef<AbortController | null>(null)
@@ -661,6 +667,7 @@ function App() {
 
   const openWorkspace = useCallback(() => {
     setWorkspaceOpen(true)
+    setEvidenceOpen(false)
   }, [])
 
   useEffect(() => {
@@ -690,7 +697,7 @@ function App() {
       const target = event.target instanceof Element ? event.target : null
       if (target?.closest('.portfolio-card')) return
       setWorkspaceOpen(false)
-      setEvidenceOpen(false)
+      setEvidenceOpen(true)
     }
 
     document.addEventListener('pointerdown', collapseEmptyWorkspace)
@@ -752,7 +759,7 @@ function App() {
     setQuestion('')
     setIsStreaming(false)
     setWorkspaceOpen(false)
-    setEvidenceOpen(false)
+    setEvidenceOpen(true)
   }, [])
 
   const chooseEmbedder = useCallback((id: string) => {
@@ -816,6 +823,7 @@ function App() {
     const controller = new AbortController()
     activeRequest.current = controller
     setWorkspaceOpen(true)
+    setEvidenceOpen(false)
     setQuestion('')
     setIsStreaming(true)
     setMessages((current) => [...current, userMessage, assistantMessage])
@@ -1006,6 +1014,7 @@ function App() {
           <Composer
             value={question}
             disabled={isStreaming}
+            expanded={workspaceOpen}
             onChange={setQuestion}
             onSubmit={() => void submitQuestion()}
             onEngage={openWorkspace}
