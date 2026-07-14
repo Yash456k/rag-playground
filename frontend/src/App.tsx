@@ -221,8 +221,28 @@ function ModelControls({
   onTopKChange,
   onHistoryAwareChange,
 }: ModelControlsProps) {
+  const [advancedOpen, setAdvancedOpen] = useState(false)
+  const advancedRef = useRef<HTMLDetailsElement>(null)
   const embedder = config.embedders.find((item) => item.id === embedderId)
   const panelTitleId = compact ? 'model-panel-title-compact' : 'model-panel-title'
+
+  useEffect(() => {
+    if (!advancedOpen) return
+
+    const closeOutside = (event: PointerEvent) => {
+      if (!advancedRef.current?.contains(event.target as Node)) setAdvancedOpen(false)
+    }
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') setAdvancedOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeOutside)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [advancedOpen])
 
   return (
     <section className={`model-panel ${compact ? 'is-compact' : ''}`} aria-labelledby={panelTitleId}>
@@ -244,12 +264,18 @@ function ModelControls({
         />
       </div>
       {compact && (
-        <details className="route-advanced">
-          <summary>
-            <span>Retrieval settings</span>
+        <details className="route-advanced" open={advancedOpen} ref={advancedRef}>
+          <summary
+            aria-expanded={advancedOpen}
+            onClick={(event) => {
+              event.preventDefault()
+              setAdvancedOpen((current) => !current)
+            }}
+          >
             <svg className="route-settings-icon" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M3 4h10M3 12h10M5.5 2.5v3M10.5 10.5v3" />
             </svg>
+            <span>Settings</span>
           </summary>
           <div className="advanced-content">
             <label>
@@ -322,17 +348,19 @@ function RetrievedRail({
   chunks,
   embedding,
   pendingEmbedding,
+  retrievalMs,
   collapsed = false,
   onToggle,
 }: {
   chunks: RetrievedChunk[]
   embedding?: EmbeddingConfirmation
   pendingEmbedding?: string
+  retrievalMs?: number
   collapsed?: boolean
   onToggle?: () => void
 }) {
   const visibleChunks = chunks
-  const bestScore = visibleChunks[0]?.score
+  const retrievalLabel = retrievalMs === undefined ? undefined : `${Math.round(retrievalMs)} ms retrieval`
   const confirmationLabel = embedding
     ? 'Embedding confirmed'
     : pendingEmbedding
@@ -357,7 +385,13 @@ function RetrievedRail({
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
           </svg>
-          <span>{visibleChunks.length} chunks · {bestScore?.toFixed(2) ?? '—'}</span>
+          <span className="rail-toggle-copy">
+            <strong>Open to see retrieved chunks</strong>
+            <small>
+              {visibleChunks.length} {visibleChunks.length === 1 ? 'chunk' : 'chunks'}
+              {retrievalLabel ? ` · ${retrievalLabel}` : ''}
+            </small>
+          </span>
           <svg className="rail-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="m4 2.5 3.5 3.5L4 9.5" /></svg>
         </button>
       </aside>
@@ -378,6 +412,7 @@ function RetrievedRail({
           <path d="M3.5 5.5c3-.8 5.8-.2 8.5 1.7v12c-2.7-1.9-5.5-2.5-8.5-1.7zM20.5 5.5c-3-.8-5.8-.2-8.5 1.7v12c2.7-1.9 5.5-2.5 8.5-1.7z" />
         </svg>
         <h2>Retrieved chunks</h2>
+        {retrievalLabel && <span className="retrieval-time">{retrievalLabel}</span>}
         {onToggle && (
           <button className="evidence-close" type="button" onClick={onToggle} aria-label="Collapse retrieved chunks">
             <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m8 2.5-3.5 3.5L8 9.5" /></svg>
@@ -452,7 +487,6 @@ function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; 
       <div className="transcript demo-transcript">
         <article className="message user-message" aria-label="Example question">
           <p>What kind of work do you do?</p>
-          <time>Ask me anything</time>
         </article>
         <article className="message assistant-message" aria-label="Example answer">
           <div className="assistant-orb" aria-hidden="true">✧</div>
@@ -479,7 +513,6 @@ function ChatTranscript({ messages, onShowSources }: { messages: ChatMessage[]; 
         message.role === 'user' ? (
           <article className="message user-message" key={message.id} aria-label="Your question">
             <p>{message.content}</p>
-            <time>Now</time>
           </article>
         ) : (
           <AssistantAnswer key={message.id} message={message} onShowSources={onShowSources} />
@@ -494,11 +527,11 @@ type ComposerProps = {
   disabled: boolean
   onChange: (value: string) => void
   onSubmit: () => void
-  onFocus: () => void
+  onEngage: () => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-function Composer({ value, disabled, onChange, onSubmit, onFocus, inputRef }: ComposerProps) {
+function Composer({ value, disabled, onChange, onSubmit, onEngage, inputRef }: ComposerProps) {
   const canSubmit = value.trim().length >= 2 && !disabled
 
   const submit = (event: FormEvent) => {
@@ -523,7 +556,7 @@ function Composer({ value, disabled, onChange, onSubmit, onFocus, inputRef }: Co
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={onFocus}
+          onFocus={onEngage}
           placeholder="Ask about my work…"
           rows={1}
           maxLength={QUESTION_LIMIT}
@@ -628,7 +661,6 @@ function App() {
 
   const openWorkspace = useCallback(() => {
     setWorkspaceOpen(true)
-    setEvidenceOpen(true)
   }, [])
 
   useEffect(() => {
@@ -649,7 +681,21 @@ function App() {
       window.cancelAnimationFrame(animationFrame)
       window.clearTimeout(transitionTimer)
     }
-  }, [workspaceOpen])
+  }, [evidenceOpen, workspaceOpen])
+
+  useEffect(() => {
+    if (!workspaceOpen || question.trim() || messages.length > 0 || isStreaming) return
+
+    const collapseEmptyWorkspace = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null
+      if (target?.closest('.portfolio-card')) return
+      setWorkspaceOpen(false)
+      setEvidenceOpen(false)
+    }
+
+    document.addEventListener('pointerdown', collapseEmptyWorkspace)
+    return () => document.removeEventListener('pointerdown', collapseEmptyWorkspace)
+  }, [isStreaming, messages.length, question, workspaceOpen])
 
   const clearChat = useCallback(() => {
     activeRequest.current?.abort()
@@ -814,9 +860,11 @@ function App() {
         updateAssistant(current, answerId, (answer) => ({ ...answer, status: 'error', error: message })),
       )
     } finally {
-      if (activeRequest.current === controller) activeRequest.current = null
-      setIsStreaming(false)
-      window.setTimeout(() => inputRef.current?.focus(), 0)
+      if (activeRequest.current === controller) {
+        activeRequest.current = null
+        setIsStreaming(false)
+        window.setTimeout(() => inputRef.current?.focus(), 0)
+      }
     }
   }, [
     config,
@@ -869,7 +917,7 @@ function App() {
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
                 </svg>
-                <span>Clear</span>
+                <span>Clear chat</span>
               </button>
             </header>
             <header className="card-intro" aria-hidden={workspaceOpen} inert={workspaceOpen}>
@@ -912,7 +960,7 @@ function App() {
             disabled={isStreaming}
             onChange={setQuestion}
             onSubmit={() => void submitQuestion()}
-            onFocus={openWorkspace}
+            onEngage={openWorkspace}
             inputRef={inputRef}
           />
         </section>
@@ -920,8 +968,9 @@ function App() {
               chunks={railChunks}
               embedding={latestAssistant?.embedding}
               pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
-              collapsed={workspaceOpen && !evidenceOpen}
-              onToggle={workspaceOpen ? () => setEvidenceOpen((open) => !open) : undefined}
+              retrievalMs={latestAssistant?.latencies.retrievalMs}
+              collapsed={!evidenceOpen}
+              onToggle={() => setEvidenceOpen((open) => !open)}
             />
           </main>
           </div>
