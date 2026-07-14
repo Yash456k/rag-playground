@@ -30,12 +30,11 @@ export function LandingSection() {
         <div className="landing-copy">
           <p className="section-kicker"><span /> Full-stack engineer · Applied AI</p>
           <h1 id="landing-title">
-            I build the useful,
-            <em>difficult <br className="mobile-title-break" />things.</em>
+            I build stuff
+            <em>I find <br className="mobile-title-break" />interesting.</em>
           </h1>
           <p className="landing-summary">
-            Production-minded software across real-time products, search systems,
-            data-heavy backends, and grounded AI experiences.
+            (I do actually know how to build things, not just AI stuff lol)
           </p>
           <div className="landing-actions">
             <a className="primary-link" href="#work">Explore selected work <span aria-hidden="true">↘</span></a>
