@@ -709,7 +709,7 @@ function App() {
     if (!portfolio) return
 
     const sections = Array.from(portfolio.querySelectorAll<HTMLElement>('.portfolio-section'))
-    const snapZone = 0.22
+    const snapZone = 0.44
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let settleTimer = 0
     let releaseTimer = 0
