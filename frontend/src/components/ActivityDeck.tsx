@@ -3,6 +3,7 @@ import activity from '../data/activity.json'
 
 type ActivityKind = 'codex' | 'github'
 type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
+type ActivityRange = 'quarter' | 'year'
 
 type HeatmapDay = {
   date: string
@@ -12,7 +13,10 @@ type HeatmapDay = {
 }
 
 const DAY_MS = 86_400_000
-const WEEK_COUNT = 53
+const RANGE_WEEKS: Record<ActivityRange, number> = {
+  quarter: 14,
+  year: 53,
+}
 
 function dateAtNoon(value: string): Date {
   return new Date(`${value}T12:00:00`)
@@ -44,7 +48,7 @@ function quantile(sorted: number[], fraction: number): number {
   return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))] ?? 0
 }
 
-function buildCalendar(kind: ActivityKind): HeatmapDay[][] {
+function buildCalendar(kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
   const sourceDays = kind === 'codex'
     ? activity.codex.days.map((day) => ({ date: day.date, count: day.tokens }))
     : activity.github.days
@@ -59,9 +63,10 @@ function buildCalendar(kind: ActivityKind): HeatmapDay[][] {
   const lastDataDay = dateAtNoon(activity.period.end)
   const calendarEnd = new Date(lastDataDay)
   calendarEnd.setDate(calendarEnd.getDate() + (6 - calendarEnd.getDay()))
-  const calendarStart = new Date(calendarEnd.getTime() - ((WEEK_COUNT * 7 - 1) * DAY_MS))
+  const weekCount = RANGE_WEEKS[range]
+  const calendarStart = new Date(calendarEnd.getTime() - ((weekCount * 7 - 1) * DAY_MS))
 
-  return Array.from({ length: WEEK_COUNT }, (_, weekIndex) =>
+  return Array.from({ length: weekCount }, (_, weekIndex) =>
     Array.from({ length: 7 }, (_, dayIndex) => {
       const date = new Date(calendarStart.getTime() + ((weekIndex * 7 + dayIndex) * DAY_MS))
       const dateKey = isoDate(date)
@@ -106,16 +111,54 @@ function GitHubMark() {
 type ActivityCardProps = {
   kind: ActivityKind
   position: CardPosition
+  range: ActivityRange
   onSwapComplete: () => void
 }
 
-function ActivityCard({ kind, position, onSwapComplete }: ActivityCardProps) {
-  const data = activity[kind]
-  const weeks = useMemo(() => buildCalendar(kind), [kind])
+type HoveredDay = {
+  day: HeatmapDay
+  left: number
+  top: number
+  alignment: 'start' | 'center' | 'end'
+}
+
+function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardProps) {
+  const weeks = useMemo(() => buildCalendar(kind, range), [kind, range])
   const months = useMemo(() => monthMarkers(weeks), [weeks])
+  const summary = useMemo(() => {
+    const activeDays = weeks.flat().filter((day) => day.count > 0)
+    const peak = activeDays.reduce<HeatmapDay | null>(
+      (current, day) => !current || day.count > current.count ? day : current,
+      null,
+    )
+    return {
+      total: activeDays.reduce((total, day) => total + day.count, 0),
+      activeDays: activeDays.length,
+      peak,
+    }
+  }, [weeks])
+  const [hovered, setHovered] = useState<HoveredDay | null>(null)
   const isCodex = kind === 'codex'
   const unit = isCodex ? 'tokens processed' : 'contributions'
   const peakUnit = isCodex ? 'tokens' : 'contributions'
+  const columnTemplate = range === 'quarter'
+    ? `repeat(${weeks.length}, minmax(0, 18px))`
+    : `repeat(${weeks.length}, minmax(0, 1fr))`
+
+  const showTooltip = (element: HTMLButtonElement, day: HeatmapDay) => {
+    const calendar = element.closest<HTMLElement>('.activity-calendar')
+    if (!calendar) return
+    const cellBounds = element.getBoundingClientRect()
+    const calendarBounds = calendar.getBoundingClientRect()
+    const left = cellBounds.left - calendarBounds.left + cellBounds.width / 2
+    const edgeSpace = 82
+    setHovered({
+      day,
+      left,
+      top: cellBounds.top - calendarBounds.top,
+      alignment: left < edgeSpace ? 'start' : left > calendarBounds.width - edgeSpace ? 'end' : 'center',
+    })
+  }
 
   return (
     <article
@@ -128,39 +171,54 @@ function ActivityCard({ kind, position, onSwapComplete }: ActivityCardProps) {
           <span className="activity-card-mark">{isCodex ? <CodexMark /> : <GitHubMark />}</span>
           <div>
             <p>{isCodex ? 'Codex' : 'GitHub'} activity</p>
-            <span>Last 12 months</span>
+            <span>{range === 'quarter' ? 'Last 3 months' : 'Last 12 months'}</span>
           </div>
         </div>
         <span className="activity-live"><i /> Updated daily</span>
       </header>
 
       <div className="activity-total">
-        <strong>{formatNumber(data.total)}</strong>
+        <strong>{formatNumber(summary.total)}</strong>
         <span>{unit}</span>
       </div>
 
-      <div className="activity-calendar" role="img" aria-label={`${data.total.toLocaleString()} ${unit} across ${data.activeDays} active days in the last year`}>
-        <div className="activity-months" aria-hidden="true">
+      <div className={`activity-calendar is-${range}`} role="group" aria-label={`${isCodex ? 'Codex' : 'GitHub'} daily activity for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
+        <div className="activity-months" aria-hidden="true" style={{ gridTemplateColumns: columnTemplate }}>
           {months.map((month) => (
             <span key={`${month.week}-${month.label}`} style={{ gridColumnStart: month.week }}>{month.label}</span>
           ))}
         </div>
         <div className="activity-weekdays" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
-        <div className="activity-grid" aria-hidden="true">
+        <div className="activity-grid" style={{ gridTemplateColumns: columnTemplate }}>
           {weeks.flat().map((day) => (
-            <span
+            <button
+              type="button"
               className={`activity-cell level-${day.level} ${day.isFuture ? 'is-future' : ''}`}
               key={day.date}
-              title={`${formatDate(day.date)}: ${day.count.toLocaleString()} ${isCodex ? 'tokens' : 'contributions'}`}
+              disabled={day.isFuture}
+              aria-label={`${formatDate(day.date)}: ${day.count.toLocaleString()} ${isCodex ? 'tokens' : 'contributions'}`}
+              onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
+              onMouseLeave={() => setHovered(null)}
+              onFocus={(event) => showTooltip(event.currentTarget, day)}
+              onBlur={() => setHovered(null)}
             />
           ))}
         </div>
+        {hovered && (
+          <output
+            className={`activity-day-tooltip align-${hovered.alignment}`}
+            style={{ left: hovered.left, top: hovered.top }}
+          >
+            <strong>{hovered.day.count.toLocaleString()}</strong> {isCodex ? 'tokens' : 'contributions'}
+            <span>{formatDate(hovered.day.date)}</span>
+          </output>
+        )}
       </div>
 
       <footer className="activity-card-footer">
-        <span><strong>{data.activeDays}</strong> active days</span>
-        {data.peak && (
-          <span>Peak <strong>{formatNumber(data.peak.count)}</strong> {peakUnit} · {formatDate(data.peak.date)}</span>
+        <span><strong>{summary.activeDays}</strong> active days</span>
+        {summary.peak && (
+          <span>Peak <strong>{formatNumber(summary.peak.count)}</strong> {peakUnit} · {formatDate(summary.peak.date)}</span>
         )}
       </footer>
     </article>
@@ -169,6 +227,7 @@ function ActivityCard({ kind, position, onSwapComplete }: ActivityCardProps) {
 
 export function ActivityDeck() {
   const [active, setActive] = useState<ActivityKind>('codex')
+  const [range, setRange] = useState<ActivityRange>('quarter')
   const [swap, setSwap] = useState<{ from: ActivityKind; to: ActivityKind } | null>(null)
   const selected = swap?.to ?? active
 
@@ -177,7 +236,7 @@ export function ActivityDeck() {
     const fallback = window.setTimeout(() => {
       setActive(swap.to)
       setSwap(null)
-    }, 900)
+    }, 650)
     return () => window.clearTimeout(fallback)
   }, [swap])
 
@@ -199,19 +258,25 @@ export function ActivityDeck() {
 
   return (
     <aside className="activity-deck" aria-label="Coding activity">
-      <div className="activity-switch" aria-label="Choose activity source">
-        <span className={`activity-switch-glider is-${selected}`} aria-hidden="true" />
-        <button type="button" aria-pressed={selected === 'codex'} disabled={Boolean(swap)} onClick={() => selectCard('codex')}>
-          Codex
-        </button>
-        <button type="button" aria-pressed={selected === 'github'} disabled={Boolean(swap)} onClick={() => selectCard('github')}>
-          GitHub
-        </button>
+      <div className="activity-toolbar">
+        <div className="activity-range-switch" aria-label="Choose activity period">
+          <button type="button" aria-pressed={range === 'quarter'} onClick={() => setRange('quarter')}>3M</button>
+          <button type="button" aria-pressed={range === 'year'} onClick={() => setRange('year')}>1Y</button>
+        </div>
+        <div className="activity-switch" aria-label="Choose activity source">
+          <span className={`activity-switch-glider is-${selected}`} aria-hidden="true" />
+          <button type="button" aria-pressed={selected === 'codex'} disabled={Boolean(swap)} onClick={() => selectCard('codex')}>
+            Codex
+          </button>
+          <button type="button" aria-pressed={selected === 'github'} disabled={Boolean(swap)} onClick={() => selectCard('github')}>
+            GitHub
+          </button>
+        </div>
       </div>
 
       <div className="activity-card-stack">
-        <ActivityCard kind="codex" position={positionFor('codex')} onSwapComplete={completeSwap} />
-        <ActivityCard kind="github" position={positionFor('github')} onSwapComplete={completeSwap} />
+        <ActivityCard kind="codex" position={positionFor('codex')} range={range} onSwapComplete={completeSwap} />
+        <ActivityCard kind="github" position={positionFor('github')} range={range} onSwapComplete={completeSwap} />
       </div>
 
       <p className="activity-caption">

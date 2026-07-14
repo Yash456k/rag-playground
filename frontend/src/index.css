@@ -2194,20 +2194,57 @@ a:focus-visible {
   min-width: 0;
 }
 
-.activity-switch {
+.activity-toolbar {
   position: relative;
   z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  margin: 0 10px 16px 0;
+}
+
+.activity-switch {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  align-self: flex-end;
   width: 188px;
-  margin: 0 10px 16px 0;
+  margin: 0;
   padding: 3px;
   border: 1px solid rgba(85, 67, 57, 0.15);
   border-radius: 999px;
   background: rgba(255, 250, 244, 0.54);
   box-shadow: 0 7px 20px rgba(93, 62, 42, 0.06);
   backdrop-filter: blur(12px);
+}
+
+.activity-range-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 92px;
+  padding: 3px;
+  border: 1px solid rgba(85, 67, 57, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 250, 244, 0.54);
+  box-shadow: 0 7px 20px rgba(93, 62, 42, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.activity-range-switch button {
+  padding: 9px 8px;
+  border: 0;
+  border-radius: 999px;
+  color: #74675f;
+  background: transparent;
+  font: 500 9px/1 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.activity-range-switch button[aria-pressed='true'] {
+  color: #fffaf3;
+  background: #4b4541;
+  box-shadow: 0 5px 12px rgba(48, 36, 30, 0.15);
 }
 
 .activity-switch button {
@@ -2267,10 +2304,10 @@ a:focus-visible {
   --card-back-top: 18px;
   --card-back-inset: 10px;
   --card-back-bottom: 2px;
-  --card-separate-top: 82px;
-  --card-separate-side: 18px;
-  --card-separate-right: -18px;
-  --card-separate-bottom: -62px;
+  --card-separate-top: 64px;
+  --card-separate-side: 12px;
+  --card-separate-right: -12px;
+  --card-separate-bottom: -44px;
   position: absolute;
   inset: 0 0 20px;
   display: flex;
@@ -2318,12 +2355,16 @@ a:focus-visible {
   left: var(--card-back-inset);
 }
 
+.activity-card.is-behind > * {
+  visibility: hidden;
+}
+
 .activity-card.is-swapping-out {
-  animation: activity-card-out 780ms cubic-bezier(0.45, 0, 0.18, 1) both;
+  animation: activity-card-out 520ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
 
 .activity-card.is-swapping-in {
-  animation: activity-card-in 780ms cubic-bezier(0.45, 0, 0.18, 1) both;
+  animation: activity-card-in 520ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
 
 @keyframes activity-card-out {
@@ -2333,17 +2374,15 @@ a:focus-visible {
     right: 0;
     bottom: var(--card-front-bottom);
     left: 0;
-    box-shadow: 0 25px 54px rgba(67, 45, 34, 0.2);
   }
-  44% {
+  46% {
     z-index: 3;
     top: var(--card-separate-top);
     right: var(--card-separate-right);
     bottom: var(--card-separate-bottom);
     left: var(--card-separate-side);
-    box-shadow: 0 38px 76px rgba(48, 30, 22, 0.3);
   }
-  45% {
+  47% {
     z-index: 1;
     top: var(--card-separate-top);
     right: var(--card-separate-right);
@@ -2356,7 +2395,6 @@ a:focus-visible {
     right: var(--card-back-inset);
     bottom: var(--card-back-bottom);
     left: var(--card-back-inset);
-    box-shadow: 0 18px 38px rgba(67, 45, 34, 0.16);
   }
 }
 
@@ -2368,14 +2406,14 @@ a:focus-visible {
     bottom: var(--card-back-bottom);
     left: var(--card-back-inset);
   }
-  44% {
+  46% {
     z-index: 1;
     top: 8px;
     right: 4px;
     bottom: 12px;
     left: 4px;
   }
-  45% {
+  47% {
     z-index: 3;
     top: 8px;
     right: 4px;
@@ -2487,6 +2525,12 @@ a:focus-visible {
   padding-left: 31px;
 }
 
+.activity-calendar.is-quarter {
+  width: min(390px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .activity-months {
   display: grid;
   grid-template-columns: repeat(53, minmax(0, 1fr));
@@ -2520,11 +2564,29 @@ a:focus-visible {
   gap: 2.5px;
 }
 
+.activity-calendar.is-quarter .activity-months,
+.activity-calendar.is-quarter .activity-grid {
+  justify-content: space-between;
+  column-gap: 0;
+}
+
+.activity-calendar.is-quarter .activity-months {
+  row-gap: 0;
+}
+
+.activity-calendar.is-quarter .activity-grid {
+  row-gap: 4px;
+}
+
 .activity-cell {
+  display: block;
   width: 100%;
   aspect-ratio: 1;
+  padding: 0;
+  border: 0;
   border-radius: 2px;
   background: var(--activity-empty);
+  cursor: crosshair;
   transition: background 180ms ease, transform 180ms ease;
 }
 
@@ -2533,8 +2595,44 @@ a:focus-visible {
 .activity-cell.level-3 { background: var(--activity-three); }
 .activity-cell.level-4 { background: var(--activity-four); }
 .activity-cell.level-5 { background: var(--activity-five); }
-.activity-cell.is-future { opacity: 0.16; }
+.activity-cell.is-future { opacity: 0.16; pointer-events: none; }
 .activity-cell:not(.level-0):hover { transform: scale(1.6); }
+.activity-calendar.is-quarter .activity-cell:not(.level-0):hover { transform: scale(1.18); }
+
+.activity-day-tooltip {
+  position: absolute;
+  z-index: 10;
+  display: block;
+  min-width: max-content;
+  padding: 8px 10px 7px;
+  border: 1px solid var(--activity-border);
+  border-radius: 9px;
+  color: var(--activity-bg);
+  background: var(--activity-text);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  font: 400 9px/1.15 'DM Sans', sans-serif;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 8px));
+}
+
+.activity-day-tooltip strong {
+  font-weight: 500;
+}
+
+.activity-day-tooltip span {
+  display: block;
+  margin-top: 4px;
+  color: color-mix(in srgb, var(--activity-bg) 68%, transparent);
+  font-size: 8px;
+}
+
+.activity-day-tooltip.align-start {
+  transform: translate(0, calc(-100% - 8px));
+}
+
+.activity-day-tooltip.align-end {
+  transform: translate(-100%, calc(-100% - 8px));
+}
 
 .activity-card-footer {
   margin-top: auto;
@@ -3028,18 +3126,21 @@ a:focus-visible {
   .landing-summary { margin-top: 24px; font-size: 14px; }
   .landing-actions { align-items: flex-start; flex-direction: column; gap: 17px; margin-top: 23px; }
   .activity-deck { margin-top: 8px; }
-  .activity-switch { width: 150px; margin-bottom: 10px; }
+  .activity-toolbar { gap: 7px; margin: 0 2px 10px 0; }
+  .activity-switch { width: 150px; }
   .activity-switch button { padding-block: 7px; font-size: 8px; }
+  .activity-range-switch { width: 82px; }
+  .activity-range-switch button { padding: 7px 6px; font-size: 8px; }
   .activity-card-stack { height: 306px; }
   .activity-card {
     --card-front-bottom: 14px;
     --card-back-top: 14px;
     --card-back-inset: 7px;
     --card-back-bottom: 0px;
-    --card-separate-top: 66px;
-    --card-separate-side: 10px;
-    --card-separate-right: -10px;
-    --card-separate-bottom: -52px;
+    --card-separate-top: 52px;
+    --card-separate-side: 8px;
+    --card-separate-right: -8px;
+    --card-separate-bottom: -38px;
     bottom: 14px;
     padding: 20px 18px 16px;
     border-radius: 21px;
@@ -3112,18 +3213,21 @@ a:focus-visible {
     margin-left: clamp(2px, 6vw, 72px);
   }
   .primary-link { padding: 10px 14px 10px 16px; font-size: 10px; }
-  .activity-switch { width: 144px; margin-bottom: 7px; }
+  .activity-toolbar { gap: 6px; margin-bottom: 7px; }
+  .activity-switch { width: 144px; }
   .activity-switch button { padding-block: 6px; font-size: 7px; }
+  .activity-range-switch { width: 78px; }
+  .activity-range-switch button { padding: 6px 5px; font-size: 7px; }
   .activity-card-stack { height: 250px; }
   .activity-card {
     --card-front-bottom: 10px;
     --card-back-top: 10px;
     --card-back-inset: 6px;
     --card-back-bottom: 0px;
-    --card-separate-top: 48px;
-    --card-separate-side: 8px;
-    --card-separate-right: -8px;
-    --card-separate-bottom: -38px;
+    --card-separate-top: 40px;
+    --card-separate-side: 6px;
+    --card-separate-right: -6px;
+    --card-separate-bottom: -30px;
     bottom: 10px;
     padding: 14px 15px 12px;
     border-radius: 18px;
@@ -3209,6 +3313,10 @@ a:focus-visible {
     right: var(--card-back-inset);
     bottom: var(--card-back-bottom);
     left: var(--card-back-inset);
+  }
+
+  .activity-card.is-swapping-out > * {
+    visibility: hidden;
   }
 
   .activity-card.is-swapping-in {
