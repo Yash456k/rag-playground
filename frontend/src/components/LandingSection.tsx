@@ -1,11 +1,13 @@
 import { ActivityDeck } from './ActivityDeck'
 
+/*
 const highlights = [
   { value: '9.66', label: 'CGPA / 10' },
   { value: '100K+', label: 'records handled daily' },
   { value: '20+', label: 'production features shipped' },
   { value: '150+', label: 'problems solved' },
 ] as const
+*/
 
 export function LandingSection() {
   return (
@@ -47,14 +49,14 @@ export function LandingSection() {
 
       <div className="landing-footer">
         <p>Ahmedabad, India <span>·</span> Available for ambitious product teams</p>
-        <dl className="highlight-strip">
+        {/* <dl className="highlight-strip">
           {highlights.map((highlight) => (
             <div key={highlight.label}>
               <dt>{highlight.value}</dt>
               <dd>{highlight.label}</dd>
             </div>
           ))}
-        </dl>
+        </dl> */}
         <a className="scroll-cue" href="#playground" aria-label="Continue to the RAG playground">
           <span>Scroll to explore</span>
           <b aria-hidden="true">↓</b>

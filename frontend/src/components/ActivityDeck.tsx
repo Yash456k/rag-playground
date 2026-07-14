@@ -240,7 +240,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
 
 export function ActivityDeck() {
   const [active, setActive] = useState<ActivityKind>('codex')
-  const [range, setRange] = useState<ActivityRange>('quarter')
+  const [range, setRange] = useState<ActivityRange>('year')
   const [swap, setSwap] = useState<{ from: ActivityKind; to: ActivityKind } | null>(null)
   const selected = swap?.to ?? active
 

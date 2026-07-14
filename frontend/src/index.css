@@ -1895,7 +1895,7 @@ a:focus-visible {
   overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
   overscroll-behavior-y: none;
   scrollbar-width: thin;
   scrollbar-color: rgba(184, 61, 50, 0.3) transparent;
@@ -2094,9 +2094,9 @@ a:focus-visible {
 
 .landing-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(480px, 560px);
+  grid-template-columns: minmax(0, 1fr) minmax(540px, 650px);
   align-items: center;
-  gap: clamp(42px, 5vw, 86px);
+  gap: clamp(30px, 3.5vw, 56px);
   width: min(1370px, 100%);
   margin: auto;
   padding: 4vh 0 5vh;
@@ -2286,7 +2286,7 @@ a:focus-visible {
 
 .activity-card-stack {
   position: relative;
-  height: 358px;
+  height: 398px;
 }
 
 .activity-card {
@@ -2313,7 +2313,7 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 25px 27px 21px;
+  padding: 28px 25px 23px;
   overflow: hidden;
   border: 1px solid var(--activity-border);
   border-radius: 27px;
@@ -2467,7 +2467,7 @@ a:focus-visible {
 
 .activity-card-identity p {
   margin: 0;
-  font: 500 12px/1 'DM Sans', sans-serif;
+  font: 500 13px/1 'DM Sans', sans-serif;
 }
 
 .activity-card-identity div > span,
@@ -2475,7 +2475,7 @@ a:focus-visible {
 .activity-total span,
 .activity-card-footer {
   color: var(--activity-muted);
-  font: 400 9px/1.2 'DM Sans', sans-serif;
+  font: 400 10px/1.2 'DM Sans', sans-serif;
 }
 
 .activity-card-identity div > span {
@@ -2501,7 +2501,7 @@ a:focus-visible {
 }
 
 .activity-total strong {
-  font: 400 40px/0.9 'Newsreader', serif;
+  font: 400 44px/0.9 'Newsreader', serif;
   letter-spacing: -0.025em;
 }
 
@@ -2513,8 +2513,8 @@ a:focus-visible {
 
 .activity-calendar {
   position: relative;
-  margin-top: 22px;
-  padding-left: 31px;
+  margin-top: 25px;
+  padding-left: 34px;
 }
 
 .activity-calendar.is-quarter {
@@ -2529,7 +2529,7 @@ a:focus-visible {
   height: 16px;
   margin-bottom: 6px;
   color: var(--activity-muted);
-  font: 400 7.5px/1 'DM Sans', sans-serif;
+  font: 400 8px/1 'DM Sans', sans-serif;
 }
 
 .activity-months span {
@@ -2545,7 +2545,7 @@ a:focus-visible {
   flex-direction: column;
   justify-content: space-around;
   color: var(--activity-muted);
-  font: 400 7px/1 'DM Sans', sans-serif;
+  font: 400 7.5px/1 'DM Sans', sans-serif;
 }
 
 .activity-grid {
@@ -2595,27 +2595,28 @@ a:focus-visible {
   position: absolute;
   z-index: 10;
   display: block;
-  min-width: max-content;
-  padding: 8px 10px 7px;
+  min-width: 132px;
+  padding: 11px 13px 10px;
   border: 1px solid var(--activity-border);
-  border-radius: 9px;
+  border-radius: 11px;
   color: var(--activity-bg);
   background: var(--activity-text);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-  font: 400 9px/1.15 'DM Sans', sans-serif;
+  font: 400 11px/1.2 'DM Sans', sans-serif;
   pointer-events: none;
   transform: translate(-50%, calc(-100% - 8px));
 }
 
 .activity-day-tooltip strong {
+  font-size: 12px;
   font-weight: 500;
 }
 
 .activity-day-tooltip span {
   display: block;
-  margin-top: 4px;
+  margin-top: 6px;
   color: color-mix(in srgb, var(--activity-bg) 68%, transparent);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .activity-day-tooltip.align-start {
@@ -2655,7 +2656,7 @@ a:focus-visible {
 
 .landing-footer {
   display: grid;
-  grid-template-columns: minmax(210px, 0.8fr) minmax(520px, 1.8fr) minmax(110px, 0.45fr);
+  grid-template-columns: minmax(280px, 1fr) auto;
   align-items: end;
   gap: 30px;
   width: min(1370px, 100%);
@@ -3065,8 +3066,8 @@ a:focus-visible {
 
 @media (max-width: 1100px) {
   .section-navigator { display: none; }
-  .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(420px, 460px); gap: 30px; }
-  .landing-footer { grid-template-columns: 1fr 2fr; }
+  .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(470px, 510px); gap: 24px; }
+  .landing-footer { grid-template-columns: 1fr auto; }
   .scroll-cue { display: none; }
   .work-layout { grid-template-columns: minmax(250px, 0.62fr) minmax(500px, 1.38fr); gap: 45px; }
   .about-layout { grid-template-columns: minmax(360px, 0.85fr) minmax(440px, 1.15fr); gap: 55px; }
@@ -3083,12 +3084,11 @@ a:focus-visible {
   .work-section,
   .about-section { padding-inline: 28px; }
   .landing-hero { grid-template-columns: 1fr; align-items: center; padding-block: 5vh 4vh; }
-  .activity-deck { justify-self: center; width: min(560px, 100%); margin-top: 16px; }
+  .activity-deck { justify-self: center; width: min(650px, 100%); margin-top: 16px; }
   .landing-copy h1 { font-size: clamp(64px, 13vw, 102px); }
   .landing-summary,
   .landing-actions { margin-left: 0; }
-  .landing-footer { grid-template-columns: 1fr; }
-  .landing-footer > p { display: none; }
+  .landing-footer { display: none; }
   .work-layout,
   .about-layout { grid-template-columns: 1fr; gap: 42px; padding-block: 6vh; }
   .work-section,
@@ -3099,7 +3099,7 @@ a:focus-visible {
 }
 
 @media (max-width: 680px) {
-  .portfolio-site { scroll-snap-type: y proximity; }
+  .portfolio-site { scroll-snap-type: none; }
   .landing-section,
   .work-section,
   .about-section {
@@ -3239,7 +3239,7 @@ a:focus-visible {
   .activity-card-footer { padding-top: 8px; }
   .activity-caption { margin-top: 7px; font-size: 6.5px; }
   .landing-footer {
-    grid-template-columns: 1fr;
+    display: none;
     padding-top: 9px;
   }
   .landing-footer > p,
