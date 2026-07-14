@@ -709,7 +709,7 @@ function App() {
     if (!portfolio) return
 
     const sections = Array.from(portfolio.querySelectorAll<HTMLElement>('.portfolio-section'))
-    const snapZone = 0.12
+    const snapZone = 0.22
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let settleTimer = 0
     let releaseTimer = 0
@@ -741,7 +741,7 @@ function App() {
     const scheduleSettle = () => {
       if (isSnapping) return
       window.clearTimeout(settleTimer)
-      settleTimer = window.setTimeout(settleNearSection, 180)
+      settleTimer = window.setTimeout(settleNearSection, 150)
     }
 
     portfolio.addEventListener('scroll', scheduleSettle, { passive: true })

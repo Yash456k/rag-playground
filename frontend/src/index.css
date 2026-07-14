@@ -201,9 +201,9 @@ a:focus-visible {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 650px) 270px;
-  width: min(920px, calc(100vw - 120px));
-  height: min(620px, calc(100svh - var(--header-height) - var(--page-bottom)));
+  grid-template-columns: minmax(0, 680px) 280px;
+  width: min(960px, calc(100vw - 120px));
+  height: min(650px, calc(100svh - var(--header-height) - var(--page-bottom)));
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.78);
@@ -837,7 +837,7 @@ a:focus-visible {
   opacity: 1;
 }
 
-.composer button {
+.composer-input > button {
   display: grid;
   flex: 0 0 auto;
   place-items: center;
@@ -852,16 +852,16 @@ a:focus-visible {
   transition: transform 160ms ease, opacity 160ms ease;
 }
 
-.composer button:not(:disabled):hover {
+.composer-input > button:not(:disabled):hover {
   transform: translateY(-2px) rotate(-3deg);
 }
 
-.composer button:disabled {
+.composer-input > button:disabled {
   cursor: not-allowed;
   opacity: 0.84;
 }
 
-.composer button svg {
+.composer-input > button svg {
   width: 19px;
   height: 19px;
   fill: none;
@@ -1328,7 +1328,7 @@ a:focus-visible {
   min-height: 52px;
 }
 
-.portfolio-card.is-active .composer button {
+.portfolio-card.is-active .composer-input > button {
   width: 40px;
   height: 40px;
 }
@@ -1672,7 +1672,7 @@ a:focus-visible {
   .assistant-content { padding: 16px 17px 14px; }
   .answer-copy p { font-size: 16px; }
   .composer-input { min-height: 52px; padding-left: 18px; }
-  .composer button { width: 40px; height: 40px; }
+  .composer-input > button { width: 40px; height: 40px; }
   .source-list { grid-template-columns: 1fr; }
   .advanced-content {
     grid-template-columns: 1fr;
@@ -1752,7 +1752,7 @@ a:focus-visible {
     min-height: 52px;
     padding-left: 17px;
   }
-  .portfolio-card.is-active .composer button {
+  .portfolio-card.is-active .composer-input > button {
     width: 40px;
     height: 40px;
   }
@@ -1843,9 +1843,9 @@ a:focus-visible {
   .site-nav a { font-size: 14px; }
   .connection-status { width: 11px; height: 11px; margin-left: -6px; }
   .portfolio-card {
-    grid-template-columns: minmax(0, 540px) 220px;
-    width: min(760px, calc(100vw - 96px));
-    height: min(540px, calc(100svh - var(--header-height) - var(--page-bottom)));
+    grid-template-columns: minmax(0, 570px) 230px;
+    width: min(800px, calc(100vw - 96px));
+    height: min(565px, calc(100svh - var(--header-height) - var(--page-bottom)));
     border-radius: 30px;
   }
   .chat-column { padding: 30px 16px 18px 28px; }
@@ -1867,8 +1867,8 @@ a:focus-visible {
   .message-meta { margin-top: 6px; font-size: 10px; }
   .composer-input { min-height: 50px; padding-left: 20px; }
   .composer textarea { font-size: 13px; }
-  .composer button { width: 39px; height: 39px; }
-  .composer button svg { width: 18px; height: 18px; }
+  .composer-input > button { width: 39px; height: 39px; }
+  .composer-input > button svg { width: 18px; height: 18px; }
   .source-rail { position: relative; padding: 86px 14px 12px; }
   .embedding-confirmation {
     position: absolute;
@@ -1900,8 +1900,8 @@ a:focus-visible {
     margin: 0 0 12px;
   }
   .load-state {
-    width: min(760px, calc(100vw - 96px));
-    height: min(540px, calc(100svh - var(--header-height) - var(--page-bottom)));
+    width: min(800px, calc(100vw - 96px));
+    height: min(565px, calc(100svh - var(--header-height) - var(--page-bottom)));
     border-radius: 30px;
   }
   .load-state h1 { font-size: 40px; }
