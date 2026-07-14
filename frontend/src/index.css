@@ -2094,7 +2094,7 @@ a:focus-visible {
 
 .landing-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(390px, 470px);
+  grid-template-columns: minmax(0, 1fr) minmax(480px, 560px);
   align-items: center;
   gap: clamp(42px, 5vw, 86px);
   width: min(1370px, 100%);
@@ -2126,6 +2126,10 @@ a:focus-visible {
   color: var(--ink);
   font: 400 clamp(64px, 8.25vw, 132px)/0.82 'Newsreader', serif;
   letter-spacing: -0.064em;
+}
+
+.landing-copy h1 {
+  font-size: clamp(64px, 7.45vw, 120px);
 }
 
 .landing-copy h1 em,
@@ -2196,8 +2200,8 @@ a:focus-visible {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-self: flex-end;
-  width: 166px;
-  margin: 0 8px 14px 0;
+  width: 188px;
+  margin: 0 10px 16px 0;
   padding: 3px;
   border: 1px solid rgba(85, 67, 57, 0.15);
   border-radius: 999px;
@@ -2209,11 +2213,11 @@ a:focus-visible {
 .activity-switch button {
   position: relative;
   z-index: 2;
-  padding: 8px 10px;
+  padding: 9px 12px;
   border: 0;
   color: #74675f;
   background: transparent;
-  font: 500 9px/1 'DM Sans', sans-serif;
+  font: 500 10px/1 'DM Sans', sans-serif;
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: color 260ms ease;
@@ -2221,6 +2225,10 @@ a:focus-visible {
 
 .activity-switch button[aria-pressed='true'] {
   color: #fffaf3;
+}
+
+.activity-switch button:disabled {
+  cursor: wait;
 }
 
 .activity-switch-glider {
@@ -2241,7 +2249,7 @@ a:focus-visible {
 
 .activity-card-stack {
   position: relative;
-  height: 294px;
+  height: 358px;
 }
 
 .activity-card {
@@ -2255,25 +2263,28 @@ a:focus-visible {
   --activity-three: #bf493e;
   --activity-four: #e15a49;
   --activity-five: #ff7a63;
+  --card-front-bottom: 20px;
+  --card-back-top: 18px;
+  --card-back-inset: 10px;
+  --card-back-bottom: 2px;
+  --card-separate-top: 82px;
+  --card-separate-side: 18px;
+  --card-separate-right: -18px;
+  --card-separate-bottom: -62px;
   position: absolute;
-  inset: 0 0 14px;
+  inset: 0 0 20px;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 22px 23px 19px;
+  padding: 25px 27px 21px;
   overflow: hidden;
   border: 1px solid var(--activity-border);
-  border-radius: 24px;
+  border-radius: 27px;
   color: var(--activity-text);
   background:
     radial-gradient(circle at 92% -15%, rgba(225, 90, 73, 0.18), transparent 38%),
     var(--activity-bg);
   box-shadow: 0 25px 54px rgba(67, 45, 34, 0.2);
-  transition:
-    top 540ms cubic-bezier(0.22, 1, 0.36, 1),
-    right 540ms cubic-bezier(0.22, 1, 0.36, 1),
-    left 540ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 360ms ease;
 }
 
 .activity-card--github {
@@ -2293,19 +2304,91 @@ a:focus-visible {
 }
 
 .activity-card.is-active {
-  z-index: 2;
+  z-index: 3;
   top: 0;
   right: 0;
   left: 0;
-  opacity: 1;
 }
 
 .activity-card.is-behind {
   z-index: 1;
-  top: 17px;
-  right: 8px;
-  left: 8px;
-  opacity: 0.64;
+  top: var(--card-back-top);
+  right: var(--card-back-inset);
+  bottom: var(--card-back-bottom);
+  left: var(--card-back-inset);
+}
+
+.activity-card.is-swapping-out {
+  animation: activity-card-out 780ms cubic-bezier(0.45, 0, 0.18, 1) both;
+}
+
+.activity-card.is-swapping-in {
+  animation: activity-card-in 780ms cubic-bezier(0.45, 0, 0.18, 1) both;
+}
+
+@keyframes activity-card-out {
+  0% {
+    z-index: 3;
+    top: 0;
+    right: 0;
+    bottom: var(--card-front-bottom);
+    left: 0;
+    box-shadow: 0 25px 54px rgba(67, 45, 34, 0.2);
+  }
+  44% {
+    z-index: 3;
+    top: var(--card-separate-top);
+    right: var(--card-separate-right);
+    bottom: var(--card-separate-bottom);
+    left: var(--card-separate-side);
+    box-shadow: 0 38px 76px rgba(48, 30, 22, 0.3);
+  }
+  45% {
+    z-index: 1;
+    top: var(--card-separate-top);
+    right: var(--card-separate-right);
+    bottom: var(--card-separate-bottom);
+    left: var(--card-separate-side);
+  }
+  100% {
+    z-index: 1;
+    top: var(--card-back-top);
+    right: var(--card-back-inset);
+    bottom: var(--card-back-bottom);
+    left: var(--card-back-inset);
+    box-shadow: 0 18px 38px rgba(67, 45, 34, 0.16);
+  }
+}
+
+@keyframes activity-card-in {
+  0% {
+    z-index: 1;
+    top: var(--card-back-top);
+    right: var(--card-back-inset);
+    bottom: var(--card-back-bottom);
+    left: var(--card-back-inset);
+  }
+  44% {
+    z-index: 1;
+    top: 8px;
+    right: 4px;
+    bottom: 12px;
+    left: 4px;
+  }
+  45% {
+    z-index: 3;
+    top: 8px;
+    right: 4px;
+    bottom: 12px;
+    left: 4px;
+  }
+  100% {
+    z-index: 3;
+    top: 0;
+    right: 0;
+    bottom: var(--card-front-bottom);
+    left: 0;
+  }
 }
 
 .activity-card-header,
@@ -2323,14 +2406,14 @@ a:focus-visible {
 }
 
 .activity-card-identity {
-  gap: 9px;
+  gap: 11px;
 }
 
 .activity-card-mark {
   display: grid;
   place-items: center;
-  width: 29px;
-  height: 29px;
+  width: 33px;
+  height: 33px;
   border: 1px solid var(--activity-border);
   border-radius: 9px;
   color: var(--activity-four);
@@ -2354,7 +2437,7 @@ a:focus-visible {
 
 .activity-card-identity p {
   margin: 0;
-  font: 500 11px/1 'DM Sans', sans-serif;
+  font: 500 12px/1 'DM Sans', sans-serif;
 }
 
 .activity-card-identity div > span,
@@ -2362,7 +2445,7 @@ a:focus-visible {
 .activity-total span,
 .activity-card-footer {
   color: var(--activity-muted);
-  font: 400 8px/1.2 'DM Sans', sans-serif;
+  font: 400 9px/1.2 'DM Sans', sans-serif;
 }
 
 .activity-card-identity div > span {
@@ -2383,12 +2466,12 @@ a:focus-visible {
 }
 
 .activity-total {
-  gap: 8px;
-  margin-top: 18px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .activity-total strong {
-  font: 400 33px/0.9 'Newsreader', serif;
+  font: 400 40px/0.9 'Newsreader', serif;
   letter-spacing: -0.025em;
 }
 
@@ -2400,17 +2483,17 @@ a:focus-visible {
 
 .activity-calendar {
   position: relative;
-  margin-top: 19px;
-  padding-left: 25px;
+  margin-top: 22px;
+  padding-left: 31px;
 }
 
 .activity-months {
   display: grid;
   grid-template-columns: repeat(53, minmax(0, 1fr));
-  height: 13px;
-  margin-bottom: 4px;
+  height: 16px;
+  margin-bottom: 6px;
   color: var(--activity-muted);
-  font: 400 6px/1 'DM Sans', sans-serif;
+  font: 400 7.5px/1 'DM Sans', sans-serif;
 }
 
 .activity-months span {
@@ -2419,14 +2502,14 @@ a:focus-visible {
 
 .activity-weekdays {
   position: absolute;
-  top: 18px;
+  top: 22px;
   left: 0;
   bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   color: var(--activity-muted);
-  font: 400 6px/1 'DM Sans', sans-serif;
+  font: 400 7px/1 'DM Sans', sans-serif;
 }
 
 .activity-grid {
@@ -2434,13 +2517,13 @@ a:focus-visible {
   grid-template-rows: repeat(7, minmax(0, 1fr));
   grid-template-columns: repeat(53, minmax(0, 1fr));
   grid-auto-flow: column;
-  gap: 2px;
+  gap: 2.5px;
 }
 
 .activity-cell {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 1.5px;
+  border-radius: 2px;
   background: var(--activity-empty);
   transition: background 180ms ease, transform 180ms ease;
 }
@@ -2455,7 +2538,7 @@ a:focus-visible {
 
 .activity-card-footer {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 16px;
   border-top: 1px solid var(--activity-border);
 }
 
@@ -2892,7 +2975,7 @@ a:focus-visible {
 
 @media (max-width: 1100px) {
   .section-navigator { display: none; }
-  .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(360px, 410px); gap: 34px; }
+  .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(420px, 460px); gap: 30px; }
   .landing-footer { grid-template-columns: 1fr 2fr; }
   .scroll-cue { display: none; }
   .work-layout { grid-template-columns: minmax(250px, 0.62fr) minmax(500px, 1.38fr); gap: 45px; }
@@ -2910,7 +2993,7 @@ a:focus-visible {
   .work-section,
   .about-section { padding-inline: 28px; }
   .landing-hero { grid-template-columns: 1fr; align-items: center; padding-block: 5vh 4vh; }
-  .activity-deck { justify-self: center; width: min(470px, 100%); margin-top: 16px; }
+  .activity-deck { justify-self: center; width: min(560px, 100%); margin-top: 16px; }
   .landing-copy h1 { font-size: clamp(64px, 13vw, 102px); }
   .landing-summary,
   .landing-actions { margin-left: 0; }
@@ -2947,11 +3030,25 @@ a:focus-visible {
   .activity-deck { margin-top: 8px; }
   .activity-switch { width: 150px; margin-bottom: 10px; }
   .activity-switch button { padding-block: 7px; font-size: 8px; }
-  .activity-card-stack { height: 262px; }
-  .activity-card { bottom: 12px; padding: 18px 17px 15px; border-radius: 20px; }
+  .activity-card-stack { height: 306px; }
+  .activity-card {
+    --card-front-bottom: 14px;
+    --card-back-top: 14px;
+    --card-back-inset: 7px;
+    --card-back-bottom: 0px;
+    --card-separate-top: 66px;
+    --card-separate-side: 10px;
+    --card-separate-right: -10px;
+    --card-separate-bottom: -52px;
+    bottom: 14px;
+    padding: 20px 18px 16px;
+    border-radius: 21px;
+  }
   .activity-total { margin-top: 14px; }
-  .activity-total strong { font-size: 29px; }
-  .activity-calendar { margin-top: 15px; padding-left: 21px; }
+  .activity-total strong { font-size: 31px; }
+  .activity-calendar { margin-top: 17px; padding-left: 23px; }
+  .activity-months { height: 13px; margin-bottom: 4px; font-size: 6.5px; }
+  .activity-weekdays { top: 17px; font-size: 6px; }
   .activity-grid { gap: 1.5px; }
   .activity-card-footer { padding-top: 11px; }
   .activity-caption { margin-top: 10px; }
@@ -2996,7 +3093,7 @@ a:focus-visible {
   .section-header > a:last-child { font-size: 10px; }
   .portfolio-nav .nav-contact { padding: 8px 12px; }
   .landing-hero {
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 370px);
+    grid-template-columns: minmax(0, 1fr) minmax(390px, 430px);
     gap: 34px;
     padding: 1vh 0 1.5vh;
   }
@@ -3017,8 +3114,20 @@ a:focus-visible {
   .primary-link { padding: 10px 14px 10px 16px; font-size: 10px; }
   .activity-switch { width: 144px; margin-bottom: 7px; }
   .activity-switch button { padding-block: 6px; font-size: 7px; }
-  .activity-card-stack { height: 224px; }
-  .activity-card { bottom: 9px; padding: 14px 15px 12px; border-radius: 18px; }
+  .activity-card-stack { height: 250px; }
+  .activity-card {
+    --card-front-bottom: 10px;
+    --card-back-top: 10px;
+    --card-back-inset: 6px;
+    --card-back-bottom: 0px;
+    --card-separate-top: 48px;
+    --card-separate-side: 8px;
+    --card-separate-right: -8px;
+    --card-separate-bottom: -38px;
+    bottom: 10px;
+    padding: 14px 15px 12px;
+    border-radius: 18px;
+  }
   .activity-card-mark { width: 24px; height: 24px; }
   .activity-card-identity p { font-size: 9px; }
   .activity-card-identity div > span,
@@ -3090,6 +3199,23 @@ a:focus-visible {
   .activity-card,
   .activity-switch-glider,
   .activity-cell {
+    animation: none !important;
     transition: none;
+  }
+
+  .activity-card.is-swapping-out {
+    z-index: 1;
+    top: var(--card-back-top);
+    right: var(--card-back-inset);
+    bottom: var(--card-back-bottom);
+    left: var(--card-back-inset);
+  }
+
+  .activity-card.is-swapping-in {
+    z-index: 3;
+    top: 0;
+    right: 0;
+    bottom: var(--card-front-bottom);
+    left: 0;
   }
 }

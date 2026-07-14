@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import activity from '../data/activity.json'
 
 type ActivityKind = 'codex' | 'github'
+type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
 
 type HeatmapDay = {
   date: string
@@ -102,7 +103,13 @@ function GitHubMark() {
   )
 }
 
-function ActivityCard({ kind, active }: { kind: ActivityKind; active: boolean }) {
+type ActivityCardProps = {
+  kind: ActivityKind
+  position: CardPosition
+  onSwapComplete: () => void
+}
+
+function ActivityCard({ kind, position, onSwapComplete }: ActivityCardProps) {
   const data = activity[kind]
   const weeks = useMemo(() => buildCalendar(kind), [kind])
   const months = useMemo(() => monthMarkers(weeks), [weeks])
@@ -112,8 +119,9 @@ function ActivityCard({ kind, active }: { kind: ActivityKind; active: boolean })
 
   return (
     <article
-      className={`activity-card activity-card--${kind} ${active ? 'is-active' : 'is-behind'}`}
-      aria-hidden={!active}
+      className={`activity-card activity-card--${kind} is-${position}`}
+      aria-hidden={position === 'behind' || position === 'swapping-out'}
+      onAnimationEnd={position === 'swapping-in' ? onSwapComplete : undefined}
     >
       <header className="activity-card-header">
         <div className="activity-card-identity">
@@ -161,22 +169,49 @@ function ActivityCard({ kind, active }: { kind: ActivityKind; active: boolean })
 
 export function ActivityDeck() {
   const [active, setActive] = useState<ActivityKind>('codex')
+  const [swap, setSwap] = useState<{ from: ActivityKind; to: ActivityKind } | null>(null)
+  const selected = swap?.to ?? active
+
+  useEffect(() => {
+    if (!swap) return
+    const fallback = window.setTimeout(() => {
+      setActive(swap.to)
+      setSwap(null)
+    }, 900)
+    return () => window.clearTimeout(fallback)
+  }, [swap])
+
+  const selectCard = (next: ActivityKind) => {
+    if (next === selected || swap) return
+    setSwap({ from: active, to: next })
+  }
+
+  const completeSwap = () => {
+    if (!swap) return
+    setActive(swap.to)
+    setSwap(null)
+  }
+
+  const positionFor = (kind: ActivityKind): CardPosition => {
+    if (swap) return kind === swap.from ? 'swapping-out' : 'swapping-in'
+    return kind === active ? 'active' : 'behind'
+  }
 
   return (
     <aside className="activity-deck" aria-label="Coding activity">
       <div className="activity-switch" aria-label="Choose activity source">
-        <span className={`activity-switch-glider is-${active}`} aria-hidden="true" />
-        <button type="button" aria-pressed={active === 'codex'} onClick={() => setActive('codex')}>
+        <span className={`activity-switch-glider is-${selected}`} aria-hidden="true" />
+        <button type="button" aria-pressed={selected === 'codex'} disabled={Boolean(swap)} onClick={() => selectCard('codex')}>
           Codex
         </button>
-        <button type="button" aria-pressed={active === 'github'} onClick={() => setActive('github')}>
+        <button type="button" aria-pressed={selected === 'github'} disabled={Boolean(swap)} onClick={() => selectCard('github')}>
           GitHub
         </button>
       </div>
 
       <div className="activity-card-stack">
-        <ActivityCard kind="codex" active={active === 'codex'} />
-        <ActivityCard kind="github" active={active === 'github'} />
+        <ActivityCard kind="codex" position={positionFor('codex')} onSwapComplete={completeSwap} />
+        <ActivityCard kind="github" position={positionFor('github')} onSwapComplete={completeSwap} />
       </div>
 
       <p className="activity-caption">
