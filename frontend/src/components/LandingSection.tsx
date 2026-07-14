@@ -34,7 +34,7 @@ export function LandingSection() {
             <em>I find <br className="mobile-title-break" />interesting.</em>
           </h1>
           <p className="landing-summary">
-            (I do actually know how to build things, not just AI stuff lol)
+            (I know what I&apos;m building — I just use AI to build it faster lol)
           </p>
           <div className="landing-actions">
             <a className="primary-link" href="#work">Explore selected work <span aria-hidden="true">↘</span></a>

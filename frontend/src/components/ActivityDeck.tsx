@@ -36,6 +36,19 @@ function formatNumber(value: number): string {
   }).format(value)
 }
 
+function formatTooltipValue(value: number, isTokenCount: boolean): string {
+  if (!isTokenCount) return value.toLocaleString()
+  const scaled = (divisor: number, suffix: string) => {
+    const amount = value / divisor
+    const maximumFractionDigits = amount >= 100 ? 0 : amount >= 10 ? 1 : 2
+    return `${new Intl.NumberFormat('en', { maximumFractionDigits }).format(amount)}${suffix}`
+  }
+  if (value >= 1_000_000_000) return scaled(1_000_000_000, ' billion')
+  if (value >= 1_000_000) return scaled(1_000_000, ' million')
+  if (value >= 1_000) return scaled(1_000, 'K')
+  return value.toLocaleString()
+}
+
 function formatDate(value: string): string {
   return dateAtNoon(value).toLocaleDateString('en', {
     day: 'numeric',
@@ -196,7 +209,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
               className={`activity-cell level-${day.level} ${day.isFuture ? 'is-future' : ''}`}
               key={day.date}
               disabled={day.isFuture}
-              aria-label={`${formatDate(day.date)}: ${day.count.toLocaleString()} ${isCodex ? 'tokens' : 'contributions'}`}
+              aria-label={`${formatDate(day.date)}: ${formatTooltipValue(day.count, isCodex)} ${isCodex ? 'tokens' : 'contributions'}`}
               onMouseEnter={(event) => showTooltip(event.currentTarget, day)}
               onMouseLeave={() => setHovered(null)}
               onFocus={(event) => showTooltip(event.currentTarget, day)}
@@ -209,7 +222,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
             className={`activity-day-tooltip align-${hovered.alignment}`}
             style={{ left: hovered.left, top: hovered.top }}
           >
-            <strong>{hovered.day.count.toLocaleString()}</strong> {isCodex ? 'tokens' : 'contributions'}
+            <strong>{formatTooltipValue(hovered.day.count, isCodex)}</strong> {isCodex ? 'tokens' : 'contributions'}
             <span>{formatDate(hovered.day.date)}</span>
           </output>
         )}
