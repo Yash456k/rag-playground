@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 const sections = [
   { id: 'home', label: 'Introduction' },
+  { id: 'work', label: 'Experience and projects' },
   { id: 'playground', label: 'Ask AI' },
-  { id: 'work', label: 'Selected work' },
   { id: 'about', label: 'About and contact' },
 ] as const
 

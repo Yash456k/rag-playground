@@ -81,27 +81,6 @@ function updateAssistant(
   )
 }
 
-function AppHeader({ connected }: { connected: boolean }) {
-  return (
-    <header className="site-header">
-      <a className="brand" href="#home" aria-label="Yash Khambhatta portfolio home">
-        <strong>Yash Khambhatta</strong>
-      </a>
-      <nav className="site-nav" aria-label="Portfolio navigation">
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-        <span
-          className={`connection-status ${connected ? 'is-connected' : ''}`}
-          role="status"
-          aria-label={connected ? 'Pipeline online' : 'Connecting'}
-          title={connected ? 'Pipeline online' : 'Connecting'}
-        />
-      </nav>
-    </header>
-  )
-}
-
 function LoadingScreen({ error, onRetry }: { error?: string; onRetry: () => void }) {
   return (
     <div className="app-shell">
@@ -110,7 +89,6 @@ function LoadingScreen({ error, onRetry }: { error?: string; onRetry: () => void
         <span className="shape shape-two" />
         <span className="shape shape-three" />
       </div>
-      <AppHeader connected={false} />
       <main className="load-state">
         <div className="load-orbit" aria-hidden="true">
           <span />
@@ -939,6 +917,7 @@ function App() {
     <div className="portfolio-site">
       <SectionNavigator />
       <LandingSection />
+      <WorkSection />
       <section className="portfolio-section rag-section" id="playground" aria-label="Interactive RAG playground">
         {config ? (
           <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`}>
@@ -947,7 +926,6 @@ function App() {
             <span className="shape shape-two" />
             <span className="shape shape-three" />
           </div>
-          <AppHeader connected />
           <main className={`portfolio-card ${workspaceOpen ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
         <section
           className={`chat-column ${workspaceOpen ? 'is-active' : ''}`}
@@ -1041,7 +1019,6 @@ function App() {
           />
         )}
       </section>
-      <WorkSection />
       <AboutSection />
     </div>
   )

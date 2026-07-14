@@ -21,8 +21,8 @@ export function LandingSection() {
           Yash Khambhatta
         </a>
         <nav aria-label="Portfolio">
-          <a href="#playground">Ask AI</a>
           <a href="#work">Work</a>
+          <a href="#playground">Ask AI</a>
           <a href="#about">About</a>
           <a className="nav-contact" href="mailto:yash456k@gmail.com">Let&apos;s talk</a>
         </nav>
@@ -36,7 +36,7 @@ export function LandingSection() {
             <em>I find <br className="mobile-title-break" />interesting.</em>
           </h1>
           <p className="landing-summary">
-            (I know what I&apos;m building, I just use AI to build it faster lol)
+            Yes, I use AI to build. I can also explain how everything works, ask me anything.
           </p>
           <div className="landing-actions">
             <a className="primary-link" href="#work">Explore selected work <span aria-hidden="true">↘</span></a>
@@ -57,7 +57,7 @@ export function LandingSection() {
             </div>
           ))}
         </dl> */}
-        <a className="scroll-cue" href="#playground" aria-label="Continue to the RAG playground">
+        <a className="scroll-cue" href="#work" aria-label="Continue to experience and projects">
           <span>Scroll to explore</span>
           <b aria-hidden="true">↓</b>
         </a>

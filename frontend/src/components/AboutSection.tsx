@@ -23,9 +23,7 @@ export function AboutSection() {
   return (
     <section className="portfolio-section about-section" id="about" aria-labelledby="about-title">
       <header className="section-header about-header">
-        <a className="portfolio-wordmark" href="#home">Yash Khambhatta</a>
         <p><span>04</span> About</p>
-        <a href="#home">Back to top <span aria-hidden="true">↑</span></a>
       </header>
 
       <div className="about-layout">
