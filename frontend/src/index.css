@@ -2325,19 +2325,11 @@ a:focus-visible {
 }
 
 .activity-card--github {
-  --activity-bg: #101813;
-  --activity-border: rgba(240, 255, 243, 0.12);
-  --activity-text: #effbf1;
-  --activity-muted: rgba(226, 246, 231, 0.56);
-  --activity-empty: rgba(236, 255, 241, 0.07);
   --activity-one: #123b22;
   --activity-two: #196c34;
   --activity-three: #238c43;
   --activity-four: #31bd58;
   --activity-five: #54e178;
-  background:
-    radial-gradient(circle at 92% -15%, rgba(48, 191, 87, 0.16), transparent 38%),
-    var(--activity-bg);
 }
 
 .activity-card.is-active {
