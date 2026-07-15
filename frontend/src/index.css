@@ -3398,7 +3398,7 @@ a:focus-visible {
 .project-revolver-stage {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  gap: 20px;
+  gap: 26px;
   min-height: 0;
 }
 
@@ -3451,7 +3451,7 @@ a:focus-visible {
   min-height: 0;
   overflow: hidden;
   border-top: 1px solid rgba(63, 67, 55, 0.13);
-  border-bottom: 1px solid rgba(63, 67, 55, 0.13);
+  border-bottom: 0;
 }
 
 .project-revolver-viewport::after {
@@ -3615,15 +3615,8 @@ a:focus-visible {
 
 .project-revolver-item > span:last-child {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: baseline;
-  gap: 3px 10px;
-}
-
-.project-revolver-item time {
-  color: #8f877d;
-  font: 600 7px/1 'DM Sans', sans-serif;
-  letter-spacing: 0.06em;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
 }
 
 .project-revolver-item strong {
@@ -3635,7 +3628,7 @@ a:focus-visible {
 }
 
 .project-revolver-item small {
-  grid-column: 2;
+  grid-column: 1;
   overflow: hidden;
   color: #8b8379;
   font: 400 8px/1.25 'DM Sans', sans-serif;
@@ -3694,12 +3687,13 @@ a:focus-visible {
 }
 
 .project-focus-view {
-  display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
   min-width: 0;
   min-height: 0;
   padding: 8px 0 0;
+  overflow-y: auto;
   animation: project-focus-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -3849,6 +3843,7 @@ a:focus-visible {
   font: 600 7.5px/1 'DM Sans', sans-serif;
   text-decoration: none;
   white-space: nowrap;
+  margin-top: auto;
 }
 
 .project-focus-footer a span { color: #b34338; }
@@ -4869,15 +4864,28 @@ a:focus-visible {
 
 .project-selection-receipt {
   justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 0;
 }
 
 .project-selection-receipt > button {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 220px) 12px;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   gap: 9px;
+  width: min(310px, 100%);
   max-width: 100%;
   overflow: hidden;
+}
+
+.project-action-label {
+  justify-self: start;
+  color: inherit !important;
+}
+
+.project-action-arrow {
+  color: #f0a095 !important;
 }
 
 .project-action-window {
@@ -4885,7 +4893,8 @@ a:focus-visible {
   display: inline-grid;
   grid-template-areas: 'project-name';
   min-width: 0;
-  max-width: 220px;
+  width: 220px;
+  max-width: 100%;
   padding: 4px 7px 3px;
   overflow: hidden;
   border-top: 1px solid rgba(255, 250, 243, 0.46);
@@ -5076,12 +5085,14 @@ a:focus-visible {
   }
 
   .project-selection-receipt > button {
+    grid-template-columns: 28px minmax(0, 160px) 12px;
+    width: min(260px, 100%);
     padding-inline: 14px;
     font-size: 9px;
   }
 
   .project-action-window {
-    max-width: 160px;
+    width: 160px;
   }
 
   .route-header-home {
@@ -5103,11 +5114,11 @@ a:focus-visible {
   }
 
   .project-view-stack {
-    height: min(450px, calc(100svh - 120px));
+    height: min(590px, calc(100svh - 150px));
   }
 
   .project-selector-view {
-    grid-template-rows: auto minmax(0, 315px);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 }
 

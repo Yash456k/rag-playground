@@ -796,7 +796,7 @@ function App() {
       ? '.portfolio-section:not(.work-section), .work-mobile-panel'
       : '.portfolio-section'
     const sections = Array.from(portfolio.querySelectorAll<HTMLElement>(sectionSelector))
-    const snapZone = 0.44
+    const snapZone = 0.62
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let settleTimer = 0
     let releaseTimer = 0
@@ -839,8 +839,10 @@ function App() {
     }
 
     portfolio.addEventListener('scroll', scheduleSettle, { passive: true })
+    const initialFrame = window.requestAnimationFrame(scheduleSettle)
     return () => {
       portfolio.removeEventListener('scroll', scheduleSettle)
+      window.cancelAnimationFrame(initialFrame)
       window.clearTimeout(settleTimer)
       window.clearTimeout(releaseTimer)
     }

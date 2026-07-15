@@ -141,6 +141,10 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
   const summary = useMemo(() => {
     const activeDays = weeks.flat().filter((day) => day.count > 0)
     const total = activeDays.reduce((sum, day) => sum + day.count, 0)
+    const averageDays = kind === 'codex'
+      ? activeDays.filter((day) => day.count > 1_000_000)
+      : activeDays
+    const averageTotal = averageDays.reduce((sum, day) => sum + day.count, 0)
     const peak = activeDays.reduce<HeatmapDay | null>(
       (current, day) => !current || day.count > current.count ? day : current,
       null,
@@ -148,10 +152,10 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
     return {
       total,
       activeDays: activeDays.length,
-      average: activeDays.length > 0 ? total / activeDays.length : 0,
+      average: averageDays.length > 0 ? averageTotal / averageDays.length : 0,
       peak,
     }
-  }, [weeks])
+  }, [kind, weeks])
   const [hovered, setHovered] = useState<HoveredDay | null>(null)
   const isCodex = kind === 'codex'
   const displayTotal = isCodex && range === 'year'
@@ -205,7 +209,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
         <div className="activity-stat activity-average">
           <span>Daily avg</span>
           <strong>{formatNumber(summary.average)}</strong>
-          <small>per active day</small>
+          <small>{isCodex ? 'days over 1M' : 'per active day'}</small>
         </div>
         {summary.peak && (
           <div className="activity-stat activity-peak">

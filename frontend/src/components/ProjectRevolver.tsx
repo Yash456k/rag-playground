@@ -126,7 +126,6 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
               >
                 <span>{project.number}</span>
                 <span>
-                  <time>{project.date}</time>
                   <strong>{project.title}</strong>
                   <small>{project.summary}</small>
                 </span>
@@ -142,7 +141,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
 
       <div className="project-selection-receipt" aria-live="polite">
         <button type="button" onClick={onOpen} aria-label={`View ${selectedProject.title}`}>
-          View
+          <span className="project-action-label">View</span>
           <span className={`project-action-window ${motion === 1 ? 'is-rolling-next' : motion === -1 ? 'is-rolling-previous' : ''}`}>
             <span className="project-action-name is-current" key={`current-${selectedProject.id}`}>
               {selectedProject.title}
@@ -153,7 +152,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
               </span>
             )}
           </span>
-          <span aria-hidden="true">↗</span>
+          <span className="project-action-arrow" aria-hidden="true">↗</span>
         </button>
       </div>
     </div>
