@@ -140,13 +140,15 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
   const months = useMemo(() => monthMarkers(weeks), [weeks])
   const summary = useMemo(() => {
     const activeDays = weeks.flat().filter((day) => day.count > 0)
+    const total = activeDays.reduce((sum, day) => sum + day.count, 0)
     const peak = activeDays.reduce<HeatmapDay | null>(
       (current, day) => !current || day.count > current.count ? day : current,
       null,
     )
     return {
-      total: activeDays.reduce((total, day) => total + day.count, 0),
+      total,
       activeDays: activeDays.length,
+      average: activeDays.length > 0 ? total / activeDays.length : 0,
       peak,
     }
   }, [weeks])
@@ -195,9 +197,23 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
         <span className="activity-live"><i /> Updated daily</span>
       </header>
 
-      <div className="activity-total">
-        <strong>{formatNumber(displayTotal)}</strong>
-        <span>{unit}</span>
+      <div className="activity-metrics">
+        <div className="activity-total">
+          <strong>{formatNumber(displayTotal)}</strong>
+          <span>{unit}</span>
+        </div>
+        <div className="activity-average">
+          <span>Daily avg</span>
+          <strong>{formatNumber(summary.average)}</strong>
+          <small>per active day</small>
+        </div>
+        {summary.peak && (
+          <div className="activity-peak">
+            <span>Peak</span>
+            <strong>{formatNumber(summary.peak.count)}</strong>
+            <small>{peakUnit} · {formatDate(summary.peak.date)}</small>
+          </div>
+        )}
       </div>
 
       <div className={`activity-calendar is-${range}`} role="group" aria-label={`${isCodex ? 'Codex' : 'GitHub'} daily activity for the last ${range === 'quarter' ? '3 months' : 'year'}`}>
@@ -235,9 +251,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
 
       <footer className="activity-card-footer">
         <span><strong>{summary.activeDays}</strong> active days</span>
-        {summary.peak && (
-          <span>Peak <strong>{formatNumber(summary.peak.count)}</strong> {peakUnit} · {formatDate(summary.peak.date)}</span>
-        )}
+        <span>Refreshed daily from official activity</span>
       </footer>
     </article>
   )

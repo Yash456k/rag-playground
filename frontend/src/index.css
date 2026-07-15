@@ -307,6 +307,105 @@ a:focus-visible {
   grid-area: 1 / 1;
 }
 
+.chat-header {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  max-height: 340px;
+  text-align: center;
+  view-transition-name: rag-chat-header;
+  transition:
+    max-height 430ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 430ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms ease;
+}
+
+.chat-heading {
+  display: grid;
+  justify-items: center;
+  view-transition-name: rag-chat-heading;
+}
+
+.chat-heading h1 {
+  margin: 8px 0 7px;
+  color: var(--ink);
+  font: 400 clamp(38px, 3.1vw, 48px)/1.02 'Newsreader', serif;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  transition: font-size 380ms cubic-bezier(0.22, 1, 0.36, 1), margin 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chat-heading h1 em {
+  color: var(--red);
+  font-weight: 400;
+}
+
+.chat-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font: 400 17px/1.5 'Newsreader', serif;
+  transition: opacity 180ms ease, max-height 320ms cubic-bezier(0.22, 1, 0.36, 1), transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chat-header > .model-panel {
+  view-transition-name: rag-model-controls;
+}
+
+.chat-header > .clear-chat {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  view-transition-name: rag-clear-chat;
+}
+
+.chat-header.is-active {
+  grid-template-columns: auto minmax(380px, 1fr) auto;
+  align-items: center;
+  justify-items: stretch;
+  gap: 14px;
+  min-height: 49px;
+  max-height: 58px;
+  padding: 0 3px 11px;
+  border-bottom: 1px solid rgba(151, 113, 91, 0.16);
+  text-align: left;
+}
+
+.chat-header.is-active .chat-heading {
+  display: flex;
+  grid-column: 1;
+  align-items: center;
+  gap: 5px;
+}
+
+.chat-header.is-active .sparkle-mark {
+  font-size: 15px;
+}
+
+.chat-header.is-active .chat-heading h1 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.chat-header.is-active .chat-subtitle {
+  position: absolute;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.chat-header.is-active > .model-panel {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.chat-header.is-active > .clear-chat {
+  position: static;
+  grid-column: 3;
+  grid-row: 1;
+}
+
 .sparkle-mark {
   grid-column: 2;
   color: var(--red);
@@ -574,6 +673,76 @@ a:focus-visible {
   padding: 38px 3px 24px 0;
 }
 
+.user-message,
+.assistant-message,
+.assistant-orb,
+.assistant-content,
+.answer-copy,
+.composer-input,
+.composer-input > button {
+  transition:
+    width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    max-width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    gap 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    font-size 320ms ease,
+    min-height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-shell:not(.is-active) .transcript {
+  gap: 18px;
+  padding: 26px 3px 19px 0;
+}
+
+.app-shell:not(.is-active) .user-message {
+  width: min(260px, 72%);
+  padding: 11px 17px 9px;
+}
+
+.app-shell:not(.is-active) .user-message p {
+  font-size: 15px;
+}
+
+.app-shell:not(.is-active) .assistant-message {
+  grid-template-columns: 34px minmax(0, 390px);
+  gap: 10px;
+}
+
+.app-shell:not(.is-active) .assistant-orb {
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+}
+
+.app-shell:not(.is-active) .assistant-content {
+  padding: 13px 17px 12px;
+}
+
+.app-shell:not(.is-active) .answer-copy {
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.app-shell:not(.is-active) .message-meta {
+  margin-top: 7px;
+  font-size: 9px;
+}
+
+.app-shell:not(.is-active) .composer-input {
+  min-height: 46px;
+  padding-left: 17px;
+}
+
+.app-shell:not(.is-active) .composer textarea {
+  font-size: 13px;
+}
+
+.app-shell:not(.is-active) .composer-input > button {
+  width: 34px;
+  height: 34px;
+}
+
 .message {
   font-family: 'Newsreader', serif;
 }
@@ -767,33 +936,37 @@ a:focus-visible {
 .composer {
   position: relative;
   padding-top: 8px;
+  view-transition-name: rag-composer;
 }
 
 .chat-mode-invite {
-  display: flex;
+  display: grid;
+  place-items: center;
   align-items: center;
-  gap: 7px;
-  width: fit-content;
-  margin: 0 auto 7px;
-  padding: 6px 11px;
-  border: 1px solid rgba(184, 61, 50, 0.2);
-  border-radius: 999px;
+  width: 30px;
+  height: 26px;
+  margin: 0 auto 3px;
+  padding: 0;
+  border: 0;
   color: var(--red-dark);
-  background: rgba(255, 250, 244, 0.86);
-  box-shadow: 0 7px 18px rgba(115, 62, 42, 0.07);
-  font: 500 9px/1 'DM Sans', sans-serif;
-  letter-spacing: 0.04em;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  background: transparent;
+  transition: color 160ms ease, transform 160ms ease;
 }
 
-.chat-mode-invite:hover {
-  border-color: rgba(184, 61, 50, 0.42);
-  background: #fffaf4;
-  transform: translateY(-1px);
+.chat-mode-invite:hover,
+.chat-mode-invite:focus-visible {
+  color: var(--red);
+  transform: translateY(2px);
 }
 
-.chat-mode-invite span {
-  font-size: 12px;
+.chat-mode-invite svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .composer-input {
@@ -885,6 +1058,17 @@ a:focus-visible {
   padding: 28px 20px 24px;
   overflow: hidden;
   border-left: 1px solid rgba(174, 139, 117, 0.18);
+  view-transition-name: rag-evidence-rail;
+}
+
+::view-transition-group(rag-chat-header),
+::view-transition-group(rag-chat-heading),
+::view-transition-group(rag-model-controls),
+::view-transition-group(rag-clear-chat),
+::view-transition-group(rag-composer),
+::view-transition-group(rag-evidence-rail) {
+  animation-duration: 430ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .embedding-confirmation {
@@ -1598,6 +1782,15 @@ a:focus-visible {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
   }
+  .chat-header.is-active {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    min-height: 82px;
+    max-height: 92px;
+  }
+  .chat-header.is-active .chat-heading { grid-column: 1; grid-row: 1; }
+  .chat-header.is-active > .model-panel { grid-column: 1 / -1; grid-row: 2; max-width: none; }
+  .chat-header.is-active > .clear-chat { grid-column: 2; grid-row: 1; }
   .chat-column.is-active .active-chat-bar {
     min-height: 82px;
     max-height: 92px;
@@ -1662,8 +1855,10 @@ a:focus-visible {
   .intro-bar { min-height: 34px; }
   .sparkle-mark { font-size: 29px; }
   .clear-chat span { display: none; }
-  .card-intro h1 { margin-top: 4px; font-size: 35px; }
-  .card-intro > p { max-width: 320px; margin-inline: auto; font-size: 15px; }
+  .card-intro h1,
+  .chat-heading h1 { margin-top: 4px; font-size: 35px; }
+  .card-intro > p,
+  .chat-subtitle { max-width: 320px; margin-inline: auto; font-size: 15px; }
   .model-panel { margin-top: 18px; }
   .model-grid { grid-template-columns: 1fr; gap: 10px; }
   .theme-select { height: 38px; padding-left: 18px; }
@@ -1706,6 +1901,12 @@ a:focus-visible {
     padding: 10px 10px 10px 12px;
   }
   .active-chat-bar {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 7px;
+    padding-bottom: 8px;
+  }
+  .chat-header.is-active {
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 7px;
@@ -2532,7 +2733,6 @@ a:focus-visible {
 
 .activity-total {
   gap: 10px;
-  margin-top: 20px;
 }
 
 .activity-total strong {
@@ -2544,6 +2744,48 @@ a:focus-visible {
   padding-top: 5px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.activity-metrics {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(112px, 0.42fr) minmax(140px, 0.52fr);
+  align-items: end;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.activity-average,
+.activity-peak {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 4px 9px;
+  padding: 4px 0 3px 22px;
+  border-left: 1px solid var(--activity-border);
+}
+
+.activity-average > span,
+.activity-average small,
+.activity-peak > span,
+.activity-peak small {
+  color: var(--activity-muted);
+  font: 400 8px/1.2 'DM Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.activity-average strong,
+.activity-peak strong {
+  color: var(--activity-text);
+  font: 400 27px/0.95 'Newsreader', serif;
+  letter-spacing: -0.02em;
+}
+
+.activity-average small,
+.activity-peak small {
+  grid-column: 1 / -1;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .activity-calendar {
@@ -2691,8 +2933,9 @@ a:focus-visible {
 
 .landing-footer {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) auto;
+  grid-template-columns: 1fr;
   align-items: end;
+  justify-items: end;
   gap: 30px;
   width: min(1370px, 100%);
   margin: 0 auto;
@@ -3007,19 +3250,25 @@ a:focus-visible {
   border-top: 1px solid rgba(63, 67, 55, 0.16);
 }
 
+.projects-stage {
+  display: grid;
+  min-height: 0;
+}
+
 .project-index-row {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 28px;
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 16px 2px;
+  min-height: 76px;
+  padding: 16px 10px;
   border: 0;
   border-bottom: 1px solid rgba(63, 67, 55, 0.16);
   color: #6d6a62;
   background: transparent;
   text-align: left;
-  transition: padding 160ms ease, color 160ms ease, background 160ms ease;
+  transition: color 160ms ease, background 160ms ease;
 }
 
 .project-index-row > span:first-child {
@@ -3059,7 +3308,6 @@ a:focus-visible {
 .project-index-row:hover,
 .project-index-row:focus-visible,
 .project-index-row.is-active {
-  padding-inline: 10px;
   color: #4f6849;
   background: rgba(104, 124, 94, 0.065);
 }
@@ -3111,6 +3359,57 @@ a:focus-visible {
 
 .project-detail-card a span {
   color: #b34338;
+}
+
+@media (min-width: 901px) {
+  .work-section {
+    padding-inline: clamp(24px, 3vw, 48px);
+  }
+
+  .split-work-layout {
+    width: min(1580px, 100%);
+  }
+
+  .work-mobile-panel {
+    grid-template-rows: auto 320px;
+    padding: clamp(32px, 4.5vh, 52px) clamp(38px, 4.8vw, 78px);
+  }
+
+  .split-panel-intro {
+    gap: 15px 38px;
+    margin-bottom: 52px;
+  }
+
+  .split-panel-intro h2 {
+    font-size: clamp(48px, 4.25vw, 70px);
+  }
+
+  .experience-stage {
+    grid-template-columns: minmax(178px, 0.72fr) minmax(240px, 1.28fr);
+    gap: clamp(34px, 3.5vw, 58px);
+    height: 320px;
+    min-height: 0;
+  }
+
+  .experience-detail-card,
+  .project-detail-card {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .projects-stage {
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 320px;
+  }
+
+  .project-index-row {
+    min-height: 78px;
+    padding-block: 19px;
+  }
+
+  .project-detail-card {
+    margin-top: 26px;
+  }
 }
 
 .work-layout {
@@ -3493,7 +3792,19 @@ a:focus-visible {
     padding: 20px 18px 16px;
     border-radius: 21px;
   }
-  .activity-total { margin-top: 14px; }
+  .activity-metrics {
+    grid-template-columns: minmax(0, 1.15fr) minmax(82px, 0.55fr) minmax(92px, 0.65fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .activity-average,
+  .activity-peak { gap: 3px 6px; padding-left: 12px; }
+  .activity-average strong,
+  .activity-peak strong { font-size: 20px; }
+  .activity-average > span,
+  .activity-average small,
+  .activity-peak > span,
+  .activity-peak small { font-size: 6px; }
   .activity-total strong { font-size: 31px; }
   .activity-calendar { margin-top: 17px; padding-left: 23px; }
   .activity-months { height: 13px; margin-bottom: 4px; font-size: 6.5px; }
@@ -3651,7 +3962,19 @@ a:focus-visible {
   .activity-live,
   .activity-total span,
   .activity-card-footer { font-size: 6.5px; }
-  .activity-total { margin-top: 10px; }
+  .activity-metrics {
+    grid-template-columns: minmax(0, 1.15fr) minmax(76px, 0.55fr) minmax(88px, 0.65fr);
+    gap: 7px;
+    margin-top: 10px;
+  }
+  .activity-average,
+  .activity-peak { gap: 2px 5px; padding-left: 11px; }
+  .activity-average strong,
+  .activity-peak strong { font-size: 19px; }
+  .activity-average > span,
+  .activity-average small,
+  .activity-peak > span,
+  .activity-peak small { font-size: 5.5px; }
   .activity-total strong { font-size: 25px; }
   .activity-calendar { margin-top: 10px; padding-left: 21px; }
   .activity-months { height: 10px; margin-bottom: 3px; font-size: 5px; }

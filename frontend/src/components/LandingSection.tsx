@@ -30,7 +30,6 @@ export function LandingSection() {
 
       <div className="landing-hero">
         <div className="landing-copy">
-          <p className="section-kicker"><span /> Full-stack engineer · Applied AI</p>
           <h1 id="landing-title">
             I build stuff
             <em>I find <br className="mobile-title-break" />interesting.</em>
@@ -48,7 +47,6 @@ export function LandingSection() {
       </div>
 
       <div className="landing-footer">
-        <p>Ahmedabad, India <span>·</span> Available for ambitious product teams</p>
         {/* <dl className="highlight-strip">
           {highlights.map((highlight) => (
             <div key={highlight.label}>

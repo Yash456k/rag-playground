@@ -138,47 +138,49 @@ export function WorkSection() {
             <p>Two production builds. Select one to see what was actually engineered.</p>
           </header>
 
-          <nav className="project-index" aria-label="Selected projects">
-            {projectItems.map((project) => (
-              <button
-                type="button"
-                className={`project-index-row ${project.id === selectedProject.id ? 'is-active' : ''}`}
-                key={project.id}
-                aria-pressed={project.id === selectedProject.id}
-                onMouseEnter={() => setActiveProject(project.id)}
-                onFocus={() => setActiveProject(project.id)}
-                onClick={() => setActiveProject(project.id)}
-              >
-                <span>{project.number}</span>
-                <span>
-                  <time>{project.date}</time>
-                  <strong>{project.title}</strong>
-                  <small>{project.summary}</small>
-                </span>
-                <span aria-hidden="true">↗</span>
-              </button>
-            ))}
-          </nav>
+          <div className="projects-stage">
+            <nav className="project-index" aria-label="Selected projects">
+              {projectItems.map((project) => (
+                <button
+                  type="button"
+                  className={`project-index-row ${project.id === selectedProject.id ? 'is-active' : ''}`}
+                  key={project.id}
+                  aria-pressed={project.id === selectedProject.id}
+                  onMouseEnter={() => setActiveProject(project.id)}
+                  onFocus={() => setActiveProject(project.id)}
+                  onClick={() => setActiveProject(project.id)}
+                >
+                  <span>{project.number}</span>
+                  <span>
+                    <time>{project.date}</time>
+                    <strong>{project.title}</strong>
+                    <small>{project.summary}</small>
+                  </span>
+                  <span aria-hidden="true">↗</span>
+                </button>
+              ))}
+            </nav>
 
-          <article className="project-detail-card" aria-live="polite">
-            <header>
-              <p>{selectedProject.eyebrow}</p>
-              <h3>{selectedProject.title}</h3>
-            </header>
-            <p>{selectedProject.detail}</p>
-            <footer>
-              <ul aria-label={`${selectedProject.title} technologies`}>
-                {selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}
-              </ul>
-              <a
-                href={selectedProject.href}
-                target={selectedProject.external ? '_blank' : undefined}
-                rel={selectedProject.external ? 'noreferrer' : undefined}
-              >
-                {selectedProject.linkLabel} <span aria-hidden="true">↗</span>
-              </a>
-            </footer>
-          </article>
+            <article className="project-detail-card" aria-live="polite">
+              <header>
+                <p>{selectedProject.eyebrow}</p>
+                <h3>{selectedProject.title}</h3>
+              </header>
+              <p>{selectedProject.detail}</p>
+              <footer>
+                <ul aria-label={`${selectedProject.title} technologies`}>
+                  {selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                </ul>
+                <a
+                  href={selectedProject.href}
+                  target={selectedProject.external ? '_blank' : undefined}
+                  rel={selectedProject.external ? 'noreferrer' : undefined}
+                >
+                  {selectedProject.linkLabel} <span aria-hidden="true">↗</span>
+                </a>
+              </footer>
+            </article>
+          </div>
         </section>
       </div>
     </section>

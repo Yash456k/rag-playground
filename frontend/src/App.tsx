@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { flushSync } from 'react-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ApiError, getConfig, streamChat } from './api'
@@ -26,6 +27,20 @@ import type {
 } from './types'
 
 const QUESTION_LIMIT = 500
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => unknown
+}
+
+function transitionInterface(update: () => void) {
+  const transitionDocument = document as ViewTransitionDocument
+  if (!transitionDocument.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    update()
+    return
+  }
+  transitionDocument.startViewTransition(() => flushSync(update))
+}
+
 const STORAGE_KEYS = {
   embedder: 'rag-playground:embedder',
   model: 'rag-playground:model',
@@ -529,8 +544,15 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
     <form className="composer" onSubmit={submit} aria-label="Ask Yash's portfolio">
       <label className="visually-hidden" htmlFor="question-input">Ask about Yash</label>
       {!expanded && (
-        <button className="chat-mode-invite" type="button" onClick={() => inputRef.current?.focus()}>
-          Click here to enter chat mode <span aria-hidden="true">↗</span>
+        <button
+          className="chat-mode-invite"
+          type="button"
+          aria-label="Enter chat mode"
+          onClick={() => inputRef.current?.focus()}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v14M6.5 11.5 12 17l5.5-5.5" />
+          </svg>
         </button>
       )}
       <div className="composer-input">
@@ -644,8 +666,10 @@ function App() {
     : hasConversation ? [] : PREVIEW_CHUNKS
 
   const openWorkspace = useCallback(() => {
-    setWorkspaceOpen(true)
-    setEvidenceOpen(false)
+    transitionInterface(() => {
+      setWorkspaceOpen(true)
+      setEvidenceOpen(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -674,8 +698,10 @@ function App() {
     const collapseEmptyWorkspace = (event: PointerEvent) => {
       const target = event.target instanceof Element ? event.target : null
       if (target?.closest('.portfolio-card')) return
-      setWorkspaceOpen(false)
-      setEvidenceOpen(true)
+      transitionInterface(() => {
+        setWorkspaceOpen(false)
+        setEvidenceOpen(true)
+      })
     }
 
     document.addEventListener('pointerdown', collapseEmptyWorkspace)
@@ -741,13 +767,15 @@ function App() {
   }, [workspaceOpen])
 
   const clearChat = useCallback(() => {
-    activeRequest.current?.abort()
-    activeRequest.current = null
-    setMessages([])
-    setQuestion('')
-    setIsStreaming(false)
-    setWorkspaceOpen(false)
-    setEvidenceOpen(true)
+    transitionInterface(() => {
+      activeRequest.current?.abort()
+      activeRequest.current = null
+      setMessages([])
+      setQuestion('')
+      setIsStreaming(false)
+      setWorkspaceOpen(false)
+      setEvidenceOpen(true)
+    })
   }, [])
 
   const chooseEmbedder = useCallback((id: string) => {
@@ -939,13 +967,17 @@ function App() {
           <main className={`portfolio-card ${workspaceOpen ? 'is-active' : ''} ${evidenceOpen ? 'evidence-open' : ''}`}>
         <section
           className={`chat-column ${workspaceOpen ? 'is-active' : ''}`}
-          aria-labelledby={workspaceOpen ? 'page-title-active' : 'page-title-landing'}
+          aria-labelledby="page-title-chat"
         >
           <div className="header-stage">
-            <header className="active-chat-bar" aria-hidden={!workspaceOpen} inert={!workspaceOpen}>
-              <h1 id="page-title-active"><span aria-hidden="true">✦</span> Chat with <em>my portfolio</em></h1>
+            <header className={`chat-header ${workspaceOpen ? 'is-active' : ''}`}>
+              <div className="chat-heading">
+                <span className="sparkle-mark" aria-hidden="true">✦</span>
+                <h1 id="page-title-chat">Chat with <em>my portfolio</em></h1>
+              </div>
+              <p className="chat-subtitle">I use AI + RAG to answer from my résumé, projects, and experience.</p>
               <ModelControls
-                compact
+                compact={workspaceOpen}
                 config={config}
                 embedderId={embedderId}
                 modelId={modelId}
@@ -957,47 +989,22 @@ function App() {
                 onTopKChange={chooseTopK}
                 onHistoryAwareChange={chooseHistoryAware}
               />
-              <button className="clear-chat is-active" type="button" aria-label="Clear chat" onClick={clearChat}>
+              <button
+                className={`clear-chat ${workspaceOpen ? 'is-active' : ''}`}
+                type="button"
+                aria-label="Clear chat"
+                onClick={clearChat}
+                disabled={messages.length === 0 && !question}
+              >
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
                 </svg>
                 <span>Clear chat</span>
               </button>
             </header>
-            <header className="card-intro" aria-hidden={workspaceOpen} inert={workspaceOpen}>
-              <div className="intro-bar">
-                <span className="sparkle-mark" aria-hidden="true">✦</span>
-                <button
-                  className="clear-chat"
-                  type="button"
-                  aria-label="Clear chat"
-                  onClick={clearChat}
-                  disabled={messages.length === 0 && !question}
-                >
-                  <svg viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M3 8a5 5 0 1 0 1.45-3.53M3 3.5v3h3" />
-                  </svg>
-                  <span>Clear chat</span>
-                </button>
-              </div>
-              <h1 id="page-title-landing">Chat with <em>my portfolio</em></h1>
-              <p>I use AI + RAG to answer from my résumé, projects, and experience.</p>
-              <ModelControls
-                config={config}
-                embedderId={embedderId}
-                modelId={modelId}
-                topK={topK}
-                historyAware={historyAware}
-                disabled={isStreaming}
-                onEmbedderChange={chooseEmbedder}
-                onModelChange={chooseModel}
-                onTopKChange={chooseTopK}
-                onHistoryAwareChange={chooseHistoryAware}
-              />
-            </header>
           </div>
           <div className="chat-scroll" ref={chatScrollRef}>
-            <ChatTranscript messages={messages} onShowSources={() => setEvidenceOpen(true)} />
+            <ChatTranscript messages={messages} onShowSources={() => transitionInterface(() => setEvidenceOpen(true))} />
           </div>
           <Composer
             value={question}
@@ -1015,7 +1022,7 @@ function App() {
               pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
               retrievalMs={latestAssistant?.latencies.retrievalMs}
               collapsed={!evidenceOpen}
-              onToggle={() => setEvidenceOpen((open) => !open)}
+              onToggle={() => transitionInterface(() => setEvidenceOpen((open) => !open))}
             />
           </main>
           </div>
