@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { KeyboardEvent, WheelEvent } from 'react'
+import type { KeyboardEvent } from 'react'
 import type { ProjectItem } from './projectTypes'
 
 type ProjectRevolverProps = {
@@ -30,6 +30,7 @@ function slotName(offset: number) {
 
 export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: ProjectRevolverProps) {
   const wheelLock = useRef<number | null>(null)
+  const revolverRef = useRef<HTMLDivElement>(null)
   const selectedProject = projects[activeIndex] ?? projects[0]
 
   useEffect(() => () => {
@@ -40,15 +41,25 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     onChange(wrapIndex(activeIndex + direction, projects.length))
   }
 
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaY) < 12) return
-    event.preventDefault()
-    if (wheelLock.current !== null) return
-    rotate(event.deltaY > 0 ? 1 : -1)
-    wheelLock.current = window.setTimeout(() => {
-      wheelLock.current = null
-    }, 210)
-  }
+  useEffect(() => {
+    const revolver = revolverRef.current
+    if (!revolver) return
+
+    const handleWheel = (event: globalThis.WheelEvent) => {
+      event.preventDefault()
+      event.stopPropagation()
+      if (Math.abs(event.deltaY) < 8 || wheelLock.current !== null) return
+
+      const direction = event.deltaY > 0 ? 1 : -1
+      onChange(wrapIndex(activeIndex + direction, projects.length))
+      wheelLock.current = window.setTimeout(() => {
+        wheelLock.current = null
+      }, 150)
+    }
+
+    revolver.addEventListener('wheel', handleWheel, { passive: false })
+    return () => revolver.removeEventListener('wheel', handleWheel)
+  }, [activeIndex, onChange, projects.length])
 
   const handleKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
@@ -59,11 +70,11 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
   return (
     <div className="project-revolver-stage">
       <div
+        ref={revolverRef}
         className="project-revolver"
         role="group"
         aria-label="Project selector"
         tabIndex={0}
-        onWheel={handleWheel}
         onKeyDown={handleKeyboard}
       >
         <button className="revolver-step is-up" type="button" onClick={() => rotate(-1)} aria-label="Previous project">

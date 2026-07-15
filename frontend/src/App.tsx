@@ -1,6 +1,8 @@
 import {
   type FormEvent,
   type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -366,13 +368,26 @@ function RetrievedRail({
       ? `${pendingEmbedding} · embedding queued`
       : 'Vector receipt appears here'
 
+  const toggleOnPointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0) return
+    event.preventDefault()
+    event.stopPropagation()
+    onToggle?.()
+  }
+
+  const toggleFromKeyboard = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
+    if (event.detail === 0) onToggle?.()
+  }
+
   if (collapsed) {
     return (
       <aside className="source-rail is-collapsed" aria-label="Retrieved evidence">
         <button
           className="evidence-rail-toggle"
           type="button"
-          onClick={onToggle}
+          onPointerDown={toggleOnPointerDown}
+          onClick={toggleFromKeyboard}
           aria-expanded="false"
           aria-label={`Show ${visibleChunks.length} retrieved chunks`}
         >
@@ -408,7 +423,13 @@ function RetrievedRail({
         <h2>Retrieved chunks</h2>
         {retrievalLabel && <span className="retrieval-time">{retrievalLabel}</span>}
         {onToggle && (
-          <button className="evidence-close" type="button" onClick={onToggle} aria-label="Collapse retrieved chunks">
+          <button
+            className="evidence-close"
+            type="button"
+            onPointerDown={toggleOnPointerDown}
+            onClick={toggleFromKeyboard}
+            aria-label="Collapse retrieved chunks"
+          >
             <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m8 2.5-3.5 3.5L8 9.5" /></svg>
           </button>
         )}
@@ -779,6 +800,10 @@ function App() {
     })
   }, [])
 
+  const toggleEvidence = useCallback(() => {
+    setEvidenceOpen((open) => !open)
+  }, [])
+
   const chooseEmbedder = useCallback((id: string) => {
     setEmbedderId(id)
     window.localStorage.setItem(STORAGE_KEYS.embedder, id)
@@ -1023,7 +1048,7 @@ function App() {
               pendingEmbedding={latestAssistant && !latestAssistant.embedding ? latestAssistant.embedderLabel : undefined}
               retrievalMs={latestAssistant?.latencies.retrievalMs}
               collapsed={!evidenceOpen}
-              onToggle={() => transitionInterface(() => setEvidenceOpen((open) => !open))}
+              onToggle={toggleEvidence}
             />
           </main>
           </div>
