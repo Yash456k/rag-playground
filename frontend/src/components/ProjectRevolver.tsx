@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { KeyboardEvent } from 'react'
+import type { AnimationEvent, KeyboardEvent } from 'react'
 import type { ProjectItem } from './projectTypes'
 
 type ProjectRevolverProps = {
@@ -26,6 +26,7 @@ function slotName(offset: (typeof revolverSlots)[number]) {
 export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: ProjectRevolverProps) {
   const motionTimer = useRef<number | null>(null)
   const motionLock = useRef(false)
+  const pendingDirection = useRef<-1 | 1 | null>(null)
   const revolverRef = useRef<HTMLDivElement>(null)
   const [motion, setMotion] = useState<-1 | 1 | null>(null)
   const selectedProject = projects[activeIndex] ?? projects[0]
@@ -34,18 +35,33 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     if (motionTimer.current !== null) window.clearTimeout(motionTimer.current)
   }, [])
 
+  const completeRotation = useCallback(() => {
+    const direction = pendingDirection.current
+    if (direction === null) return
+
+    if (motionTimer.current !== null) window.clearTimeout(motionTimer.current)
+    pendingDirection.current = null
+    motionTimer.current = null
+    onChange(wrapIndex(activeIndex + direction, projects.length))
+    setMotion(null)
+    motionLock.current = false
+  }, [activeIndex, onChange, projects.length])
+
   const rotate = useCallback((direction: -1 | 1) => {
     if (motionLock.current || projects.length < 2) return
 
     motionLock.current = true
+    pendingDirection.current = direction
     setMotion(direction)
-    motionTimer.current = window.setTimeout(() => {
-      onChange(wrapIndex(activeIndex + direction, projects.length))
-      setMotion(null)
-      motionLock.current = false
-      motionTimer.current = null
-    }, 310)
-  }, [activeIndex, onChange, projects.length])
+    motionTimer.current = window.setTimeout(completeRotation, 380)
+  }, [completeRotation, projects.length])
+
+  const handleAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement) || target.dataset.slot !== 'active') return
+    if (!event.animationName.startsWith('revolver-roll-')) return
+    completeRotation()
+  }
 
   useEffect(() => {
     const revolver = revolverRef.current
@@ -79,6 +95,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
         aria-label="Project selector"
         tabIndex={0}
         onKeyDown={handleKeyboard}
+        onAnimationEnd={handleAnimationEnd}
       >
         <button className="revolver-step is-up" type="button" onClick={() => rotate(-1)} aria-label="Previous project">
           <span aria-hidden="true">↑</span> Previous
