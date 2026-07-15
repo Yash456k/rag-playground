@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Refresh the portfolio activity heatmaps from Codex and GitHub.
 
-The Codex totals are reconstructed from local rollout telemetry. GitHub data is
-read from the authenticated `gh` CLI. With --publish, the refreshed snapshot is
-committed by a bot identity and pushed so the portfolio redeploys automatically.
+Codex data comes from the authenticated profile statistics used by the desktop
+app. GitHub data is read from the authenticated `gh` CLI. With --publish, the
+refreshed snapshot is committed and pushed so the portfolio redeploys.
 """
 
 from __future__ import annotations
@@ -12,17 +12,18 @@ import argparse
 import json
 import os
 import subprocess
-import sys
-from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_PATH = REPO_ROOT / "frontend" / "src" / "data" / "activity.json"
 BOT_NAME = "Portfolio Activity Bot"
 BOT_EMAIL = "portfolio-activity-bot@users.noreply.github.com"
+CODEX_PROFILE_URL = "https://chatgpt.com/backend-api/wham/profiles/me"
 
 
 def find_codex_home() -> Path:
@@ -41,61 +42,60 @@ def find_codex_home() -> Path:
     raise RuntimeError("Could not find a Codex home containing session logs")
 
 
-def local_day(timestamp: str) -> str:
-    parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-    return parsed.astimezone().date().isoformat()
-
-
 def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, Any]:
-    daily: dict[str, dict[str, int]] = defaultdict(
-        lambda: {"tokens": 0, "cachedInput": 0, "output": 0, "calls": 0}
+    auth_path = codex_home / "auth.json"
+    if not auth_path.exists():
+        raise RuntimeError(f"Codex authentication was not found at {auth_path}")
+
+    try:
+        auth = json.loads(auth_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError("Codex authentication could not be read") from error
+
+    tokens = auth.get("tokens") or {}
+    access_token = tokens.get("access_token")
+    account_id = tokens.get("account_id")
+    if not access_token or not account_id:
+        raise RuntimeError("Codex authentication is missing an access token or account ID")
+
+    request = Request(
+        CODEX_PROFILE_URL,
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+            "ChatGPT-Account-ID": account_id,
+            "OAI-Language": "en",
+            "Originator": "Codex Desktop",
+            "User-Agent": "Portfolio Activity Sync/1.0",
+        },
     )
-    threads_by_day: dict[str, set[str]] = defaultdict(set)
+    try:
+        with urlopen(request, timeout=30) as response:
+            profile = json.load(response)
+    except HTTPError as error:
+        raise RuntimeError(f"Codex profile request failed with HTTP {error.code}") from error
+    except (URLError, TimeoutError, json.JSONDecodeError) as error:
+        raise RuntimeError("Codex profile request failed") from error
 
-    rollout_paths: list[Path] = []
-    for folder in (codex_home / "sessions", codex_home / "archived_sessions"):
-        if folder.exists():
-            rollout_paths.extend(folder.rglob("*.jsonl"))
+    stats = profile.get("stats") or {}
+    buckets = stats.get("daily_usage_buckets")
+    if not isinstance(buckets, list):
+        raise RuntimeError("Codex profile response did not include daily usage")
 
-    for rollout_path in rollout_paths:
-        thread_id = rollout_path.stem.rsplit("-", 1)[-1]
-        try:
-            with rollout_path.open("r", encoding="utf-8") as handle:
-                for line in handle:
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-                    payload = event.get("payload", {})
-                    if event.get("type") != "event_msg" or payload.get("type") != "token_count":
-                        continue
-                    usage = (payload.get("info") or {}).get("last_token_usage")
-                    timestamp = event.get("timestamp")
-                    if not usage or not timestamp:
-                        continue
-                    day = local_day(timestamp)
-                    if day < start.isoformat() or day > end.isoformat():
-                        continue
-                    daily[day]["tokens"] += int(usage.get("total_tokens", 0))
-                    daily[day]["cachedInput"] += int(usage.get("cached_input_tokens", 0))
-                    daily[day]["output"] += int(usage.get("output_tokens", 0))
-                    daily[day]["calls"] += 1
-                    threads_by_day[day].add(thread_id)
-        except (OSError, UnicodeDecodeError) as error:
-            print(f"Skipping unreadable rollout {rollout_path}: {error}", file=sys.stderr)
-
-    days = [
-        {
-            "date": day,
-            **values,
-            "threads": len(threads_by_day[day]),
-        }
-        for day, values in sorted(daily.items())
-        if values["tokens"] > 0
-    ]
+    days = sorted(
+        (
+            {"date": str(bucket.get("start_date", ""))[:10], "tokens": int(bucket.get("tokens", 0))}
+            for bucket in buckets
+            if start.isoformat() <= str(bucket.get("start_date", ""))[:10] <= end.isoformat()
+            and int(bucket.get("tokens", 0)) > 0
+        ),
+        key=lambda item: item["date"],
+    )
     peak = max(days, key=lambda item: item["tokens"], default=None)
     return {
         "total": sum(item["tokens"] for item in days),
+        "lifetimeTotal": int(stats.get("lifetime_tokens", 0)),
+        "peakDailyTokens": int(stats.get("peak_daily_tokens", 0)),
         "activeDays": len(days),
         "peak": {"date": peak["date"], "count": peak["tokens"]} if peak else None,
         "days": days,

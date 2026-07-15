@@ -40,7 +40,7 @@ function formatTooltipValue(value: number, isTokenCount: boolean): string {
   if (!isTokenCount) return value.toLocaleString()
   const scaled = (divisor: number, suffix: string) => {
     const amount = value / divisor
-    const maximumFractionDigits = amount >= 100 ? 0 : amount >= 10 ? 1 : 2
+    const maximumFractionDigits = amount >= 10 ? 1 : 2
     return `${new Intl.NumberFormat('en', { maximumFractionDigits }).format(amount)}${suffix}`
   }
   if (value >= 1_000_000_000) return scaled(1_000_000_000, ' billion')
@@ -152,7 +152,12 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
   }, [weeks])
   const [hovered, setHovered] = useState<HoveredDay | null>(null)
   const isCodex = kind === 'codex'
-  const unit = isCodex ? 'tokens processed' : 'contributions'
+  const displayTotal = isCodex && range === 'year'
+    ? activity.codex.lifetimeTotal
+    : summary.total
+  const unit = isCodex
+    ? range === 'year' ? 'lifetime tokens' : 'tokens in period'
+    : 'contributions'
   const peakUnit = isCodex ? 'tokens' : 'contributions'
   const columnTemplate = range === 'quarter'
     ? `repeat(${weeks.length}, minmax(0, 18px))`
@@ -191,7 +196,7 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
       </header>
 
       <div className="activity-total">
-        <strong>{formatNumber(summary.total)}</strong>
+        <strong>{formatNumber(displayTotal)}</strong>
         <span>{unit}</span>
       </div>
 

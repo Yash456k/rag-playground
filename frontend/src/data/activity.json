@@ -1,544 +1,542 @@
 {
-  "generatedAt": "2026-07-14T18:25:02Z",
+  "generatedAt": "2026-07-15T03:46:06Z",
   "period": {
-    "start": "2025-07-14",
-    "end": "2026-07-14"
+    "start": "2025-07-15",
+    "end": "2026-07-15"
   },
   "codex": {
-    "total": 2326829843,
-    "activeDays": 66,
+    "total": 5312703928,
+    "lifetimeTotal": 5312703928,
+    "peakDailyTokens": 249120100,
+    "activeDays": 131,
     "peak": {
-      "date": "2026-07-12",
-      "count": 519043420
+      "date": "2026-07-14",
+      "count": 249120100
     },
     "days": [
       {
+        "date": "2026-02-12",
+        "tokens": 1006343
+      },
+      {
+        "date": "2026-02-13",
+        "tokens": 3152697
+      },
+      {
+        "date": "2026-02-23",
+        "tokens": 15643
+      },
+      {
+        "date": "2026-02-27",
+        "tokens": 2340902
+      },
+      {
+        "date": "2026-02-28",
+        "tokens": 790342
+      },
+      {
+        "date": "2026-03-01",
+        "tokens": 775328
+      },
+      {
+        "date": "2026-03-03",
+        "tokens": 1235357
+      },
+      {
+        "date": "2026-03-11",
+        "tokens": 1051802
+      },
+      {
         "date": "2026-03-12",
-        "tokens": 12869111,
-        "cachedInput": 11170688,
-        "output": 69740,
-        "calls": 127,
-        "threads": 4
+        "tokens": 13277998
       },
       {
         "date": "2026-03-13",
-        "tokens": 11936432,
-        "cachedInput": 7406976,
-        "output": 62600,
-        "calls": 118,
-        "threads": 2
+        "tokens": 10805036
       },
       {
         "date": "2026-03-15",
-        "tokens": 285350,
-        "cachedInput": 83456,
-        "output": 2714,
-        "calls": 4,
-        "threads": 1
+        "tokens": 303881
       },
       {
         "date": "2026-03-16",
-        "tokens": 3207798,
-        "cachedInput": 2171648,
-        "output": 18800,
-        "calls": 38,
-        "threads": 2
+        "tokens": 2929741
       },
       {
         "date": "2026-03-17",
-        "tokens": 20526751,
-        "cachedInput": 17563264,
-        "output": 112695,
-        "calls": 201,
-        "threads": 3
+        "tokens": 31514201
       },
       {
         "date": "2026-03-18",
-        "tokens": 5354573,
-        "cachedInput": 3964288,
-        "output": 36442,
-        "calls": 77,
-        "threads": 2
+        "tokens": 16541316
       },
       {
         "date": "2026-03-19",
-        "tokens": 53890208,
-        "cachedInput": 45585664,
-        "output": 207026,
-        "calls": 395,
-        "threads": 4
+        "tokens": 64704576
       },
       {
         "date": "2026-03-20",
-        "tokens": 11696791,
-        "cachedInput": 7292416,
-        "output": 51062,
-        "calls": 101,
-        "threads": 2
+        "tokens": 16591679
+      },
+      {
+        "date": "2026-03-21",
+        "tokens": 26519352
       },
       {
         "date": "2026-03-22",
-        "tokens": 12271,
-        "cachedInput": 5504,
-        "output": 230,
-        "calls": 1,
-        "threads": 1
+        "tokens": 4907244
       },
       {
         "date": "2026-03-23",
-        "tokens": 25382716,
-        "cachedInput": 19305984,
-        "output": 117154,
-        "calls": 211,
-        "threads": 3
+        "tokens": 19767902
       },
       {
         "date": "2026-03-24",
-        "tokens": 28456276,
-        "cachedInput": 22688000,
-        "output": 169973,
-        "calls": 224,
-        "threads": 1
+        "tokens": 22875614
       },
       {
         "date": "2026-03-25",
-        "tokens": 18976946,
-        "cachedInput": 14023936,
-        "output": 116426,
-        "calls": 138,
-        "threads": 2
+        "tokens": 16212525
       },
       {
         "date": "2026-03-26",
-        "tokens": 15887998,
-        "cachedInput": 12840192,
-        "output": 96750,
-        "calls": 126,
-        "threads": 1
+        "tokens": 16756151
       },
       {
         "date": "2026-03-27",
-        "tokens": 21496765,
-        "cachedInput": 17898112,
-        "output": 118473,
-        "calls": 173,
-        "threads": 2
+        "tokens": 22051086
+      },
+      {
+        "date": "2026-03-28",
+        "tokens": 231325
+      },
+      {
+        "date": "2026-03-29",
+        "tokens": 13800714
       },
       {
         "date": "2026-03-30",
-        "tokens": 47588737,
-        "cachedInput": 40641792,
-        "output": 315941,
-        "calls": 429,
-        "threads": 2
+        "tokens": 44072927
       },
       {
         "date": "2026-03-31",
-        "tokens": 2195967,
-        "cachedInput": 1917568,
-        "output": 38425,
-        "calls": 41,
-        "threads": 2
+        "tokens": 2322066
       },
       {
         "date": "2026-04-01",
-        "tokens": 22680567,
-        "cachedInput": 18133888,
-        "output": 138968,
-        "calls": 214,
-        "threads": 5
+        "tokens": 18460329
       },
       {
         "date": "2026-04-02",
-        "tokens": 2281951,
-        "cachedInput": 1897728,
-        "output": 10319,
-        "calls": 19,
-        "threads": 1
+        "tokens": 4989369
       },
       {
         "date": "2026-04-03",
-        "tokens": 27416230,
-        "cachedInput": 23837568,
-        "output": 113878,
-        "calls": 218,
-        "threads": 3
+        "tokens": 19553345
+      },
+      {
+        "date": "2026-04-04",
+        "tokens": 7539304
       },
       {
         "date": "2026-04-05",
-        "tokens": 20684064,
-        "cachedInput": 18684672,
-        "output": 70820,
-        "calls": 213,
-        "threads": 1
+        "tokens": 23529354
       },
       {
         "date": "2026-04-06",
-        "tokens": 31878868,
-        "cachedInput": 28748160,
-        "output": 100856,
-        "calls": 191,
-        "threads": 2
+        "tokens": 32374741
       },
       {
         "date": "2026-04-07",
-        "tokens": 16964614,
-        "cachedInput": 13603584,
-        "output": 56742,
-        "calls": 108,
-        "threads": 1
+        "tokens": 40382366
       },
       {
         "date": "2026-04-08",
-        "tokens": 59680317,
-        "cachedInput": 39597312,
-        "output": 252111,
-        "calls": 382,
-        "threads": 2
+        "tokens": 35780147
       },
       {
         "date": "2026-04-09",
-        "tokens": 6687827,
-        "cachedInput": 6220032,
-        "output": 61310,
-        "calls": 78,
-        "threads": 1
+        "tokens": 45299955
       },
       {
         "date": "2026-04-10",
-        "tokens": 25265342,
-        "cachedInput": 19842432,
-        "output": 95517,
-        "calls": 169,
-        "threads": 2
+        "tokens": 22943008
+      },
+      {
+        "date": "2026-04-11",
+        "tokens": 1161211
+      },
+      {
+        "date": "2026-04-12",
+        "tokens": 10782420
       },
       {
         "date": "2026-04-13",
-        "tokens": 11074874,
-        "cachedInput": 8829696,
-        "output": 46752,
-        "calls": 66,
-        "threads": 2
+        "tokens": 9812607
       },
       {
         "date": "2026-04-14",
-        "tokens": 8781236,
-        "cachedInput": 5448448,
-        "output": 66530,
-        "calls": 72,
-        "threads": 2
+        "tokens": 8163291
       },
       {
         "date": "2026-04-15",
-        "tokens": 20142019,
-        "cachedInput": 16585472,
-        "output": 89811,
-        "calls": 117,
-        "threads": 2
+        "tokens": 20458694
       },
       {
         "date": "2026-04-16",
-        "tokens": 22807076,
-        "cachedInput": 18966144,
-        "output": 155111,
-        "calls": 170,
-        "threads": 2
+        "tokens": 5471670
       },
       {
         "date": "2026-04-17",
-        "tokens": 27962646,
-        "cachedInput": 24520960,
-        "output": 93604,
-        "calls": 170,
-        "threads": 2
+        "tokens": 1402698
+      },
+      {
+        "date": "2026-04-18",
+        "tokens": 1240629
+      },
+      {
+        "date": "2026-04-19",
+        "tokens": 1163070
       },
       {
         "date": "2026-04-20",
-        "tokens": 50434133,
-        "cachedInput": 47136128,
-        "output": 152586,
-        "calls": 325,
-        "threads": 1
+        "tokens": 45835715
       },
       {
         "date": "2026-04-21",
-        "tokens": 33014870,
-        "cachedInput": 31991680,
-        "output": 106940,
-        "calls": 318,
-        "threads": 2
+        "tokens": 33301235
       },
       {
         "date": "2026-04-22",
-        "tokens": 41581763,
-        "cachedInput": 38630272,
-        "output": 122633,
-        "calls": 265,
-        "threads": 2
+        "tokens": 70780454
       },
       {
         "date": "2026-04-23",
-        "tokens": 23333791,
-        "cachedInput": 20435712,
-        "output": 62789,
-        "calls": 145,
-        "threads": 2
+        "tokens": 35872732
       },
       {
         "date": "2026-04-24",
-        "tokens": 14396513,
-        "cachedInput": 13204864,
-        "output": 18159,
-        "calls": 86,
-        "threads": 2
+        "tokens": 36824368
       },
       {
         "date": "2026-04-25",
-        "tokens": 12427318,
-        "cachedInput": 11407872,
-        "output": 38047,
-        "calls": 147,
-        "threads": 1
+        "tokens": 15835425
+      },
+      {
+        "date": "2026-04-26",
+        "tokens": 1611078
       },
       {
         "date": "2026-04-27",
-        "tokens": 1779583,
-        "cachedInput": 1419136,
-        "output": 3933,
-        "calls": 13,
-        "threads": 2
+        "tokens": 17103768
+      },
+      {
+        "date": "2026-04-28",
+        "tokens": 31171936
+      },
+      {
+        "date": "2026-04-29",
+        "tokens": 9025897
+      },
+      {
+        "date": "2026-04-30",
+        "tokens": 10446112
+      },
+      {
+        "date": "2026-05-01",
+        "tokens": 16576610
+      },
+      {
+        "date": "2026-05-02",
+        "tokens": 11929418
       },
       {
         "date": "2026-05-03",
-        "tokens": 25148957,
-        "cachedInput": 23418240,
-        "output": 109053,
-        "calls": 265,
-        "threads": 10
+        "tokens": 30401793
       },
       {
         "date": "2026-05-04",
-        "tokens": 20466427,
-        "cachedInput": 18924800,
-        "output": 111677,
-        "calls": 168,
-        "threads": 1
+        "tokens": 50684405
+      },
+      {
+        "date": "2026-05-05",
+        "tokens": 54729539
+      },
+      {
+        "date": "2026-05-06",
+        "tokens": 2549480
+      },
+      {
+        "date": "2026-05-07",
+        "tokens": 140601207
+      },
+      {
+        "date": "2026-05-08",
+        "tokens": 99275331
       },
       {
         "date": "2026-05-09",
-        "tokens": 3699670,
-        "cachedInput": 3392896,
-        "output": 21001,
-        "calls": 33,
-        "threads": 1
+        "tokens": 6782445
       },
       {
         "date": "2026-05-10",
-        "tokens": 1515806,
-        "cachedInput": 1121024,
-        "output": 6931,
-        "calls": 10,
-        "threads": 2
+        "tokens": 1230885
       },
       {
         "date": "2026-05-11",
-        "tokens": 1487060,
-        "cachedInput": 1221760,
-        "output": 9093,
-        "calls": 27,
-        "threads": 1
+        "tokens": 89523725
+      },
+      {
+        "date": "2026-05-12",
+        "tokens": 159937796
       },
       {
         "date": "2026-05-13",
-        "tokens": 23055397,
-        "cachedInput": 21909504,
-        "output": 90400,
-        "calls": 169,
-        "threads": 1
+        "tokens": 77395587
       },
       {
         "date": "2026-05-14",
-        "tokens": 14005791,
-        "cachedInput": 13220480,
-        "output": 46409,
-        "calls": 83,
-        "threads": 1
+        "tokens": 72220637
       },
       {
         "date": "2026-05-15",
-        "tokens": 84613,
-        "cachedInput": 40192,
-        "output": 923,
-        "calls": 2,
-        "threads": 1
+        "tokens": 121118715
       },
       {
         "date": "2026-05-16",
-        "tokens": 213273,
-        "cachedInput": 139520,
-        "output": 1610,
-        "calls": 6,
-        "threads": 2
+        "tokens": 34161995
+      },
+      {
+        "date": "2026-05-17",
+        "tokens": 15331820
+      },
+      {
+        "date": "2026-05-18",
+        "tokens": 13960349
       },
       {
         "date": "2026-05-19",
-        "tokens": 4724629,
-        "cachedInput": 4308352,
-        "output": 23395,
-        "calls": 38,
-        "threads": 1
+        "tokens": 101531354
       },
       {
         "date": "2026-05-20",
-        "tokens": 18471821,
-        "cachedInput": 17328000,
-        "output": 67211,
-        "calls": 137,
-        "threads": 1
+        "tokens": 68474666
+      },
+      {
+        "date": "2026-05-21",
+        "tokens": 143265071
+      },
+      {
+        "date": "2026-05-22",
+        "tokens": 97109047
+      },
+      {
+        "date": "2026-05-23",
+        "tokens": 3403566
       },
       {
         "date": "2026-05-24",
-        "tokens": 27145973,
-        "cachedInput": 26064768,
-        "output": 81456,
-        "calls": 182,
-        "threads": 1
+        "tokens": 59719548
+      },
+      {
+        "date": "2026-05-25",
+        "tokens": 109693646
+      },
+      {
+        "date": "2026-05-26",
+        "tokens": 109451535
+      },
+      {
+        "date": "2026-05-27",
+        "tokens": 111886961
+      },
+      {
+        "date": "2026-05-28",
+        "tokens": 45589955
+      },
+      {
+        "date": "2026-05-29",
+        "tokens": 63864815
       },
       {
         "date": "2026-05-30",
-        "tokens": 992312,
-        "cachedInput": 612608,
-        "output": 5663,
-        "calls": 19,
-        "threads": 1
+        "tokens": 26609856
       },
       {
         "date": "2026-05-31",
-        "tokens": 15067757,
-        "cachedInput": 14275712,
-        "output": 44096,
-        "calls": 116,
-        "threads": 1
+        "tokens": 35055889
       },
       {
         "date": "2026-06-01",
-        "tokens": 188034,
-        "cachedInput": 185216,
-        "output": 70,
-        "calls": 1,
-        "threads": 1
+        "tokens": 176669682
+      },
+      {
+        "date": "2026-06-02",
+        "tokens": 113843203
       },
       {
         "date": "2026-06-03",
-        "tokens": 9755522,
-        "cachedInput": 9219840,
-        "output": 24746,
-        "calls": 67,
-        "threads": 1
+        "tokens": 55610966
+      },
+      {
+        "date": "2026-06-04",
+        "tokens": 80144086
       },
       {
         "date": "2026-06-05",
-        "tokens": 8568944,
-        "cachedInput": 7996416,
-        "output": 37697,
-        "calls": 68,
-        "threads": 1
+        "tokens": 113614960
       },
       {
         "date": "2026-06-06",
-        "tokens": 564691,
-        "cachedInput": 473984,
-        "output": 4546,
-        "calls": 21,
-        "threads": 1
+        "tokens": 2061040
+      },
+      {
+        "date": "2026-06-07",
+        "tokens": 2886510
       },
       {
         "date": "2026-06-08",
-        "tokens": 8901334,
-        "cachedInput": 7984768,
-        "output": 36001,
-        "calls": 72,
-        "threads": 1
+        "tokens": 71637194
       },
       {
         "date": "2026-06-09",
-        "tokens": 11318488,
-        "cachedInput": 10833152,
-        "output": 37787,
-        "calls": 86,
-        "threads": 1
+        "tokens": 86405222
+      },
+      {
+        "date": "2026-06-10",
+        "tokens": 153901640
+      },
+      {
+        "date": "2026-06-11",
+        "tokens": 54116867
       },
       {
         "date": "2026-06-12",
-        "tokens": 387042,
-        "cachedInput": 193280,
-        "output": 429,
-        "calls": 2,
-        "threads": 1
+        "tokens": 55449146
+      },
+      {
+        "date": "2026-06-13",
+        "tokens": 20259734
+      },
+      {
+        "date": "2026-06-14",
+        "tokens": 5456419
+      },
+      {
+        "date": "2026-06-15",
+        "tokens": 16383709
+      },
+      {
+        "date": "2026-06-16",
+        "tokens": 26098044
+      },
+      {
+        "date": "2026-06-17",
+        "tokens": 17774418
+      },
+      {
+        "date": "2026-06-18",
+        "tokens": 30650441
+      },
+      {
+        "date": "2026-06-19",
+        "tokens": 20846597
+      },
+      {
+        "date": "2026-06-20",
+        "tokens": 5104378
+      },
+      {
+        "date": "2026-06-21",
+        "tokens": 5059195
       },
       {
         "date": "2026-06-22",
-        "tokens": 450510,
-        "cachedInput": 341504,
-        "output": 14312,
-        "calls": 12,
-        "threads": 1
+        "tokens": 121133335
+      },
+      {
+        "date": "2026-06-23",
+        "tokens": 122803938
+      },
+      {
+        "date": "2026-06-24",
+        "tokens": 72096947
+      },
+      {
+        "date": "2026-06-25",
+        "tokens": 31165155
+      },
+      {
+        "date": "2026-06-26",
+        "tokens": 5169109
+      },
+      {
+        "date": "2026-06-27",
+        "tokens": 59862249
+      },
+      {
+        "date": "2026-06-28",
+        "tokens": 51303732
+      },
+      {
+        "date": "2026-06-29",
+        "tokens": 24471293
+      },
+      {
+        "date": "2026-06-30",
+        "tokens": 28049722
+      },
+      {
+        "date": "2026-07-01",
+        "tokens": 3859940
+      },
+      {
+        "date": "2026-07-02",
+        "tokens": 3655102
+      },
+      {
+        "date": "2026-07-03",
+        "tokens": 1514476
+      },
+      {
+        "date": "2026-07-04",
+        "tokens": 1336183
+      },
+      {
+        "date": "2026-07-05",
+        "tokens": 738893
+      },
+      {
+        "date": "2026-07-07",
+        "tokens": 1136533
       },
       {
         "date": "2026-07-08",
-        "tokens": 5155859,
-        "cachedInput": 4622208,
-        "output": 38999,
-        "calls": 61,
-        "threads": 1
+        "tokens": 6911110
       },
       {
         "date": "2026-07-09",
-        "tokens": 32271123,
-        "cachedInput": 29702912,
-        "output": 118822,
-        "calls": 308,
-        "threads": 6
+        "tokens": 34832926
       },
       {
         "date": "2026-07-10",
-        "tokens": 168257990,
-        "cachedInput": 163049856,
-        "output": 594529,
-        "calls": 1435,
-        "threads": 6
+        "tokens": 105542742
       },
       {
         "date": "2026-07-11",
-        "tokens": 287705990,
-        "cachedInput": 276109312,
-        "output": 1152847,
-        "calls": 2345,
-        "threads": 11
+        "tokens": 76264258
       },
       {
         "date": "2026-07-12",
-        "tokens": 519043420,
-        "cachedInput": 502167040,
-        "output": 1687931,
-        "calls": 3983,
-        "threads": 11
+        "tokens": 132888591
       },
       {
         "date": "2026-07-13",
-        "tokens": 132275597,
-        "cachedInput": 127395840,
-        "output": 319444,
-        "calls": 893,
-        "threads": 3
+        "tokens": 115935821
       },
       {
         "date": "2026-07-14",
-        "tokens": 224865521,
-        "cachedInput": 213949696,
-        "output": 716181,
-        "calls": 1924,
-        "threads": 19
+        "tokens": 249120100
       }
     ]
   },
