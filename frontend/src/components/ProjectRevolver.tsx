@@ -30,6 +30,9 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
   const revolverRef = useRef<HTMLDivElement>(null)
   const [motion, setMotion] = useState<-1 | 1 | null>(null)
   const selectedProject = projects[activeIndex] ?? projects[0]
+  const incomingProject = motion === null
+    ? null
+    : projects[wrapIndex(activeIndex + motion, projects.length)]
 
   useEffect(() => () => {
     if (motionTimer.current !== null) window.clearTimeout(motionTimer.current)
@@ -140,8 +143,15 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       <div className="project-selection-receipt" aria-live="polite">
         <button type="button" onClick={onOpen} aria-label={`View ${selectedProject.title}`}>
           View
-          <span className="project-action-window">
-            <span className="project-action-name" key={selectedProject.id}>{selectedProject.title}</span>
+          <span className={`project-action-window ${motion === 1 ? 'is-rolling-next' : motion === -1 ? 'is-rolling-previous' : ''}`}>
+            <span className="project-action-name is-current" key={`current-${selectedProject.id}`}>
+              {selectedProject.title}
+            </span>
+            {incomingProject && (
+              <span className="project-action-name is-incoming" key={`incoming-${incomingProject.id}`}>
+                {incomingProject.title}
+              </span>
+            )}
           </span>
           <span aria-hidden="true">↗</span>
         </button>
