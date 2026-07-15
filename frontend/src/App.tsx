@@ -31,6 +31,14 @@ import type {
 
 const QUESTION_LIMIT = 500
 
+type PortfolioRoute = 'home' | 'projects' | 'about'
+
+function routeFromPath(pathname: string): PortfolioRoute {
+  if (pathname === '/projects' || pathname.startsWith('/projects/')) return 'projects'
+  if (pathname === '/about' || pathname.startsWith('/about/')) return 'about'
+  return 'home'
+}
+
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => unknown
 }
@@ -609,6 +617,7 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
 }
 
 function App() {
+  const [route, setRoute] = useState<PortfolioRoute>(() => routeFromPath(window.location.pathname))
   const [config, setConfig] = useState<PlaygroundConfig | null>(null)
   const [configError, setConfigError] = useState<string>()
   const [loadAttempt, setLoadAttempt] = useState(0)
@@ -624,6 +633,52 @@ function App() {
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const activeRequest = useRef<AbortController | null>(null)
+
+  const navigate = useCallback((path: string) => {
+    const destination = new URL(path, window.location.origin)
+    const nextRoute = routeFromPath(destination.pathname)
+
+    transitionInterface(() => {
+      window.history.pushState({}, '', `${destination.pathname}${destination.search}${destination.hash}`)
+      setRoute(nextRoute)
+    })
+
+    window.setTimeout(() => {
+      if (nextRoute !== 'home') {
+        document.querySelector<HTMLElement>('.route-page-shell')?.scrollTo({ top: 0, behavior: 'auto' })
+        return
+      }
+      const portfolio = document.querySelector<HTMLElement>('.portfolio-site')
+      const target = destination.hash ? document.getElementById(destination.hash.slice(1)) : null
+      if (portfolio && target) {
+        portfolio.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
+      } else {
+        portfolio?.scrollTo({ top: 0, behavior: 'auto' })
+      }
+    }, 60)
+  }, [])
+
+  useEffect(() => {
+    const syncRoute = () => setRoute(routeFromPath(window.location.pathname))
+    window.addEventListener('popstate', syncRoute)
+    return () => window.removeEventListener('popstate', syncRoute)
+  }, [])
+
+  useEffect(() => {
+    document.title = route === 'projects'
+      ? 'Projects · Yash Khambhatta'
+      : route === 'about'
+        ? 'About · Yash Khambhatta'
+        : 'Yash Khambhatta · Portfolio'
+
+    if (route !== 'home' || !window.location.hash) return
+    const timer = window.setTimeout(() => {
+      const portfolio = document.querySelector<HTMLElement>('.portfolio-site')
+      const target = document.getElementById(window.location.hash.slice(1))
+      if (portfolio && target) portfolio.scrollTop = target.offsetTop
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [route])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -688,11 +743,12 @@ function App() {
     : hasConversation ? [] : PREVIEW_CHUNKS
 
   const openWorkspace = useCallback(() => {
+    if (workspaceOpen) return
     transitionInterface(() => {
       setWorkspaceOpen(true)
       setEvidenceOpen(false)
     })
-  }, [])
+  }, [workspaceOpen])
 
   useEffect(() => {
     if (!workspaceOpen) return
@@ -873,6 +929,7 @@ function App() {
 
     const handleEvent = (event: StreamEvent) => {
       if (event.type === 'done' || event.type === 'error') terminalEventSeen = true
+      if (event.type === 'sources') setEvidenceOpen(true)
       setMessages((current) =>
         updateAssistant(current, answerId, (answer) => {
           switch (event.type) {
@@ -977,11 +1034,19 @@ function App() {
     topK,
   ])
 
+  if (route === 'projects') {
+    return <div className="route-page-shell"><AllProjectsSection onNavigate={navigate} /></div>
+  }
+
+  if (route === 'about') {
+    return <div className="route-page-shell"><AboutSection onNavigate={navigate} /></div>
+  }
+
   return (
     <div className="portfolio-site">
       <SectionNavigator />
-      <LandingSection />
-      <WorkSection />
+      <LandingSection onNavigate={navigate} />
+      <WorkSection onNavigate={navigate} />
       <section className="portfolio-section rag-section" id="playground" aria-label="Interactive RAG playground">
         {config ? (
           <div className={`app-shell ${workspaceOpen ? 'is-active' : ''}`}>
@@ -1062,8 +1127,6 @@ function App() {
           />
         )}
       </section>
-      <AboutSection />
-      <AllProjectsSection />
     </div>
   )
 }

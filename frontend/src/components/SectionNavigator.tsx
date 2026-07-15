@@ -4,8 +4,6 @@ const sections = [
   { id: 'home', label: 'Introduction' },
   { id: 'work', label: 'Experience and projects' },
   { id: 'playground', label: 'Ask AI' },
-  { id: 'about', label: 'About and contact' },
-  { id: 'projects', label: 'All projects' },
 ] as const
 
 export function SectionNavigator() {

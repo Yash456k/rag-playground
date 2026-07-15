@@ -19,7 +19,11 @@ const experience = [
   },
 ] as const
 
-export function AboutSection() {
+type AboutSectionProps = {
+  onNavigate: (path: string) => void
+}
+
+export function AboutSection({ onNavigate }: AboutSectionProps) {
   return (
     <section className="portfolio-section about-section" id="about" aria-labelledby="about-title">
       <header className="section-header about-header">
@@ -34,6 +38,9 @@ export function AboutSection() {
             I care about the hard parts beneath a product—data integrity, performance,
             reliability—and the quiet details that make it intuitive above the surface.
           </p>
+          <a className="route-back-link" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }}>
+            <span aria-hidden="true">←</span> Back to portfolio
+          </a>
           <div className="availability-note">
             <span aria-hidden="true" />
             Open to full-time software engineering opportunities
@@ -62,7 +69,7 @@ export function AboutSection() {
         <nav aria-label="Social links">
           <a href="https://github.com/Yash456k" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://linkedin.com/in/yash-khambhatta/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <a href="#playground">RAG Playground</a>
+          <a href="/#playground" onClick={(event) => { event.preventDefault(); onNavigate('/#playground') }}>RAG Playground</a>
         </nav>
         <p>Designed and engineered by Yash Khambhatta · 2026</p>
       </footer>

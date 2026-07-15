@@ -3,12 +3,15 @@ import type { ProjectItem } from './projectTypes'
 
 const projects = projectsData as readonly ProjectItem[]
 
-export function AllProjectsSection() {
+type AllProjectsSectionProps = {
+  onNavigate: (path: string) => void
+}
+
+export function AllProjectsSection({ onNavigate }: AllProjectsSectionProps) {
   return (
     <section className="portfolio-section all-projects-section" id="projects" aria-labelledby="all-projects-title">
       <header className="section-header all-projects-header">
-        <p><span>05</span> All projects</p>
-        <a href="#work">Back to selected work <span aria-hidden="true">↖</span></a>
+        <p>Projects</p>
       </header>
 
       <div className="all-projects-layout">
@@ -16,6 +19,9 @@ export function AllProjectsSection() {
           <p className="section-kicker"><span /> Built and shipped</p>
           <h2 id="all-projects-title">Every project,<br /><em>in one place.</em></h2>
           <p>A growing JSON-driven archive of production systems, experiments, and things that made it into users’ hands.</p>
+          <a className="route-back-link" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }}>
+            <span aria-hidden="true">←</span> Back to portfolio
+          </a>
         </div>
 
         <div className="all-projects-grid">
