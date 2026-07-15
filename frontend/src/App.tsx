@@ -578,7 +578,10 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           className="chat-mode-invite"
           type="button"
           aria-label="Enter chat mode"
-          onClick={() => inputRef.current?.focus()}
+          onClick={() => {
+            onEngage()
+            inputRef.current?.focus()
+          }}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3v14M6.5 11.5 12 17l5.5-5.5" />
@@ -592,6 +595,7 @@ function Composer({ value, disabled, expanded, onChange, onSubmit, onEngage, inp
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
+          onPointerDown={onEngage}
           onFocus={onEngage}
           placeholder={expanded ? 'Ask about my work…' : 'Ask a question to begin…'}
           rows={1}
@@ -744,10 +748,8 @@ function App() {
 
   const openWorkspace = useCallback(() => {
     if (workspaceOpen) return
-    transitionInterface(() => {
-      setWorkspaceOpen(true)
-      setEvidenceOpen(false)
-    })
+    setWorkspaceOpen(true)
+    setEvidenceOpen(false)
   }, [workspaceOpen])
 
   useEffect(() => {
@@ -776,10 +778,10 @@ function App() {
     const collapseEmptyWorkspace = (event: PointerEvent) => {
       const target = event.target instanceof Element ? event.target : null
       if (target?.closest('.portfolio-card')) return
-      transitionInterface(() => {
-        setWorkspaceOpen(false)
-        setEvidenceOpen(true)
-      })
+      inputRef.current?.blur()
+      if (chatScrollRef.current) chatScrollRef.current.scrollTop = 0
+      setWorkspaceOpen(false)
+      setEvidenceOpen(true)
     }
 
     document.addEventListener('pointerdown', collapseEmptyWorkspace)
@@ -845,15 +847,15 @@ function App() {
   }, [workspaceOpen])
 
   const clearChat = useCallback(() => {
-    transitionInterface(() => {
-      activeRequest.current?.abort()
-      activeRequest.current = null
-      setMessages([])
-      setQuestion('')
-      setIsStreaming(false)
-      setWorkspaceOpen(false)
-      setEvidenceOpen(true)
-    })
+    activeRequest.current?.abort()
+    activeRequest.current = null
+    inputRef.current?.blur()
+    if (chatScrollRef.current) chatScrollRef.current.scrollTop = 0
+    setMessages([])
+    setQuestion('')
+    setIsStreaming(false)
+    setWorkspaceOpen(false)
+    setEvidenceOpen(true)
   }, [])
 
   const toggleEvidence = useCallback(() => {
