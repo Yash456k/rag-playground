@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import projectsData from '../data/projects.json'
+import { ProjectDetail } from './ProjectDetail'
+import { ProjectRevolver } from './ProjectRevolver'
+import type { ProjectItem } from './projectTypes'
 
 type ExperienceItem = {
   id: string
@@ -8,20 +12,6 @@ type ExperienceItem = {
   detail: string
   tags: readonly string[]
   milestone?: boolean
-}
-
-type ProjectItem = {
-  id: string
-  number: string
-  date: string
-  title: string
-  eyebrow: string
-  summary: string
-  detail: string
-  tags: readonly string[]
-  href: string
-  linkLabel: string
-  external?: boolean
 }
 
 const experienceItems: readonly ExperienceItem[] = [
@@ -52,39 +42,14 @@ const experienceItems: readonly ExperienceItem[] = [
   },
 ]
 
-const projectItems: readonly ProjectItem[] = [
-  {
-    id: 'nsk',
-    number: '01',
-    date: '2025',
-    title: 'Nashik Sports Klub',
-    eyebrow: 'Live product',
-    summary: 'A race-safe booking platform for real sports inventory.',
-    detail: 'Built multi-tenant booking for Pickleball and Cricket with temporary holds, MongoDB transactions, role-specific workflows, real-time availability, and AWS deployment. A 500-user concurrency test committed exactly one booking for the final slot.',
-    tags: ['React', 'Node.js', 'MongoDB', 'AWS'],
-    href: 'https://www.nashiksportsklub.com',
-    linkLabel: 'Visit live product',
-    external: true,
-  },
-  {
-    id: 'portfolio-rag',
-    number: '02',
-    date: '2026 → Now',
-    title: 'This portfolio + RAG',
-    eyebrow: 'Current build',
-    summary: 'An inspectable portfolio that can answer for itself.',
-    detail: 'Designed trained retrieval routes, streamed answers, model fallback, visible evidence and timing receipts. The system combines a React interface, FastAPI services, PostgreSQL with pgvector, and provider-aware limits.',
-    tags: ['React', 'FastAPI', 'pgvector', 'RAG'],
-    href: '#playground',
-    linkLabel: 'Open the RAG lab',
-  },
-]
+const projectItems = projectsData as readonly ProjectItem[]
 
 export function WorkSection() {
   const [activeExperience, setActiveExperience] = useState('aivid-fulltime')
-  const [activeProject, setActiveProject] = useState('portfolio-rag')
+  const [activeProjectIndex, setActiveProjectIndex] = useState(1)
+  const [projectOpen, setProjectOpen] = useState(false)
   const selectedExperience = experienceItems.find((item) => item.id === activeExperience) ?? experienceItems[0]
-  const selectedProject = projectItems.find((item) => item.id === activeProject) ?? projectItems[0]
+  const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
 
   return (
     <section className="portfolio-section work-section" id="work" aria-labelledby="work-title">
@@ -131,56 +96,29 @@ export function WorkSection() {
           </div>
         </section>
 
-        <section className="work-mobile-panel projects-panel" aria-labelledby="projects-title">
-          <header className="split-panel-intro projects-intro">
-            <p className="section-kicker"><span /> Selected builds</p>
-            <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
-            <p>Two production builds. Select one to see what was actually engineered.</p>
-          </header>
-
-          <div className="projects-stage">
-            <nav className="project-index" aria-label="Selected projects">
-              {projectItems.map((project) => (
-                <button
-                  type="button"
-                  className={`project-index-row ${project.id === selectedProject.id ? 'is-active' : ''}`}
-                  key={project.id}
-                  aria-pressed={project.id === selectedProject.id}
-                  onMouseEnter={() => setActiveProject(project.id)}
-                  onFocus={() => setActiveProject(project.id)}
-                  onClick={() => setActiveProject(project.id)}
-                >
-                  <span>{project.number}</span>
-                  <span>
-                    <time>{project.date}</time>
-                    <strong>{project.title}</strong>
-                    <small>{project.summary}</small>
-                  </span>
-                  <span aria-hidden="true">↗</span>
-                </button>
-              ))}
-            </nav>
-
-            <article className="project-detail-card" aria-live="polite">
-              <header>
-                <p>{selectedProject.eyebrow}</p>
-                <h3>{selectedProject.title}</h3>
+        <section
+          className={`work-mobile-panel projects-panel ${projectOpen ? 'is-project-detail' : ''}`}
+          aria-labelledby={projectOpen ? 'project-focus-title' : 'projects-title'}
+        >
+          {projectOpen ? (
+            <ProjectDetail project={selectedProject} onBack={() => setProjectOpen(false)} />
+          ) : (
+            <>
+              <header className="split-panel-intro projects-intro">
+                <p className="section-kicker"><span /> Selected builds</p>
+                <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
+                <p>Rotate through the chamber, lock in a project, then choose when to open the full case study.</p>
+                <a className="view-all-projects" href="#projects">View all projects <span aria-hidden="true">↗</span></a>
               </header>
-              <p>{selectedProject.detail}</p>
-              <footer>
-                <ul aria-label={`${selectedProject.title} technologies`}>
-                  {selectedProject.tags.map((tag) => <li key={tag}>{tag}</li>)}
-                </ul>
-                <a
-                  href={selectedProject.href}
-                  target={selectedProject.external ? '_blank' : undefined}
-                  rel={selectedProject.external ? 'noreferrer' : undefined}
-                >
-                  {selectedProject.linkLabel} <span aria-hidden="true">↗</span>
-                </a>
-              </footer>
-            </article>
-          </div>
+
+              <ProjectRevolver
+                projects={projectItems}
+                activeIndex={activeProjectIndex}
+                onChange={setActiveProjectIndex}
+                onOpen={() => setProjectOpen(true)}
+              />
+            </>
+          )}
         </section>
       </div>
     </section>

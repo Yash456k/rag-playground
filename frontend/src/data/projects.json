@@ -1,0 +1,65 @@
+[
+  {
+    "id": "nsk",
+    "number": "01",
+    "date": "2025",
+    "title": "Nashik Sports Klub",
+    "eyebrow": "Live product",
+    "role": "Full-stack engineering",
+    "summary": "A race-safe booking platform for real sports inventory.",
+    "detail": "Built a multi-tenant booking system for Pickleball and Cricket with temporary slot holds, MongoDB transactions, role-specific workflows, real-time availability, secure authentication, and an AWS delivery pipeline.",
+    "highlights": [
+      "A 500-user concurrency test committed exactly one booking for the final slot.",
+      "Atomic transactions and compound indexes protect inventory under load.",
+      "Administrators, walk-in staff, and customers each receive purpose-built workflows."
+    ],
+    "metrics": ["500 concurrent users", "100% booking integrity", "226 ms average latency"],
+    "tags": ["React", "Node.js", "MongoDB", "AWS"],
+    "href": "https://www.nashiksportsklub.com",
+    "repository": "https://github.com/Yash456k/NSK-Project-Public",
+    "linkLabel": "Visit live product",
+    "external": true
+  },
+  {
+    "id": "portfolio-rag",
+    "number": "02",
+    "date": "2026 → Now",
+    "title": "This portfolio + RAG",
+    "eyebrow": "Current build",
+    "role": "Retrieval and product engineering",
+    "summary": "An inspectable portfolio that can answer for itself.",
+    "detail": "Designed trained retrieval routes, streamed answers, model fallback, visible evidence, timing receipts, and provider-aware limits. The system combines a React interface, FastAPI services, PostgreSQL with pgvector, and multiple embedding spaces.",
+    "highlights": [
+      "Every answer exposes retrieved evidence, similarity scores, and latency.",
+      "Provider-aware routing keeps model cost predictable while preserving fallbacks.",
+      "The corpus and vector indexes can be rebuilt from one repeatable data workflow."
+    ],
+    "metrics": ["6 embedding routes", "Streamed responses", "Visible retrieval evidence"],
+    "tags": ["React", "FastAPI", "pgvector", "RAG"],
+    "href": "#playground",
+    "repository": "https://github.com/Yash456k/rag-playground",
+    "linkLabel": "Open the RAG lab",
+    "external": false
+  },
+  {
+    "id": "realtime-chat",
+    "number": "03",
+    "date": "2024",
+    "title": "Real-time MERN Chat",
+    "eyebrow": "Shipped application",
+    "role": "Real-time product engineering",
+    "summary": "Event-driven messaging with secure authentication and an AI assistant.",
+    "detail": "Built a live messaging application with Socket.IO, Google OAuth, Firebase authentication, JWT security, MongoDB chat schemas, React Context state, and a Gemini-powered assistant.",
+    "highlights": [
+      "Real-time conversations are delivered through an event-driven Socket.IO layer.",
+      "Google OAuth, Firebase, and JWTs support secure identity flows.",
+      "The application has supported more than 100 users and 500 messages."
+    ],
+    "metrics": ["100+ users", "500+ messages", "Live Socket.IO events"],
+    "tags": ["React", "Node.js", "Socket.IO", "MongoDB"],
+    "href": "https://yashchatapp.vercel.app",
+    "repository": "https://github.com/Yash456k/SocketIO-MERN-chatApp",
+    "linkLabel": "Open live demo",
+    "external": true
+  }
+]

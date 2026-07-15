@@ -160,7 +160,6 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
   const unit = isCodex
     ? range === 'year' ? 'lifetime tokens' : 'tokens in period'
     : 'contributions'
-  const peakUnit = isCodex ? 'tokens' : 'contributions'
   const columnTemplate = range === 'quarter'
     ? `repeat(${weeks.length}, minmax(0, 18px))`
     : `repeat(${weeks.length}, minmax(0, 1fr))`
@@ -198,20 +197,21 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
       </header>
 
       <div className="activity-metrics">
-        <div className="activity-total">
-          <strong>{formatNumber(displayTotal)}</strong>
+        <div className="activity-stat activity-total">
           <span>{unit}</span>
+          <strong>{formatNumber(displayTotal)}</strong>
+          <small>{range === 'quarter' ? 'last 3 months' : isCodex ? 'all time' : 'last 12 months'}</small>
         </div>
-        <div className="activity-average">
+        <div className="activity-stat activity-average">
           <span>Daily avg</span>
           <strong>{formatNumber(summary.average)}</strong>
           <small>per active day</small>
         </div>
         {summary.peak && (
-          <div className="activity-peak">
+          <div className="activity-stat activity-peak">
             <span>Peak</span>
             <strong>{formatNumber(summary.peak.count)}</strong>
-            <small>{peakUnit} · {formatDate(summary.peak.date)}</small>
+            <small>{formatDate(summary.peak.date)}</small>
           </div>
         )}
       </div>

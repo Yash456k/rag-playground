@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ApiError, getConfig, streamChat } from './api'
 import { AboutSection } from './components/AboutSection'
+import { AllProjectsSection } from './components/AllProjectsSection'
 import { LandingSection } from './components/LandingSection'
 import { SectionNavigator } from './components/SectionNavigator'
 import { WorkSection } from './components/WorkSection'
@@ -1037,6 +1038,7 @@ function App() {
         )}
       </section>
       <AboutSection />
+      <AllProjectsSection />
     </div>
   )
 }
