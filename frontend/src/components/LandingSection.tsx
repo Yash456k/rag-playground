@@ -22,6 +22,7 @@ export function LandingSection() {
         </a>
         <nav aria-label="Portfolio">
           <a href="#work">Work</a>
+          <a href="#projects">Projects</a>
           <a href="#playground">Ask AI</a>
           <a href="#about">About</a>
           <a className="nav-contact" href="mailto:yash456k@gmail.com">Let&apos;s talk</a>
