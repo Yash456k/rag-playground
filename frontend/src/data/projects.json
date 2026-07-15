@@ -36,7 +36,7 @@
     ],
     "metrics": ["6 embedding routes", "Streamed responses", "Visible retrieval evidence"],
     "tags": ["React", "FastAPI", "pgvector", "RAG"],
-    "href": "#playground",
+    "href": "/#playground",
     "repository": "https://github.com/Yash456k/rag-playground",
     "linkLabel": "Open the RAG lab",
     "external": false

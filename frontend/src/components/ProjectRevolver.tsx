@@ -113,11 +113,13 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       </div>
 
       <div className="project-selection-receipt" aria-live="polite">
-        <div>
-          <span>Locked in</span>
-          <strong>{selectedProject.title}</strong>
-        </div>
-        <button type="button" onClick={onOpen}>View project <span aria-hidden="true">↗</span></button>
+        <button type="button" onClick={onOpen} aria-label={`View ${selectedProject.title}`}>
+          View
+          <span className="project-action-window">
+            <span className="project-action-name" key={selectedProject.id}>{selectedProject.title}</span>
+          </span>
+          <span aria-hidden="true">↗</span>
+        </button>
       </div>
     </div>
   )

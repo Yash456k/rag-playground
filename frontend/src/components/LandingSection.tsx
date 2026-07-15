@@ -9,7 +9,11 @@ const highlights = [
 ] as const
 */
 
-export function LandingSection() {
+type LandingSectionProps = {
+  onNavigate: (path: string) => void
+}
+
+export function LandingSection({ onNavigate }: LandingSectionProps) {
   return (
     <section className="portfolio-section landing-section" id="home" aria-labelledby="landing-title">
       <div className="landing-orbit" aria-hidden="true">
@@ -21,10 +25,8 @@ export function LandingSection() {
           Yash Khambhatta
         </a>
         <nav aria-label="Portfolio">
-          <a href="#work">Work</a>
-          <a href="#projects">Projects</a>
-          <a href="#playground">Ask AI</a>
-          <a href="#about">About</a>
+          <a href="/projects" onClick={(event) => { event.preventDefault(); onNavigate('/projects') }}>Projects</a>
+          <a href="/about" onClick={(event) => { event.preventDefault(); onNavigate('/about') }}>About me</a>
           <a className="nav-contact" href="mailto:yash456k@gmail.com">Let&apos;s talk</a>
         </nav>
       </header>
@@ -33,7 +35,7 @@ export function LandingSection() {
         <div className="landing-copy">
           <h1 id="landing-title">
             I build stuff
-            <em>I find <br className="mobile-title-break" />interesting.</em>
+            <em>I find interesting.</em>
           </h1>
           <p className="landing-summary">
             Yes, I use AI to build. I can also explain how everything works, ask me anything.

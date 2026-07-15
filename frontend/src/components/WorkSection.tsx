@@ -10,7 +10,6 @@ type ExperienceItem = {
   title: string
   organization: string
   detail: string
-  tags: readonly string[]
   milestone?: boolean
 }
 
@@ -21,7 +20,6 @@ const experienceItems: readonly ExperienceItem[] = [
     title: 'Full-stack internship',
     organization: 'AIVID Techvision',
     detail: 'Built a notification platform serving more than 1,000 roles a day, Microsoft Graph workflows, analytics APIs handling over 100,000 records daily, and shared React systems.',
-    tags: ['React', 'Node.js', 'Elasticsearch'],
   },
   {
     id: 'aivid-fulltime',
@@ -29,7 +27,6 @@ const experienceItems: readonly ExperienceItem[] = [
     title: 'Full-stack engineer',
     organization: 'AIVID Techvision',
     detail: 'Moved into a full-time engineering role, continuing to own production product work across frontend systems, backend services, platform reliability, and developer experience.',
-    tags: ['Product engineering', 'Platform', 'Production systems'],
   },
   {
     id: 'graduation',
@@ -37,14 +34,17 @@ const experienceItems: readonly ExperienceItem[] = [
     title: 'Graduated college',
     organization: 'Indus University',
     detail: 'Completed a B.Tech in Computer Engineering with a 9.66/10 CGPA while building and shipping production software.',
-    tags: ['Computer Engineering', '9.66 CGPA'],
     milestone: true,
   },
 ]
 
 const projectItems = projectsData as readonly ProjectItem[]
 
-export function WorkSection() {
+type WorkSectionProps = {
+  onNavigate: (path: string) => void
+}
+
+export function WorkSection({ onNavigate }: WorkSectionProps) {
   const [activeExperience, setActiveExperience] = useState('aivid-fulltime')
   const [activeProjectIndex, setActiveProjectIndex] = useState(1)
   const [projectOpen, setProjectOpen] = useState(false)
@@ -60,9 +60,7 @@ export function WorkSection() {
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
           <header className="split-panel-intro">
-            <p className="section-kicker"><span /> Experience</p>
-            <h2 id="work-title">The work,<br /><em>in sequence.</em></h2>
-            <p>One company, growing responsibility, and a degree completed along the way.</p>
+            <h2 id="work-title">Experience</h2>
           </header>
 
           <div className="experience-stage">
@@ -89,9 +87,6 @@ export function WorkSection() {
               <h3>{selectedExperience.title}</h3>
               <time>{selectedExperience.date}</time>
               <p>{selectedExperience.detail}</p>
-              <ul aria-label={`${selectedExperience.title} details`}>
-                {selectedExperience.tags.map((tag) => <li key={tag}>{tag}</li>)}
-              </ul>
             </article>
           </div>
         </section>
@@ -100,15 +95,17 @@ export function WorkSection() {
           className={`work-mobile-panel projects-panel ${projectOpen ? 'is-project-detail' : ''}`}
           aria-labelledby={projectOpen ? 'project-focus-title' : 'projects-title'}
         >
-          {projectOpen ? (
-            <ProjectDetail project={selectedProject} onBack={() => setProjectOpen(false)} />
-          ) : (
-            <>
+          <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''}`}>
+            <div className="project-selector-view" aria-hidden={projectOpen}>
               <header className="split-panel-intro projects-intro">
-                <p className="section-kicker"><span /> Selected builds</p>
                 <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
-                <p>Rotate through the chamber, lock in a project, then choose when to open the full case study.</p>
-                <a className="view-all-projects" href="#projects">View all projects <span aria-hidden="true">↗</span></a>
+                <a
+                  className="view-all-projects"
+                  href="/projects"
+                  onClick={(event) => { event.preventDefault(); onNavigate('/projects') }}
+                >
+                  View all projects <span aria-hidden="true">↗</span>
+                </a>
               </header>
 
               <ProjectRevolver
@@ -117,8 +114,11 @@ export function WorkSection() {
                 onChange={setActiveProjectIndex}
                 onOpen={() => setProjectOpen(true)}
               />
-            </>
-          )}
+            </div>
+            <div className="project-detail-view" aria-hidden={!projectOpen}>
+              <ProjectDetail project={selectedProject} onBack={() => setProjectOpen(false)} />
+            </div>
+          </div>
         </section>
       </div>
     </section>
