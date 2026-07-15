@@ -28,6 +28,9 @@ export function AboutSection({ onNavigate }: AboutSectionProps) {
     <section className="portfolio-section about-section" id="about" aria-labelledby="about-title">
       <header className="section-header about-header">
         <p><span>04</span> About</p>
+        <a className="route-header-home" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }}>
+          <span aria-hidden="true">←</span> Home
+        </a>
       </header>
 
       <div className="about-layout">

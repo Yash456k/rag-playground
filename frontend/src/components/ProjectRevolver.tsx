@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import type { ProjectItem } from './projectTypes'
 
@@ -13,33 +13,39 @@ function wrapIndex(index: number, length: number) {
   return (index + length) % length
 }
 
-function circularOffset(index: number, activeIndex: number, length: number) {
-  let offset = index - activeIndex
-  const halfway = Math.floor(length / 2)
-  if (offset > halfway) offset -= length
-  if (offset < -halfway) offset += length
-  return offset
-}
+const revolverSlots = [-2, -1, 0, 1, 2] as const
 
-function slotName(offset: number) {
+function slotName(offset: (typeof revolverSlots)[number]) {
+  if (offset === -2) return 'far-previous'
   if (offset === -1) return 'previous'
   if (offset === 0) return 'active'
   if (offset === 1) return 'next'
-  return 'hidden'
+  return 'far-next'
 }
 
 export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: ProjectRevolverProps) {
-  const wheelLock = useRef<number | null>(null)
+  const motionTimer = useRef<number | null>(null)
+  const motionLock = useRef(false)
   const revolverRef = useRef<HTMLDivElement>(null)
+  const [motion, setMotion] = useState<-1 | 1 | null>(null)
   const selectedProject = projects[activeIndex] ?? projects[0]
 
   useEffect(() => () => {
-    if (wheelLock.current !== null) window.clearTimeout(wheelLock.current)
+    if (motionTimer.current !== null) window.clearTimeout(motionTimer.current)
   }, [])
 
-  const rotate = (direction: -1 | 1) => {
-    onChange(wrapIndex(activeIndex + direction, projects.length))
-  }
+  const rotate = useCallback((direction: -1 | 1) => {
+    if (motionLock.current || projects.length < 2) return
+
+    motionLock.current = true
+    setMotion(direction)
+    motionTimer.current = window.setTimeout(() => {
+      onChange(wrapIndex(activeIndex + direction, projects.length))
+      setMotion(null)
+      motionLock.current = false
+      motionTimer.current = null
+    }, 310)
+  }, [activeIndex, onChange, projects.length])
 
   useEffect(() => {
     const revolver = revolverRef.current
@@ -48,18 +54,15 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     const handleWheel = (event: globalThis.WheelEvent) => {
       event.preventDefault()
       event.stopPropagation()
-      if (Math.abs(event.deltaY) < 8 || wheelLock.current !== null) return
+      if (Math.abs(event.deltaY) < 8) return
 
       const direction = event.deltaY > 0 ? 1 : -1
-      onChange(wrapIndex(activeIndex + direction, projects.length))
-      wheelLock.current = window.setTimeout(() => {
-        wheelLock.current = null
-      }, 150)
+      rotate(direction)
     }
 
     revolver.addEventListener('wheel', handleWheel, { passive: false })
     return () => revolver.removeEventListener('wheel', handleWheel)
-  }, [activeIndex, onChange, projects.length])
+  }, [rotate])
 
   const handleKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
@@ -71,7 +74,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     <div className="project-revolver-stage">
       <div
         ref={revolverRef}
-        className="project-revolver"
+        className={`project-revolver ${motion === 1 ? 'is-rolling-next' : motion === -1 ? 'is-rolling-previous' : ''}`}
         role="group"
         aria-label="Project selector"
         tabIndex={0}
@@ -82,19 +85,24 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
         </button>
 
         <div className="project-revolver-viewport">
-          {projects.map((project, index) => {
-            const offset = circularOffset(index, activeIndex, projects.length)
+          {revolverSlots.map((offset) => {
+            const index = wrapIndex(activeIndex + offset, projects.length)
+            const project = projects[index]
             const slot = slotName(offset)
             return (
               <button
                 className="project-revolver-item"
                 data-slot={slot}
                 type="button"
-                key={project.id}
-                tabIndex={slot === 'hidden' ? -1 : 0}
+                key={offset}
+                tabIndex={Math.abs(offset) > 1 ? -1 : 0}
+                aria-hidden={Math.abs(offset) > 1}
                 aria-pressed={slot === 'active'}
                 aria-label={`${slot === 'active' ? 'Selected project' : 'Select project'}: ${project.title}`}
-                onClick={() => onChange(index)}
+                onClick={() => {
+                  if (offset === -1) rotate(-1)
+                  if (offset === 1) rotate(1)
+                }}
               >
                 <span>{project.number}</span>
                 <span>

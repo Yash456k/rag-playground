@@ -3398,7 +3398,7 @@ a:focus-visible {
 .project-revolver-stage {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  gap: 9px;
+  gap: 20px;
   min-height: 0;
 }
 
@@ -3452,7 +3452,6 @@ a:focus-visible {
   overflow: hidden;
   border-top: 1px solid rgba(63, 67, 55, 0.13);
   border-bottom: 1px solid rgba(63, 67, 55, 0.13);
-  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
 }
 
 .project-revolver-viewport::after {
@@ -3469,6 +3468,21 @@ a:focus-visible {
 }
 
 .project-revolver-item {
+  --slot-y: 0px;
+  --slot-opacity: 0;
+  --slot-scale: 0.84;
+  --slot-color: #756e65;
+  --slot-background: transparent;
+  --roll-next-y: -62px;
+  --roll-next-opacity: 0.42;
+  --roll-next-scale: 0.92;
+  --roll-next-color: #756e65;
+  --roll-next-background: transparent;
+  --roll-previous-y: 62px;
+  --roll-previous-opacity: 0.42;
+  --roll-previous-scale: 0.92;
+  --roll-previous-color: #756e65;
+  --roll-previous-background: transparent;
   position: absolute;
   top: 50%;
   right: 12px;
@@ -3482,34 +3496,116 @@ a:focus-visible {
   padding: 8px 14px;
   border: 0;
   border-radius: 12px;
-  color: #756e65;
-  background: transparent;
+  color: var(--slot-color);
+  background: var(--slot-background);
   text-align: left;
-  opacity: 0;
+  opacity: var(--slot-opacity);
   pointer-events: none;
-  transform: translateY(-50%) scale(0.9);
-  transition: transform 190ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease, color 150ms ease, background 150ms ease;
+  transform: translateY(calc(-50% + var(--slot-y))) scale(var(--slot-scale));
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.project-revolver-item[data-slot='far-previous'] {
+  --slot-y: -124px;
+  --roll-next-y: -186px;
+  --roll-next-opacity: 0;
+  --roll-next-scale: 0.78;
+  --roll-previous-y: -62px;
+}
+
+.project-revolver-item[data-slot='far-next'] {
+  --slot-y: 124px;
+  --roll-next-y: 62px;
+  --roll-previous-y: 186px;
+  --roll-previous-opacity: 0;
+  --roll-previous-scale: 0.78;
 }
 
 .project-revolver-item[data-slot='previous'] {
-  opacity: 0.42;
+  --slot-y: -62px;
+  --slot-opacity: 0.42;
+  --slot-scale: 0.92;
+  --roll-next-y: -124px;
+  --roll-next-opacity: 0;
+  --roll-next-scale: 0.84;
+  --roll-previous-y: 0px;
+  --roll-previous-opacity: 1;
+  --roll-previous-scale: 1;
+  --roll-previous-color: #293025;
+  --roll-previous-background: rgba(255, 252, 247, 0.56);
   pointer-events: auto;
-  transform: translateY(calc(-50% - 62px)) scale(0.92);
 }
 
 .project-revolver-item[data-slot='active'] {
+  --slot-opacity: 1;
+  --slot-scale: 1;
+  --slot-color: #293025;
+  --slot-background: rgba(255, 252, 247, 0.56);
+  --roll-next-y: -62px;
+  --roll-next-opacity: 0.42;
+  --roll-next-scale: 0.92;
+  --roll-next-color: #756e65;
+  --roll-next-background: transparent;
+  --roll-previous-y: 62px;
+  --roll-previous-opacity: 0.42;
+  --roll-previous-scale: 0.92;
+  --roll-previous-color: #756e65;
+  --roll-previous-background: transparent;
   z-index: 2;
-  color: #293025;
-  background: rgba(255, 252, 247, 0.56);
-  opacity: 1;
   pointer-events: auto;
-  transform: translateY(-50%) scale(1);
 }
 
 .project-revolver-item[data-slot='next'] {
-  opacity: 0.42;
+  --slot-y: 62px;
+  --slot-opacity: 0.42;
+  --slot-scale: 0.92;
+  --roll-next-y: 0px;
+  --roll-next-opacity: 1;
+  --roll-next-scale: 1;
+  --roll-next-color: #293025;
+  --roll-next-background: rgba(255, 252, 247, 0.56);
+  --roll-previous-y: 124px;
+  --roll-previous-opacity: 0;
+  --roll-previous-scale: 0.84;
   pointer-events: auto;
-  transform: translateY(calc(-50% + 62px)) scale(0.92);
+}
+
+.project-revolver.is-rolling-next .project-revolver-item {
+  animation: revolver-roll-next 310ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.project-revolver.is-rolling-previous .project-revolver-item {
+  animation: revolver-roll-previous 310ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes revolver-roll-next {
+  from {
+    color: var(--slot-color);
+    background: var(--slot-background);
+    opacity: var(--slot-opacity);
+    transform: translateY(calc(-50% + var(--slot-y))) scale(var(--slot-scale));
+  }
+  to {
+    color: var(--roll-next-color);
+    background: var(--roll-next-background);
+    opacity: var(--roll-next-opacity);
+    transform: translateY(calc(-50% + var(--roll-next-y))) scale(var(--roll-next-scale));
+  }
+}
+
+@keyframes revolver-roll-previous {
+  from {
+    color: var(--slot-color);
+    background: var(--slot-background);
+    opacity: var(--slot-opacity);
+    transform: translateY(calc(-50% + var(--slot-y))) scale(var(--slot-scale));
+  }
+  to {
+    color: var(--roll-previous-color);
+    background: var(--roll-previous-background);
+    opacity: var(--roll-previous-opacity);
+    transform: translateY(calc(-50% + var(--roll-previous-y))) scale(var(--roll-previous-scale));
+  }
 }
 
 .project-revolver-item > span:first-child {
@@ -3552,8 +3648,8 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 64px;
-  padding: 10px 10px 0;
+  min-height: 70px;
+  padding: 16px 10px 0;
   border-top: 1px solid rgba(63, 67, 55, 0.13);
 }
 
@@ -3580,7 +3676,7 @@ a:focus-visible {
 
 .project-selection-receipt > button {
   flex: 0 0 auto;
-  padding: 12px 17px;
+  padding: 9px 13px;
   border: 1px solid rgba(83, 107, 76, 0.2);
   border-radius: 999px;
   color: #fffaf3;
@@ -4696,6 +4792,10 @@ a:focus-visible {
   line-height: 0.92;
 }
 
+.experience-stage {
+  min-height: clamp(330px, 38vh, 380px);
+}
+
 .experience-detail-card h3 {
   font-size: clamp(21px, 1.75vw, 27px);
   letter-spacing: -0.02em;
@@ -4714,7 +4814,7 @@ a:focus-visible {
   display: grid;
   align-self: center;
   width: 100%;
-  height: min(470px, calc(100svh - 180px));
+  height: min(530px, calc(100svh - 150px));
   min-height: 0;
 }
 
@@ -4731,7 +4831,7 @@ a:focus-visible {
 
 .project-selector-view {
   display: grid;
-  grid-template-rows: auto minmax(0, 320px);
+  grid-template-rows: auto minmax(0, 380px);
   opacity: 1;
   visibility: visible;
   transform: translateX(0);
@@ -4775,7 +4875,7 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 9px;
   max-width: 100%;
   overflow: hidden;
 }
@@ -4784,7 +4884,10 @@ a:focus-visible {
   display: inline-grid;
   min-width: 0;
   max-width: 220px;
+  padding: 4px 7px 3px;
   overflow: hidden;
+  border-top: 1px solid rgba(255, 250, 243, 0.46);
+  border-bottom: 1px solid rgba(255, 250, 243, 0.46);
   color: inherit !important;
 }
 
@@ -4792,6 +4895,7 @@ a:focus-visible {
   display: block;
   overflow: hidden;
   color: inherit !important;
+  font: 400 12px/1 'Newsreader', serif;
   text-overflow: ellipsis;
   white-space: nowrap;
   animation: project-action-roll 210ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -4803,7 +4907,40 @@ a:focus-visible {
 }
 
 .all-projects-header {
+  position: relative;
   justify-content: center;
+}
+
+.about-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-header-home {
+  position: absolute;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(83, 107, 76, 0.2);
+  border-radius: 999px;
+  color: #536b4c;
+  background: rgba(255, 252, 247, 0.48);
+  font: 600 8px/1 'DM Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: gap 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.route-header-home:hover,
+.route-header-home:focus-visible {
+  gap: 10px;
+  color: var(--red-dark);
+  background: rgba(255, 252, 247, 0.78);
 }
 
 .all-projects-header > p {
@@ -4901,6 +5038,11 @@ a:focus-visible {
     max-width: 160px;
   }
 
+  .route-header-home {
+    padding: 7px 9px;
+    font-size: 7.5px;
+  }
+
   .route-back-link {
     margin-top: 20px;
     font-size: 8px;
@@ -4915,10 +5057,17 @@ a:focus-visible {
   }
 
   .project-view-stack {
-    height: min(390px, calc(100svh - 130px));
+    height: min(450px, calc(100svh - 120px));
   }
 
   .project-selector-view {
-    grid-template-rows: auto minmax(0, 265px);
+    grid-template-rows: auto minmax(0, 315px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-revolver.is-rolling-next .project-revolver-item,
+  .project-revolver.is-rolling-previous .project-revolver-item {
+    animation-duration: 1ms;
   }
 }

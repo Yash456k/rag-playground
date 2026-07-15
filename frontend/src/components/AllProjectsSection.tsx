@@ -12,6 +12,9 @@ export function AllProjectsSection({ onNavigate }: AllProjectsSectionProps) {
     <section className="portfolio-section all-projects-section" id="projects" aria-labelledby="all-projects-title">
       <header className="section-header all-projects-header">
         <p>Projects</p>
+        <a className="route-header-home" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }}>
+          <span aria-hidden="true">←</span> Home
+        </a>
       </header>
 
       <div className="all-projects-layout">
