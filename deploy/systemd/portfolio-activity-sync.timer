@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh portfolio activity every night
+
+[Timer]
+OnCalendar=*-*-* 23:55:00 Asia/Kolkata
+Persistent=true
+Unit=portfolio-activity-sync.service
+
+[Install]
+WantedBy=timers.target
+
