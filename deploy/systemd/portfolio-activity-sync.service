@@ -1,5 +1,5 @@
 [Unit]
-Description=Refresh and publish portfolio activity data
+Description=Refresh the server-side portfolio activity cache
 Wants=network-online.target
 After=network-online.target
 
@@ -9,12 +9,11 @@ WorkingDirectory=%h/portfolio-activity-sync
 Environment=PATH=/usr/local/bin:/usr/bin:/bin
 Environment=CI=1
 Environment=NO_COLOR=1
-Environment=VERCEL_TELEMETRY_DISABLED=1
+Environment=ACTIVITY_CACHE_PATH=%h/.local/share/rag-playground/activity.json
 UMask=0077
 ExecStartPre=/usr/bin/git -C %h/portfolio-activity-sync pull --ff-only
 ExecStartPre=/usr/bin/env codex doctor --json --no-color
-ExecStart=/usr/bin/python3 %h/portfolio-activity-sync/scripts/sync_portfolio_activity.py --publish
-ExecStartPost=/usr/bin/env vercel deploy %h/portfolio-activity-sync --prod -y
+ExecStart=/usr/bin/python3 %h/portfolio-activity-sync/scripts/sync_portfolio_activity.py
 TimeoutStartSec=15min
 NoNewPrivileges=true
 PrivateTmp=true

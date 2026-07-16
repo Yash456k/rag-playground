@@ -1,4 +1,6 @@
 import { readSSEStream } from './lib/sse'
+import { parseActivitySnapshot, writeCachedActivity } from './activity'
+import type { ActivitySnapshot } from './activity'
 import type { HistoryItem, PlaygroundConfig, StreamEvent } from './types'
 
 const rawApiUrl = import.meta.env.VITE_API_URL?.trim()
@@ -73,6 +75,28 @@ export async function getConfig(signal?: AbortSignal): Promise<PlaygroundConfig>
     throw new ApiError('The retrieval service returned an incomplete model configuration.', 0)
   }
   return config
+}
+
+export async function getActivity(signal?: AbortSignal): Promise<ActivitySnapshot> {
+  let response: Response
+  try {
+    response = await fetch(apiUrl('/v1/activity'), {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'omit',
+      cache: 'default',
+      signal,
+    })
+  } catch (error) {
+    if (error instanceof ApiError || (error instanceof DOMException && error.name === 'AbortError')) throw error
+    throw new ApiError('Could not refresh activity data.', 0)
+  }
+
+  if (!response.ok) throw await errorFromResponse(response)
+  const activity = parseActivitySnapshot(await response.json())
+  if (!activity) throw new ApiError('The activity service returned an invalid response.', 0)
+  writeCachedActivity(activity)
+  return activity
 }
 
 type ChatInput = {

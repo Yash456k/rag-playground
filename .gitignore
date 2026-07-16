@@ -18,3 +18,4 @@ output/
 *.log
 .DS_Store
 .vercel
+var/activity/

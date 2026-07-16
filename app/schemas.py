@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -33,3 +34,60 @@ class ChatRequest(BaseModel):
         if len(clean) < 2:
             raise ValueError("question is empty")
         return clean
+
+
+class ActivityPeriod(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    start: date
+    end: date
+
+
+class ActivityCountDay(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    date: date
+    count: int = Field(ge=0)
+
+
+class ActivityTokenDay(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    date: date
+    tokens: int = Field(ge=0)
+
+
+class CodexActivity(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    total: int = Field(ge=0)
+    lifetime_total: int = Field(ge=0, alias="lifetimeTotal")
+    peak_daily_tokens: int = Field(ge=0, alias="peakDailyTokens")
+    active_days: int = Field(ge=0, le=370, alias="activeDays")
+    peak: ActivityCountDay | None
+    days: list[ActivityTokenDay] = Field(max_length=370)
+
+
+class GitHubActivity(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    username: str = Field(
+        min_length=1,
+        max_length=39,
+        pattern=r"^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$",
+    )
+    total: int = Field(ge=0)
+    active_days: int = Field(ge=0, le=370, alias="activeDays")
+    peak: ActivityCountDay | None
+    days: list[ActivityCountDay] = Field(max_length=370)
+
+
+class ActivitySnapshot(BaseModel):
+    """The complete public activity contract. Undeclared fields never leave the API."""
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    generated_at: datetime = Field(alias="generatedAt")
+    period: ActivityPeriod
+    codex: CodexActivity
+    github: GitHubActivity

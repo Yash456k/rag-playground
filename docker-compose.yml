@@ -52,6 +52,7 @@ services:
         required: false
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      ACTIVITY_CACHE_PATH: /activity/activity.json
     depends_on:
       db:
         condition: service_healthy
@@ -60,6 +61,7 @@ services:
     volumes:
       - model_cache:/models
       - ./model-artifacts:/model-artifacts:ro
+      - ${ACTIVITY_DATA_DIR:-./var/activity}:/activity:ro
     networks:
       - rag_internal
     mem_limit: 3500m

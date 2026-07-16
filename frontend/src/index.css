@@ -2932,6 +2932,24 @@ a:focus-visible {
   font-size: 12px;
 }
 
+.activity-deck--loading {
+  display: grid;
+  min-height: 390px;
+  place-items: center;
+}
+
+.activity-loading-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font: 600 13px/1.4 var(--font-sans);
+}
+
+.activity-loading-card p {
+  margin: 0;
+}
+
 .landing-footer {
   display: grid;
   grid-template-columns: 1fr;

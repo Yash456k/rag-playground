@@ -13,9 +13,10 @@ from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, Response, StreamingResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from app.activity import ActivityCacheUnavailable, activity_response
 from app.config import PipelineConfig, load_pipeline
 from app.database import Database
 from app.embeddings import EmbeddingRegistry
@@ -241,7 +242,7 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
         allow_credentials=False,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type"],
-        expose_headers=["X-Request-ID", "X-RateLimit-Remaining"],
+        expose_headers=["ETag", "X-Request-ID", "X-RateLimit-Remaining"],
         max_age=86400,
     )
 
@@ -264,6 +265,18 @@ def create_app(settings: Settings | None = None, pipeline: PipelineConfig | None
     @application.get("/v1/config")
     async def public_config() -> dict[str, Any]:
         return active_pipeline.public_dict()
+
+    @application.get("/v1/activity")
+    async def public_activity(request: Request) -> Response:
+        try:
+            return activity_response(request, active_settings.activity_cache_path)
+        except ActivityCacheUnavailable:
+            logger.warning("Public activity cache is unavailable")
+            return JSONResponse(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                content={"detail": "activity_cache_unavailable"},
+                headers={"Cache-Control": "no-store"},
+            )
 
     @application.post("/v1/chat")
     async def chat(body: ChatRequest, request: Request) -> StreamingResponse:

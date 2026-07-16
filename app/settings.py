@@ -1,5 +1,6 @@
 import re
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated
 
 from pydantic import Field, field_validator
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
         le=100_000_000,
     )
     budget_input_token_reserve: int = Field(default=32_000, ge=1_000, le=100_000)
+    activity_cache_path: Path = Path("var/activity/activity.json")
     log_level: str = "INFO"
 
     @field_validator("frontend_origins", "allowed_hosts", "trusted_proxy_cidrs", mode="before")

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import activity from '../data/activity.json'
+import { getActivity } from '../api'
+import { readCachedActivity } from '../activity'
+import type { ActivitySnapshot } from '../activity'
 
 type ActivityKind = 'codex' | 'github'
 type CardPosition = 'active' | 'behind' | 'swapping-out' | 'swapping-in'
@@ -61,7 +63,7 @@ function quantile(sorted: number[], fraction: number): number {
   return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * fraction))] ?? 0
 }
 
-function buildCalendar(kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
+function buildCalendar(activity: ActivitySnapshot, kind: ActivityKind, range: ActivityRange): HeatmapDay[][] {
   const sourceDays = kind === 'codex'
     ? activity.codex.days.map((day) => ({ date: day.date, count: day.tokens }))
     : activity.github.days
@@ -122,6 +124,7 @@ function GitHubMark() {
 }
 
 type ActivityCardProps = {
+  activity: ActivitySnapshot
   kind: ActivityKind
   position: CardPosition
   range: ActivityRange
@@ -135,8 +138,8 @@ type HoveredDay = {
   alignment: 'start' | 'center' | 'end'
 }
 
-function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardProps) {
-  const weeks = useMemo(() => buildCalendar(kind, range), [kind, range])
+function ActivityCard({ activity, kind, position, range, onSwapComplete }: ActivityCardProps) {
+  const weeks = useMemo(() => buildCalendar(activity, kind, range), [activity, kind, range])
   const months = useMemo(() => monthMarkers(weeks), [weeks])
   const summary = useMemo(() => {
     const activeDays = weeks.flat().filter((day) => day.count > 0)
@@ -262,10 +265,25 @@ function ActivityCard({ kind, position, range, onSwapComplete }: ActivityCardPro
 }
 
 export function ActivityDeck() {
+  const [activity, setActivity] = useState<ActivitySnapshot | null>(() => readCachedActivity())
+  const [refreshFailed, setRefreshFailed] = useState(false)
   const [active, setActive] = useState<ActivityKind>('codex')
   const [range, setRange] = useState<ActivityRange>('year')
   const [swap, setSwap] = useState<{ from: ActivityKind; to: ActivityKind } | null>(null)
   const selected = swap?.to ?? active
+
+  useEffect(() => {
+    const controller = new AbortController()
+    void getActivity(controller.signal)
+      .then((snapshot) => {
+        setActivity(snapshot)
+        setRefreshFailed(false)
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === 'AbortError')) setRefreshFailed(true)
+      })
+    return () => controller.abort()
+  }, [])
 
   useEffect(() => {
     if (!swap) return
@@ -292,6 +310,17 @@ export function ActivityDeck() {
     return kind === active ? 'active' : 'behind'
   }
 
+  if (!activity) {
+    return (
+      <aside className="activity-deck activity-deck--loading" aria-label="Coding activity" aria-live="polite">
+        <div className="activity-loading-card">
+          <span className="activity-card-mark"><CodexMark /></span>
+          <p>{refreshFailed ? 'Activity is temporarily unavailable.' : 'Loading activity…'}</p>
+        </div>
+      </aside>
+    )
+  }
+
   return (
     <aside className="activity-deck" aria-label="Coding activity">
       <div className="activity-toolbar">
@@ -311,12 +340,12 @@ export function ActivityDeck() {
       </div>
 
       <div className="activity-card-stack">
-        <ActivityCard kind="codex" position={positionFor('codex')} range={range} onSwapComplete={completeSwap} />
-        <ActivityCard kind="github" position={positionFor('github')} range={range} onSwapComplete={completeSwap} />
+        <ActivityCard activity={activity} kind="codex" position={positionFor('codex')} range={range} onSwapComplete={completeSwap} />
+        <ActivityCard activity={activity} kind="github" position={positionFor('github')} range={range} onSwapComplete={completeSwap} />
       </div>
 
       <p className="activity-caption">
-        <span aria-hidden="true">↻</span> A living record of work, refreshed every day.
+        <span aria-hidden="true">↻</span> A living record of work, refreshed every day{refreshFailed ? ' · showing the latest saved update' : ''}.
       </p>
     </aside>
   )
