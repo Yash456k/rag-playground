@@ -11,7 +11,6 @@ Environment=CI=1
 Environment=NO_COLOR=1
 Environment=ACTIVITY_CACHE_PATH=%h/.local/share/rag-playground/activity.json
 UMask=0077
-ExecStartPre=/usr/bin/git -C %h/portfolio-activity-sync pull --ff-only
 ExecStartPre=/usr/bin/env codex doctor --json --no-color
 ExecStart=/usr/bin/python3 %h/portfolio-activity-sync/scripts/sync_portfolio_activity.py
 TimeoutStartSec=15min
