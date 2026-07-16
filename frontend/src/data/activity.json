@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-15T03:46:06Z",
+  "generatedAt": "2026-07-16T05:53:27Z",
   "period": {
-    "start": "2025-07-15",
-    "end": "2026-07-15"
+    "start": "2025-07-16",
+    "end": "2026-07-16"
   },
   "codex": {
-    "total": 5312703928,
-    "lifetimeTotal": 5312703928,
-    "peakDailyTokens": 249120100,
-    "activeDays": 131,
+    "total": 5464387901,
+    "lifetimeTotal": 5464387901,
+    "peakDailyTokens": 258153902,
+    "activeDays": 132,
     "peak": {
       "date": "2026-07-14",
-      "count": 249120100
+      "count": 258153902
     },
     "days": [
       {
@@ -536,14 +536,18 @@
       },
       {
         "date": "2026-07-14",
-        "tokens": 249120100
+        "tokens": 258153902
+      },
+      {
+        "date": "2026-07-15",
+        "tokens": 142650171
       }
     ]
   },
   "github": {
     "username": "Yash456k",
-    "total": 96,
-    "activeDays": 22,
+    "total": 111,
+    "activeDays": 24,
     "peak": {
       "date": "2026-07-14",
       "count": 19
@@ -636,6 +640,14 @@
       {
         "date": "2026-07-14",
         "count": 19
+      },
+      {
+        "date": "2026-07-15",
+        "count": 9
+      },
+      {
+        "date": "2026-07-16",
+        "count": 6
       }
     ]
   }
