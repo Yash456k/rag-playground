@@ -29,17 +29,25 @@ CODEX_PROFILE_URL = "https://chatgpt.com/backend-api/wham/profiles/me"
 def find_codex_home() -> Path:
     candidates: list[Path] = []
     if configured := os.environ.get("CODEX_HOME"):
-        candidates.append(Path(configured).expanduser())
+        configured_home = Path(configured).expanduser()
+        if (configured_home / "auth.json").exists():
+            return configured_home
+        candidates.append(configured_home)
     candidates.append(Path.home() / ".codex")
     candidates.extend(Path("/mnt/c/Users").glob("*/.codex"))
 
-    available = [candidate for candidate in candidates if (candidate / "sessions").exists()]
+    available = [candidate for candidate in candidates if (candidate / "auth.json").exists()]
     if available:
         return max(
             available,
-            key=lambda candidate: sum(1 for _ in (candidate / "sessions").rglob("*.jsonl")),
+            key=lambda candidate: (
+                sum(1 for _ in (candidate / "sessions").rglob("*.jsonl"))
+                if (candidate / "sessions").exists()
+                else 0,
+                (candidate / "auth.json").stat().st_mtime,
+            ),
         )
-    raise RuntimeError("Could not find a Codex home containing session logs")
+    raise RuntimeError("Could not find a Codex home containing authentication")
 
 
 def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, Any]:
