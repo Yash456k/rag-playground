@@ -17,9 +17,7 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
       </header>
 
       <div className="project-focus-copy">
-        <p>{project.eyebrow} · {project.role}</p>
         <h2 id="project-focus-title">{project.title}</h2>
-        <strong>{project.summary}</strong>
         <p>{project.detail}</p>
       </div>
 
@@ -32,9 +30,6 @@ export function ProjectDetail({ project, onBack }: ProjectDetailProps) {
       </ul>
 
       <footer className="project-focus-footer">
-        <ul aria-label={`${project.title} technologies`}>
-          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
-        </ul>
         <nav aria-label={`${project.title} links`}>
           <a href={project.href} target={project.external ? '_blank' : undefined} rel={project.external ? 'noreferrer' : undefined}>
             {project.linkLabel} <span aria-hidden="true">↗</span>

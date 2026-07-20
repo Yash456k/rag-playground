@@ -3734,18 +3734,18 @@ a:focus-visible {
   align-items: center;
   gap: 12px;
   color: #9a5148;
-  font: 600 8px/1 'DM Sans', sans-serif;
+  font: 600 11px/1 'DM Sans', sans-serif;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .project-focus-header button {
-  padding: 8px 11px;
+  padding: 9px 13px;
   border: 1px solid rgba(83, 107, 76, 0.2);
   border-radius: 999px;
   color: #536b4c;
   background: rgba(255, 252, 247, 0.42);
-  font: 600 7px/1 'DM Sans', sans-serif;
+  font: 600 10px/1 'DM Sans', sans-serif;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -3761,7 +3761,7 @@ a:focus-visible {
 .project-focus-copy h2 {
   margin: 0;
   color: #282b24;
-  font: 400 clamp(36px, 3.5vw, 56px)/0.92 'Newsreader', serif;
+  font: 400 clamp(44px, 4vw, 64px)/0.92 'Newsreader', serif;
   letter-spacing: -0.045em;
 }
 
@@ -3773,10 +3773,10 @@ a:focus-visible {
 }
 
 .project-focus-copy > p:last-child {
-  max-width: 650px;
+  max-width: 700px;
   margin: 12px 0 0;
   color: #777168;
-  font: 400 9.5px/1.55 'DM Sans', sans-serif;
+  font: 400 13.5px/1.55 'DM Sans', sans-serif;
 }
 
 .project-focus-metrics,
@@ -3795,10 +3795,10 @@ a:focus-visible {
 }
 
 .project-focus-metrics li {
-  padding: 12px 10px;
+  padding: 15px 12px;
   border-left: 1px solid rgba(63, 67, 55, 0.14);
   color: #485b43;
-  font: 600 8px/1.25 'DM Sans', sans-serif;
+  font: 600 11.5px/1.25 'DM Sans', sans-serif;
   text-align: center;
 }
 
@@ -3807,14 +3807,14 @@ a:focus-visible {
 .project-focus-highlights {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 10px;
 }
 
 .project-focus-highlights li {
   position: relative;
   padding-left: 16px;
   color: #6f6b62;
-  font: 400 8.5px/1.45 'DM Sans', sans-serif;
+  font: 400 12.5px/1.5 'DM Sans', sans-serif;
 }
 
 .project-focus-highlights li::before {
@@ -3858,7 +3858,7 @@ a:focus-visible {
 
 .project-focus-footer a {
   color: #485b43;
-  font: 600 7.5px/1 'DM Sans', sans-serif;
+  font: 600 10.5px/1 'DM Sans', sans-serif;
   text-decoration: none;
   white-space: nowrap;
   margin-top: auto;
@@ -4827,7 +4827,8 @@ a:focus-visible {
   display: grid;
   align-self: center;
   width: 100%;
-  height: min(530px, calc(100svh - 150px));
+  height: 100%;
+  max-height: 620px;
   min-height: 0;
 }
 
@@ -4844,7 +4845,7 @@ a:focus-visible {
 
 .project-selector-view {
   display: grid;
-  grid-template-rows: auto minmax(0, 380px);
+  grid-template-rows: auto minmax(0, 1fr);
   opacity: 1;
   visibility: visible;
   transform: translateX(0);
@@ -4877,6 +4878,8 @@ a:focus-visible {
 
 .project-focus-view {
   height: 100%;
+  justify-content: space-between;
+  gap: clamp(22px, 3vh, 30px);
   animation: none;
 }
 
@@ -4960,23 +4963,23 @@ a:focus-visible {
 }
 
 @keyframes project-action-current-next {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-16px); }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-16px); }
 }
 
 @keyframes project-action-incoming-next {
-  from { opacity: 0; transform: translateX(16px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes project-action-current-previous {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(16px); }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(16px); }
 }
 
 @keyframes project-action-incoming-previous {
-  from { opacity: 0; transform: translateX(-16px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .all-projects-header {
@@ -5132,7 +5135,8 @@ a:focus-visible {
   }
 
   .project-view-stack {
-    height: min(590px, calc(100svh - 150px));
+    height: 100%;
+    max-height: 620px;
   }
 
   .project-selector-view {
