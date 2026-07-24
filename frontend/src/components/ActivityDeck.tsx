@@ -212,7 +212,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
         <div className="activity-stat activity-average">
           <span>Daily avg</span>
           <strong>{formatNumber(summary.average)}</strong>
-          <small>{isCodex ? 'days over 1M' : 'per active day'}</small>
+          {!isCodex && <small>per active day</small>}
         </div>
         {summary.peak && (
           <div className="activity-stat activity-peak">

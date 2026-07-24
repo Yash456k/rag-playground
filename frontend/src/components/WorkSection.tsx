@@ -8,6 +8,7 @@ type ExperienceItem = {
   id: string
   date: string
   title: string
+  subline?: string
   organization: string
   detail: string
   milestone?: boolean
@@ -17,21 +18,22 @@ const experienceItems: readonly ExperienceItem[] = [
   {
     id: 'aivid-internship',
     date: 'Sep 2024 → Sep 2025',
-    title: 'Full-stack internship',
+    title: 'Full-stack intern',
     organization: 'AIVID Techvision',
     detail: 'Built a notification platform serving more than 1,000 roles a day, Microsoft Graph workflows, analytics APIs handling over 100,000 records daily, and shared React systems.',
   },
   {
     id: 'aivid-fulltime',
-    date: 'Sep 2025 → Present',
+    date: 'Mar 2026 → Present',
     title: 'Full-stack engineer',
+    subline: 'Intern, converted full-time Jun 2026',
     organization: 'AIVID Techvision',
-    detail: 'Moved into a full-time engineering role, continuing to own production product work across frontend systems, backend services, platform reliability, and developer experience.',
+    detail: 'Joined the engineering team in March 2026 and converted full-time in June 2026, owning production work across frontend systems, backend services, platform reliability, and developer experience.',
   },
   {
     id: 'graduation',
-    date: '2026',
-    title: 'Graduated college',
+    date: 'Jun 2026',
+    title: 'Graduated B.Tech',
     organization: 'Indus University',
     detail: 'Completed a B.Tech in Computer Engineering with a 9.66/10 CGPA while building and shipping production software.',
     milestone: true,
@@ -78,6 +80,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                   <span className="experience-node" aria-hidden="true" />
                   <time>{item.date}</time>
                   <strong>{item.title}</strong>
+                  {item.subline && <small>{item.subline}</small>}
                 </button>
               ))}
             </nav>
@@ -86,6 +89,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
               <p>{selectedExperience.organization}</p>
               <h3>{selectedExperience.title}</h3>
               <time>{selectedExperience.date}</time>
+              {selectedExperience.subline && <small className="experience-detail-subline">{selectedExperience.subline}</small>}
               <p>{selectedExperience.detail}</p>
             </article>
           </div>

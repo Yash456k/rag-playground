@@ -3186,6 +3186,13 @@ a:focus-visible {
   transition: color 160ms ease;
 }
 
+.experience-stop small {
+  max-width: 170px;
+  color: #918a7f;
+  font: 500 7.5px/1.35 'DM Sans', sans-serif;
+  letter-spacing: 0.015em;
+}
+
 .experience-stop:hover .experience-node,
 .experience-stop:focus-visible .experience-node,
 .experience-stop.is-active .experience-node {
@@ -3237,6 +3244,13 @@ a:focus-visible {
   font: 500 8px/1 'DM Sans', sans-serif;
   letter-spacing: 0.07em;
   text-transform: uppercase;
+}
+
+.experience-detail-subline {
+  display: block;
+  margin-top: 9px;
+  color: #697a62;
+  font: 500 8.5px/1.35 'DM Sans', sans-serif;
 }
 
 .experience-detail-card > p:nth-of-type(2),
@@ -3864,7 +3878,12 @@ a:focus-visible {
   margin-top: auto;
 }
 
-.project-focus-footer a span { color: #b34338; }
+.project-focus-footer a span {
+  display: inline-block;
+  color: #b34338;
+  line-height: 1;
+  transform: translateY(-1px);
+}
 
 .all-projects-section {
   display: flex;
@@ -4815,6 +4834,11 @@ a:focus-visible {
   white-space: nowrap;
 }
 
+.experience-detail-card {
+  align-self: start;
+  height: auto;
+}
+
 .experience-detail-card > p:nth-of-type(2) {
   margin-bottom: 0;
 }
@@ -5141,6 +5165,12 @@ a:focus-visible {
 
   .project-selector-view {
     grid-template-rows: auto minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 901px) {
+  .project-focus-view {
+    overflow-y: clip;
   }
 }
 
