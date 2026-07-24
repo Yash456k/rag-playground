@@ -23,20 +23,20 @@ const experienceItems: readonly ExperienceItem[] = [
     detail: 'Built a notification platform serving more than 1,000 roles a day, Microsoft Graph workflows, analytics APIs handling over 100,000 records daily, and shared React systems.',
   },
   {
-    id: 'aivid-fulltime',
-    date: 'Mar 2026 → Present',
-    title: 'Full-stack engineer',
-    subline: 'Intern, converted full-time Jun 2026',
-    organization: 'AIVID Techvision',
-    detail: 'Joined the engineering team in March 2026 and converted full-time in June 2026, owning production work across frontend systems, backend services, platform reliability, and developer experience.',
-  },
-  {
     id: 'graduation',
     date: 'Jun 2026',
     title: 'Graduated B.Tech',
     organization: 'Indus University',
     detail: 'Completed a B.Tech in Computer Engineering with a 9.66/10 CGPA while building and shipping production software.',
     milestone: true,
+  },
+  {
+    id: 'aivid-fulltime',
+    date: 'Mar 2026 → Present',
+    title: 'Full-stack engineer',
+    subline: 'Intern, converted full-time Jun 2026',
+    organization: 'AIVID Techvision',
+    detail: 'Joined the engineering team in March 2026 and converted full-time in June 2026, owning production work across frontend systems, backend services, platform reliability, and developer experience.',
   },
 ]
 
@@ -70,14 +70,14 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
               {experienceItems.map((item) => (
                 <button
                   type="button"
-                  className={`experience-stop ${item.id === selectedExperience.id ? 'is-active' : ''} ${item.milestone ? 'is-milestone' : ''}`}
+                  className={`experience-stop ${item.id === selectedExperience.id ? 'is-active' : ''} ${item.milestone ? 'is-milestone' : 'is-range'}`}
                   key={item.id}
                   aria-pressed={item.id === selectedExperience.id}
                   onMouseEnter={() => setActiveExperience(item.id)}
                   onFocus={() => setActiveExperience(item.id)}
                   onClick={() => setActiveExperience(item.id)}
                 >
-                  <span className="experience-node" aria-hidden="true" />
+                  <span className={item.milestone ? 'experience-node' : 'experience-bracket'} aria-hidden="true" />
                   <time>{item.date}</time>
                   <strong>{item.title}</strong>
                   {item.subline && <small>{item.subline}</small>}

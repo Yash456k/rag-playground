@@ -3129,18 +3129,8 @@ a:focus-visible {
   position: relative;
   display: grid;
   align-content: space-between;
-  gap: 10px;
+  gap: 14px;
   padding: 2px 0;
-}
-
-.experience-rail::before {
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 7px;
-  width: 1px;
-  content: '';
-  background: linear-gradient(#aab3a3, #5f7558 66%, #aab3a3);
 }
 
 .experience-stop {
@@ -3153,6 +3143,55 @@ a:focus-visible {
   color: #817c72;
   background: transparent;
   text-align: left;
+}
+
+.experience-stop.is-range {
+  min-height: 76px;
+  align-content: center;
+  padding-block: 10px;
+  border-radius: 0 12px 12px 0;
+  transition: background 180ms ease;
+}
+
+.experience-stop.is-range:hover,
+.experience-stop.is-range:focus-visible,
+.experience-stop.is-range.is-active {
+  background: linear-gradient(90deg, rgba(83, 107, 76, 0.07), rgba(83, 107, 76, 0));
+}
+
+.experience-bracket {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 2px;
+  width: 1px;
+  background: #9aa695;
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.experience-bracket::before,
+.experience-bracket::after {
+  position: absolute;
+  left: 0;
+  width: 12px;
+  height: 1px;
+  content: '';
+  background: inherit;
+}
+
+.experience-bracket::before {
+  top: 0;
+}
+
+.experience-bracket::after {
+  bottom: 0;
+}
+
+.experience-stop.is-range:hover .experience-bracket,
+.experience-stop.is-range:focus-visible .experience-bracket,
+.experience-stop.is-range.is-active .experience-bracket {
+  background: #536b4c;
+  box-shadow: -3px 0 14px rgba(83, 107, 76, 0.16);
 }
 
 .experience-node {
