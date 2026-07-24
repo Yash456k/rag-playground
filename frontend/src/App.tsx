@@ -633,7 +633,7 @@ function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
-  const [evidenceOpen, setEvidenceOpen] = useState(true)
+  const [evidenceOpen, setEvidenceOpen] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const activeRequest = useRef<AbortController | null>(null)
@@ -781,7 +781,7 @@ function App() {
       inputRef.current?.blur()
       if (chatScrollRef.current) chatScrollRef.current.scrollTop = 0
       setWorkspaceOpen(false)
-      setEvidenceOpen(true)
+      setEvidenceOpen(false)
     }
 
     document.addEventListener('pointerdown', collapseEmptyWorkspace)
@@ -857,7 +857,7 @@ function App() {
     setQuestion('')
     setIsStreaming(false)
     setWorkspaceOpen(false)
-    setEvidenceOpen(true)
+    setEvidenceOpen(false)
   }, [])
 
   const toggleEvidence = useCallback(() => {

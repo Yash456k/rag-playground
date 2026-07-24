@@ -3133,37 +3133,47 @@ a:focus-visible {
   padding: 2px 0;
 }
 
+.experience-rail::before {
+  position: absolute;
+  top: 9px;
+  right: 7px;
+  bottom: 9px;
+  width: 1px;
+  content: '';
+  background: rgba(119, 132, 111, 0.28);
+}
+
 .experience-stop {
   position: relative;
   display: grid;
   gap: 5px;
   width: 100%;
-  padding: 3px 4px 3px 31px;
+  padding: 3px 31px 3px 4px;
   border: 0;
   color: #817c72;
   background: transparent;
-  text-align: left;
+  text-align: right;
 }
 
 .experience-stop.is-range {
   min-height: 76px;
   align-content: center;
   padding-block: 10px;
-  border-radius: 0 12px 12px 0;
+  border-radius: 12px 0 0 12px;
   transition: background 180ms ease;
 }
 
 .experience-stop.is-range:hover,
 .experience-stop.is-range:focus-visible,
 .experience-stop.is-range.is-active {
-  background: linear-gradient(90deg, rgba(83, 107, 76, 0.07), rgba(83, 107, 76, 0));
+  background: linear-gradient(to left, rgba(83, 107, 76, 0.07), rgba(83, 107, 76, 0));
 }
 
 .experience-bracket {
   position: absolute;
   top: 7px;
+  right: 7px;
   bottom: 7px;
-  left: 2px;
   width: 1px;
   background: #9aa695;
   transition: background 180ms ease, box-shadow 180ms ease;
@@ -3172,7 +3182,7 @@ a:focus-visible {
 .experience-bracket::before,
 .experience-bracket::after {
   position: absolute;
-  left: 0;
+  right: 0;
   width: 12px;
   height: 1px;
   content: '';
@@ -3191,13 +3201,13 @@ a:focus-visible {
 .experience-stop.is-range:focus-visible .experience-bracket,
 .experience-stop.is-range.is-active .experience-bracket {
   background: #536b4c;
-  box-shadow: -3px 0 14px rgba(83, 107, 76, 0.16);
+  box-shadow: 3px 0 14px rgba(83, 107, 76, 0.16);
 }
 
 .experience-node {
   position: absolute;
   top: 7px;
-  left: 0;
+  right: 0;
   width: 15px;
   height: 15px;
   border: 4px solid #f4eee6;
@@ -4614,7 +4624,7 @@ a:focus-visible {
   .all-projects-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 30px; }
   .all-projects-grid article { min-height: 330px; }
   .experience-stage { grid-template-columns: minmax(125px, 0.68fr) minmax(0, 1.32fr); gap: 16px; min-height: 290px; }
-  .experience-stop { padding-left: 25px; }
+  .experience-stop { padding-right: 25px; padding-left: 4px; }
   .experience-stop strong { font-size: 14px; }
   .experience-detail-card,
   .project-detail-card { padding: 19px; border-radius: 16px; }
