@@ -4892,6 +4892,25 @@ a:focus-visible {
   margin-bottom: 0;
 }
 
+@media (min-width: 901px) {
+  .experience-panel {
+    grid-template-rows: auto auto;
+    align-content: start;
+    padding: clamp(20px, 2.8vh, 30px) clamp(34px, 3.2vw, 54px) clamp(26px, 3.4vh, 38px);
+  }
+
+  .experience-panel .split-panel-intro {
+    margin-bottom: clamp(34px, 4.4vh, 48px);
+  }
+
+  .experience-panel .experience-stage {
+    grid-template-columns: minmax(205px, 0.82fr) minmax(270px, 1.18fr);
+    gap: clamp(34px, 3vw, 52px);
+    height: clamp(430px, 54vh, 520px);
+    min-height: 0;
+  }
+}
+
 .projects-panel {
   grid-template-rows: minmax(0, 1fr);
 }
