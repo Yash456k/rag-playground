@@ -89,12 +89,15 @@ def markdown_report(summary: dict[str, Any]) -> str:
                     f"{_number(threshold['false_answer_rate'])}, false-refusal rate "
                     f"{_number(threshold['false_refusal_rate'])}"
                 )
-            configured_text = (
-                f"configured threshold {_number(configured['threshold'])}, balanced accuracy "
-                f"{_number(configured['balanced_accuracy'])}, false-answer rate "
-                f"{_number(configured['false_answer_rate'])}, false-refusal rate "
-                f"{_number(configured['false_refusal_rate'])}"
-            )
+            if not configured.get("available", True):
+                configured_text = configured["reason"]
+            else:
+                configured_text = (
+                    f"configured threshold {_number(configured['threshold'])}, balanced accuracy "
+                    f"{_number(configured['balanced_accuracy'])}, false-answer rate "
+                    f"{_number(configured['false_answer_rate'])}, false-refusal rate "
+                    f"{_number(configured['false_refusal_rate'])}"
+                )
             lines.append(
                 f"- `{key}`: {configured_text}; {threshold_text}; nDCG@5 CI "
                 f"[{_number(ci['ndcg@5']['low'])}, {_number(ci['ndcg@5']['high'])}], "

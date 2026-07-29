@@ -1,0 +1,6 @@
+# Extra dependencies required only by benchmark-only challenger models.
+# Production and the six configured embedder routes do not import them.
+# xformers 0.0.31 is the wheel matched to the old laptop's torch 2.7.1/cu126 stack.
+--extra-index-url https://download.pytorch.org/whl/cu126
+einops==0.8.2
+xformers==0.0.31

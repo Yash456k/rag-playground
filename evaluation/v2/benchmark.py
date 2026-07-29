@@ -20,6 +20,29 @@ def effective_dtype(configured: str, device: str) -> str:
     return configured
 
 
+def validate_embedding_matrix(
+    vectors: Any,
+    *,
+    rows: int,
+    dimensions: int,
+    stage: str,
+) -> Any:
+    import numpy as np
+
+    matrix = np.asarray(vectors)
+    expected = (rows, dimensions)
+    if matrix.shape != expected:
+        raise ValueError(
+            f"{stage} embedding dimensions mismatch: expected {expected}, got {matrix.shape}"
+        )
+    if not np.isfinite(matrix).all():
+        raise ValueError(f"{stage} embeddings contain NaN or infinite values")
+    norms = np.linalg.norm(matrix.astype(np.float32, copy=False), axis=1)
+    if np.any(norms <= 1e-12):
+        raise ValueError(f"{stage} embeddings contain zero-norm vectors")
+    return matrix
+
+
 def stable_exact_ranking(
     query: Any, corpus: Any, chunk_ids: list[str], top_k: int
 ) -> list[dict[str, Any]]:
@@ -149,7 +172,7 @@ def _sentence_transformer(config: Any, model_path: str, device: str, dtype: str)
     }[dtype]
     kwargs: dict[str, Any] = {
         "device": device,
-        "trust_remote_code": False,
+        "trust_remote_code": bool(getattr(config, "trust_remote_code", False)),
         "model_kwargs": {"dtype": dtype_value},
     }
     if config.revision:
@@ -157,13 +180,15 @@ def _sentence_transformer(config: Any, model_path: str, device: str, dtype: str)
     return SentenceTransformer(model_path, **kwargs)
 
 
-def _encode(model: Any, texts: list[str]) -> Any:
-    return model.encode(
-        texts,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-        show_progress_bar=False,
-    )
+def _encode(model: Any, texts: list[str], prompt_name: str | None = None) -> Any:
+    kwargs: dict[str, Any] = {
+        "convert_to_numpy": True,
+        "normalize_embeddings": True,
+        "show_progress_bar": False,
+    }
+    if prompt_name is not None:
+        kwargs["prompt_name"] = prompt_name
+    return model.encode(texts, **kwargs)
 
 
 def benchmark_model(
@@ -190,21 +215,27 @@ def benchmark_model(
         torch.cuda.reset_peak_memory_stats()
     load_start = clock()
     model = model_factory(config, path, chosen_device, dtype)
+    query_prompt_name = getattr(config, "query_prompt_name", None)
+    document_prompt_name = getattr(config, "document_prompt_name", None)
     warmup_text = config.query_prefix + "portfolio retrieval warmup"
     for _ in range(warmup):
-        _encode(model, [warmup_text])
+        _encode(model, [warmup_text], prompt_name=query_prompt_name)
     load_warmup = clock() - load_start
     rss_after_warmup = current_rss_mib()
     corpus_start = clock()
-    corpus_vectors = _encode(model, [config.document_prefix + chunk.content for chunk in chunks])
+    corpus_vectors = _encode(
+        model,
+        [config.document_prefix + chunk.content for chunk in chunks],
+        prompt_name=document_prompt_name,
+    )
     corpus_seconds = clock() - corpus_start
     rss_after_corpus_encoding = current_rss_mib()
-    if corpus_vectors.shape != (len(chunks), config.dimensions):
-        message = (
-            f"Embedding dimensions mismatch: expected {config.dimensions}, "
-            f"got {corpus_vectors.shape}"
-        )
-        raise ValueError(message)
+    corpus_vectors = validate_embedding_matrix(
+        corpus_vectors,
+        rows=len(chunks),
+        dimensions=config.dimensions,
+        stage="corpus",
+    )
     rows: list[dict[str, Any]] = []
     encode_timings: list[float] = []
     retrieval_timings: list[float] = []
@@ -219,7 +250,12 @@ def benchmark_model(
         for _ in range(timing_runs):
             end_started = clock()
             encode_started = clock()
-            vector = _encode(model, [query])[0]
+            vector = validate_embedding_matrix(
+                _encode(model, [query], prompt_name=query_prompt_name),
+                rows=1,
+                dimensions=config.dimensions,
+                stage="query",
+            )[0]
             encode_ms.append((clock() - encode_started) * 1000)
             retrieval_started = clock()
             ranking = diversified_exact_ranking(vector, corpus_vectors, chunks, top_k)
@@ -265,6 +301,9 @@ def benchmark_model(
         "revision": config.revision,
         "dimensions": config.dimensions,
         "configured_minimum_score": config.minimum_score,
+        "query_prompt_name": query_prompt_name,
+        "document_prompt_name": document_prompt_name,
+        "trust_remote_code": bool(getattr(config, "trust_remote_code", False)),
         "device": chosen_device,
         "effective_dtype": dtype,
         "load_warmup_seconds": load_warmup,

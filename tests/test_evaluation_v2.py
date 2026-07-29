@@ -9,12 +9,15 @@ import pytest
 
 from app.config import load_pipeline
 from evaluation.v2.benchmark import (
+    _encode,
     build_retrieval_query,
     effective_dtype,
     relocate_model_path,
     select_diverse_chunks,
     stable_exact_ranking,
+    validate_embedding_matrix,
 )
+from evaluation.v2.challengers import ChallengerConfig, load_challengers
 from evaluation.v2.corpus import load_corpus_chunks
 from evaluation.v2.eval_lib import (
     EvaluationV2Error,
@@ -46,6 +49,57 @@ def test_checked_in_data_invariants_and_corpus_validity() -> None:
     assert any(
         grade in {1, 2} for case in cases for grade in case["graded_qrels"].values()
     )
+
+
+def test_challenger_manifest_is_pinned_and_separate_from_production() -> None:
+    manifest = load_challengers(Path("evaluation/v2/challengers.yaml"))
+    production_ids = {item.id for item in load_pipeline(Path("config/pipeline.yaml")).embedders}
+    candidate_ids = {item.id for item in manifest.candidates}
+    assert len(manifest.candidates) == 11
+    assert candidate_ids.isdisjoint(production_ids)
+    assert all(len(item.revision) == 40 for item in manifest.candidates)
+    assert all(item.minimum_score is None for item in manifest.candidates)
+
+
+def test_challenger_rejects_prefix_and_prompt_name_together() -> None:
+    candidate = load_challengers(Path("evaluation/v2/challengers.yaml")).candidates[0]
+    payload = candidate.model_dump()
+    payload.update({"query_prefix": "query: ", "query_prompt_name": "query"})
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        ChallengerConfig.model_validate(payload)
+
+
+def test_encode_passes_sentence_transformer_prompt_name() -> None:
+    class FakeModel:
+        def __init__(self) -> None:
+            self.kwargs: dict[str, object] = {}
+
+        def encode(self, texts: list[str], **kwargs: object) -> np.ndarray:
+            self.kwargs = kwargs
+            return np.array([[1.0, 0.0] for _ in texts], dtype=np.float32)
+
+    model = FakeModel()
+    output = _encode(model, ["portfolio question"], prompt_name="query")
+    assert output.shape == (1, 2)
+    assert model.kwargs["prompt_name"] == "query"
+    assert model.kwargs["normalize_embeddings"] is True
+
+
+def test_embedding_validation_rejects_nonfinite_and_zero_vectors() -> None:
+    with pytest.raises(ValueError, match="NaN or infinite"):
+        validate_embedding_matrix(
+            np.array([[np.nan, 1.0]], dtype=np.float32),
+            rows=1,
+            dimensions=2,
+            stage="query",
+        )
+    with pytest.raises(ValueError, match="zero-norm"):
+        validate_embedding_matrix(
+            np.zeros((1, 2), dtype=np.float32),
+            rows=1,
+            dimensions=2,
+            stage="corpus",
+        )
 
 
 def test_eval_chunking_exactly_matches_production() -> None:
@@ -199,6 +253,9 @@ def test_challenge_view_cannot_retune_dev_threshold() -> None:
     assert view["configured_threshold_diagnostics"]["threshold"] == 0.5
     unavailable = evaluate_embeddings_v2._views(challenge, 0, 17, 0.5)["challenge/basic"]
     assert unavailable["threshold_diagnostics"]["available"] is False
+    unconfigured = evaluate_embeddings_v2._views(dev, 0, 17, None)["dev/basic"]
+    assert unconfigured["configured_threshold_diagnostics"]["available"] is False
+    assert unconfigured["configured_threshold_diagnostics"]["threshold"] is None
 
 
 def _record(case_id: str, family: str, value: float) -> dict:
@@ -350,3 +407,31 @@ def test_cli_continues_after_one_model_failure(
     assert evaluate_embeddings_v2.run(args) == 0
     summary = json.loads((tmp_path / "summary.json").read_text())
     assert [model["status"] for model in summary["models"]] == ["failed", "ok"]
+
+
+def test_cli_accepts_benchmark_only_challenger_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def unavailable(*args: object, **kwargs: object) -> None:
+        raise RuntimeError("deliberate smoke failure")
+
+    monkeypatch.setattr(evaluate_embeddings_v2, "benchmark_model", unavailable)
+    args = evaluate_embeddings_v2.build_parser().parse_args(
+        [
+            "--candidate-manifest",
+            "evaluation/v2/challengers.yaml",
+            "--embedder",
+            "gte-modernbert-base",
+            "--bootstrap-samples",
+            "0",
+            "--output-dir",
+            str(tmp_path),
+        ]
+    )
+    assert evaluate_embeddings_v2.run(args) == 1
+    summary = json.loads((tmp_path / "summary.json").read_text())
+    environment = json.loads((tmp_path / "environment.json").read_text())
+    assert summary["models"][0]["id"] == "gte-modernbert-base"
+    assert summary["models"][0]["status"] == "failed"
+    assert environment["models"][0]["registry"] == "challenger"
+    assert environment["hashes"]["challenger_manifest"] is not None

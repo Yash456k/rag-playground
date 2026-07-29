@@ -20,6 +20,7 @@ if str(REPO) not in sys.path:
 
 from app.config import load_pipeline
 from evaluation.v2.benchmark import benchmark_model, sanitize_failure
+from evaluation.v2.challengers import load_challengers
 from evaluation.v2.eval_lib import (
     EvaluationV2Error,
     aggregate,
@@ -66,7 +67,8 @@ def _views(
     rows: list[dict[str, Any]],
     samples: int,
     seed: int,
-    configured_threshold: float,
+    configured_threshold: float | None,
+    configured_threshold_source: str = "config/pipeline.yaml",
 ) -> dict[str, Any]:
     output: dict[str, Any] = {}
     combinations = [
@@ -83,10 +85,25 @@ def _views(
         if not subset:
             continue
         item = aggregate(subset)
-        item["configured_threshold_diagnostics"] = {
-            **evaluate_threshold(subset, configured_threshold),
-            "source": "config/pipeline.yaml",
-        }
+        if configured_threshold is None:
+            item["configured_threshold_diagnostics"] = {
+                "threshold": None,
+                "balanced_accuracy": None,
+                "false_answer_rate": None,
+                "false_refusal_rate": None,
+                "available": False,
+                "reason": (
+                    "No production threshold is configured for this "
+                    "benchmark-only challenger."
+                ),
+                "source": configured_threshold_source,
+            }
+        else:
+            item["configured_threshold_diagnostics"] = {
+                **evaluate_threshold(subset, configured_threshold),
+                "available": True,
+                "source": configured_threshold_source,
+            }
         calibration_tier = tier
         calibration = [
             row for row in rows
@@ -147,6 +164,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tier", choices=("basic", "intermediate", "all"), default="all")
     parser.add_argument("--split", choices=("dev", "challenge", "all"), default="all")
     parser.add_argument("--embedder", action="append", help="Repeat or pass comma-separated IDs")
+    parser.add_argument(
+        "--candidate-manifest",
+        type=Path,
+        help="Add benchmark-only embedders from a validated YAML manifest",
+    )
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--artifact-root", type=Path, default=REPO / "model-artifacts")
     parser.add_argument("--warmup", type=int, default=1)
@@ -166,6 +188,22 @@ def run(args: argparse.Namespace) -> int:
         )
         raise EvaluationV2Error(message)
     pipeline = load_pipeline(REPO / "config/pipeline.yaml")
+    production = {item.id: item for item in pipeline.embedders}
+    configured: dict[str, Any] = dict(production)
+    challenger_ids: set[str] = set()
+    challenger_manifest_path = (
+        args.candidate_manifest.resolve() if args.candidate_manifest else None
+    )
+    if challenger_manifest_path is not None:
+        manifest = load_challengers(challenger_manifest_path)
+        challengers = {item.id: item for item in manifest.candidates}
+        overlap = sorted(production.keys() & challengers.keys())
+        if overlap:
+            raise EvaluationV2Error(
+                f"Challenger IDs conflict with production embedders: {', '.join(overlap)}"
+            )
+        configured.update(challengers)
+        challenger_ids = set(challengers)
     _, all_cases, chunks = load_data()
     cases = [
         case for case in all_cases
@@ -173,7 +211,6 @@ def run(args: argparse.Namespace) -> int:
         and (args.split == "all" or case["split"] == args.split)
     ]
     requested = _csv(args.embedder) or [item.id for item in pipeline.embedders]
-    configured = {item.id: item for item in pipeline.embedders}
     unknown = sorted(set(requested) - configured.keys())
     if unknown:
         raise EvaluationV2Error(f"Unknown embedder IDs: {', '.join(unknown)}")
@@ -207,6 +244,11 @@ def run(args: argparse.Namespace) -> int:
                         args.bootstrap_samples,
                         args.seed,
                         config.minimum_score,
+                        (
+                            str(challenger_manifest_path)
+                            if embedder_id in challenger_ids
+                            else "config/pipeline.yaml"
+                        ),
                     ),
                     "failures": sorted(
                         [row for row in rows if row["answerable"]],
@@ -260,6 +302,11 @@ def run(args: argparse.Namespace) -> int:
             "intermediate": sha256_path(REPO / "evaluation/v2/intermediate.json"),
             "challenge_lock": sha256_path(REPO / "evaluation/v2/challenge.sha256"),
             "pipeline_config": sha256_path(REPO / "config/pipeline.yaml"),
+            "challenger_manifest": (
+                sha256_path(challenger_manifest_path)
+                if challenger_manifest_path is not None
+                else None
+            ),
         },
         "environment": {
             "python": sys.version,
@@ -272,6 +319,16 @@ def run(args: argparse.Namespace) -> int:
                 "model": configured[item].model,
                 "revision": configured[item].revision,
                 "dimensions": configured[item].dimensions,
+                "dtype": configured[item].dtype,
+                "registry": "challenger" if item in challenger_ids else "production",
+                "query_prompt_name": getattr(configured[item], "query_prompt_name", None),
+                "document_prompt_name": getattr(
+                    configured[item], "document_prompt_name", None
+                ),
+                "trust_remote_code": bool(
+                    getattr(configured[item], "trust_remote_code", False)
+                ),
+                "license": getattr(configured[item], "license", None),
             }
             for item in requested
         ],
@@ -280,6 +337,11 @@ def run(args: argparse.Namespace) -> int:
             "split": args.split,
             "device": args.device,
             "artifact_root": str(args.artifact_root.resolve()),
+            "candidate_manifest": (
+                str(challenger_manifest_path)
+                if challenger_manifest_path is not None
+                else None
+            ),
             "warmup": args.warmup,
             "timing_runs": args.timing_runs,
             "bootstrap_samples": args.bootstrap_samples,

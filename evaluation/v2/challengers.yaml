@@ -1,0 +1,157 @@
+version: 1
+researched_at: "2026-07-29"
+candidates:
+  - id: gte-modernbert-base
+    label: GTE ModernBERT Base
+    description: Efficient English retrieval encoder with long-context ModernBERT backbone.
+    model: Alibaba-NLP/gte-modernbert-base
+    revision: e7f32e3c00f91d699e8c43b53106206bcc72bb22
+    dimensions: 768
+    dtype: float16
+    trust_remote_code: false
+    license: apache-2.0
+    parameters_millions: 149.0
+    source_url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base
+    rationale: Strong English retrieval score at only 149M parameters.
+
+  - id: mxbai-embed-large-v1
+    label: Mixedbread Embed Large V1
+    description: Strong English retrieval model with query instructions and Matryoshka support.
+    model: mixedbread-ai/mxbai-embed-large-v1
+    revision: b33106f585b9ce46904ad7443a3b52b7a63e231c
+    dimensions: 1024
+    query_prompt_name: query
+    dtype: float16
+    trust_remote_code: false
+    license: apache-2.0
+    parameters_millions: 335.1
+    source_url: https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1
+    rationale: Established sub-500M English retrieval reference with a strong MTEB record.
+
+  - id: arctic-embed-m-v2
+    label: Snowflake Arctic Embed M V2
+    description: Multilingual 305M retrieval encoder optimized for English and cross-lingual search.
+    model: Snowflake/snowflake-arctic-embed-m-v2.0
+    revision: 95c2741480856aa9666782eb4afe11959938017f
+    dimensions: 768
+    query_prompt_name: query
+    dtype: float32
+    trust_remote_code: true
+    license: apache-2.0
+    parameters_millions: 305.4
+    source_url: https://huggingface.co/Snowflake/snowflake-arctic-embed-m-v2.0
+    rationale: Current medium Arctic route with competitive BEIR retrieval and production-friendly licensing.
+
+  - id: nomic-embed-v2-moe
+    label: Nomic Embed Text V2 MoE
+    description: Sparse multilingual MoE retriever with explicit query and passage prompts.
+    model: nomic-ai/nomic-embed-text-v2-moe
+    revision: 1066b6599d099fbb93dfcb64f9c37a7c9e503e85
+    dimensions: 768
+    query_prompt_name: query
+    document_prompt_name: passage
+    dtype: float32
+    trust_remote_code: true
+    license: apache-2.0
+    parameters_millions: 475.3
+    source_url: https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe
+    rationale: Newer Nomic retrieval model with strong BEIR/MIRACL results and open training artifacts.
+
+  - id: lfm25-embedding-350m
+    label: LFM2.5 Embedding 350M
+    description: Dense bidirectional multilingual LFM retriever for short-context RAG.
+    model: LiquidAI/LFM2.5-Embedding-350M
+    revision: f35ae2c91d687658dbf1f2b449382f0b019b9808
+    dimensions: 1024
+    query_prompt_name: query
+    document_prompt_name: document
+    dtype: bfloat16
+    trust_remote_code: true
+    license: lfm-open-license-v1.0
+    parameters_millions: 354.5
+    source_url: https://huggingface.co/LiquidAI/LFM2.5-Embedding-350M
+    rationale: Retrieval-ready LFM candidate discussed previously; raw encoder backbones are intentionally excluded.
+
+  - id: embeddinggemma-300m
+    label: EmbeddingGemma 300M
+    description: Google's multilingual on-device embedding model with Matryoshka dimensions.
+    model: google/embeddinggemma-300m
+    revision: 57c266a740f537b4dc058e1b0cda161fd15afa75
+    dimensions: 768
+    query_prompt_name: query
+    document_prompt_name: document
+    dtype: float32
+    trust_remote_code: false
+    license: gemma
+    parameters_millions: 302.9
+    source_url: https://huggingface.co/google/embeddinggemma-300m
+    rationale: Modern 300M on-device model with strong reported English MTEB performance; access is license-gated.
+
+  - id: harrier-oss-270m
+    label: Microsoft Harrier OSS 270M
+    description: Distilled multilingual decoder embedder with instruction-aware retrieval.
+    model: microsoft/harrier-oss-v1-270m
+    revision: 31de22b673913c7d658c0f03f792d77c2dcf8ebd
+    dimensions: 640
+    query_prompt_name: web_search_query
+    dtype: float32
+    trust_remote_code: false
+    license: mit
+    parameters_millions: 268.1
+    source_url: https://huggingface.co/microsoft/harrier-oss-v1-270m
+    rationale: Recent permissively licensed 270M model with strong multilingual MTEB claims.
+
+  - id: pplx-embed-v1-06b
+    label: Perplexity Embed V1 0.6B
+    description: Diffusion-pretrained instruction-free dense retriever with quantized outputs.
+    model: perplexity-ai/pplx-embed-v1-0.6b
+    revision: 2c4d510dd4a732063c31a0f70193e35067b51fd8
+    dimensions: 1024
+    dtype: float16
+    trust_remote_code: true
+    license: mit
+    parameters_millions: 596.0
+    source_url: https://huggingface.co/perplexity-ai/pplx-embed-v1-0.6b
+    rationale: New web-scale retrieval model that avoids query instruction selection.
+
+  - id: bge-m3
+    label: BGE M3
+    description: Mature multilingual multi-function retriever evaluated here in dense-vector mode.
+    model: BAAI/bge-m3
+    revision: 5617a9f61b028005a4858fdac845db406aefb181
+    dimensions: 1024
+    dtype: float16
+    trust_remote_code: false
+    license: mit
+    parameters_millions: 568.0
+    source_url: https://huggingface.co/BAAI/bge-m3
+    rationale: Widely deployed dense retrieval reference that still fits the 4 GiB GPU in half precision.
+
+  - id: stella-en-400m-v5
+    label: Stella EN 400M V5
+    description: English retrieval model distilled from larger GTE-family teachers.
+    model: NovaSearch/stella_en_400M_v5
+    revision: ffeb2b7ee715c226d4ffe5e4619f7dbb48624c20
+    dimensions: 1024
+    query_prompt_name: s2p_query
+    dtype: float16
+    trust_remote_code: true
+    license: mit
+    parameters_millions: 435.2
+    source_url: https://huggingface.co/NovaSearch/stella_en_400M_v5
+    rationale: High-performing English specialist with a 1024-dimensional production-friendly projection.
+
+  - id: jina-v5-nano-retrieval
+    label: Jina Embeddings V5 Nano Retrieval
+    description: Recent task-specialized multilingual retrieval model with last-token pooling.
+    model: jinaai/jina-embeddings-v5-text-nano-retrieval
+    revision: ac5d898c8d382b17167c33e5c8af644a3519b47d
+    dimensions: 768
+    query_prompt_name: query
+    document_prompt_name: document
+    dtype: bfloat16
+    trust_remote_code: true
+    license: cc-by-nc-4.0
+    parameters_millions: 211.8
+    source_url: https://huggingface.co/jinaai/jina-embeddings-v5-text-nano-retrieval
+    rationale: Current compact retrieval specialist; benchmark only because its license is non-commercial and runtime requirements exceed the pinned environment.

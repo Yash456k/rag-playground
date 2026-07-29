@@ -47,7 +47,24 @@ Run useful benchmark subsets:
 .venv-eval/bin/python scripts/evaluate_embeddings_v2.py --tier all --split all --device auto \
   --artifact-root model-artifacts --warmup 1 --timing-runs 3 --bootstrap-samples 2000 \
   --seed 17 --top-k 5 --output-dir evaluation/results/v2
+
+# Install the isolated candidate-only dependency without changing host Python
+.venv-eval/bin/python -m pip install -r requirements-eval-challengers.txt
+
+# Benchmark pinned research candidates without adding them to production config
+.venv-eval/bin/python scripts/evaluate_embeddings_v2.py --tier all --split all --device cuda \
+  --candidate-manifest evaluation/v2/challengers.yaml \
+  --embedder gte-modernbert-base,lfm25-embedding-350m,harrier-oss-270m \
+  --warmup 3 --timing-runs 3 --bootstrap-samples 2000 --seed 1729 --top-k 5 \
+  --output-dir evaluation/results/v2-challengers
 ```
+
+`--candidate-manifest` extends the benchmark registry only. It does not modify
+`config/pipeline.yaml`, database columns, the public API, or the production
+default. The checked-in manifest records exact revisions, prompts, dtypes,
+licenses, model sizes, sources, and selection rationale. A challenger with no
+production threshold reports configured-threshold diagnostics as unavailable;
+its development-calibrated threshold remains available for analysis.
 
 `--embedder` is repeatable and also accepts commas. `--device` is `auto`,
 `cpu`, or `cuda`. Auto uses CUDA when available. Qwen's configured bfloat16 is
