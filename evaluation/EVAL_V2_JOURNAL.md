@@ -103,3 +103,24 @@ Append-only engineering journal for the portfolio RAG evaluation rebuild and enc
 - Ran a real CUDA smoke benchmark with Portfolio GTE Small on 45 basic development queries. It completed successfully, produced raw JSONL plus summary/environment/report artifacts, and used 199.2 MiB peak allocated / 246.0 MiB peak reserved CUDA memory.
 - The first smoke exposed a Transformers deprecation warning for `torch_dtype`. Updated model loading to the current `dtype` argument and reran the smoke successfully with no warning.
 - Warm-cache rerun wall time was 7.93 seconds with 1,254,300 KiB maximum process RSS. The suite is now ready for the controlled six-model run.
+
+## 2026-07-29 15:25 IST — Six-model benchmark and recommendation
+
+- Reverified the execution host immediately before the full run: `yash456k-GF63-Thin-9SCSR`, battery 100% Full, GTX 1650 Ti Max-Q idle with 0 MiB allocated, and 6.5 GiB host RAM available.
+- The first benchmark command failed before any model loaded because `--embedder all` was interpreted as a literal unknown model ID. The CLI selects every model when the option is omitted. Removed the invalid option and restarted; the failed attempt took 4.40 seconds and did not contaminate model timings.
+- The corrected old-laptop run loaded and evaluated all six pinned routes successfully. It completed in 79.17 seconds with 3,556,272 KiB maximum process RSS. There were no model failures and the benchmark log was empty.
+- MiniLM produced the best quality/speed balance: development/challenge nDCG@5 0.824/0.784, development/challenge required Recall@5 0.938/0.950, 4.486 ms mean end-to-end latency, 222.4 queries/s, and 157.8 MiB peak allocated CUDA memory.
+- Current Portfolio GTE produced development/challenge nDCG@5 0.784/0.768 and Recall@5 0.917/0.933 at 7.699 ms mean latency and 198.8 MiB peak allocated CUDA memory. MiniLM was 1.72x faster with nDCG@5 deltas of +0.040 development and +0.016 challenge, but uncertainty intervals overlap.
+- BGE Base reached perfect challenge Recall@5 and 0.780 challenge nDCG@5 at 7.733 ms, using 549.5 MiB allocated CUDA memory. Qwen3 used 1,596.6 MiB and averaged 98.145 ms without winning quality, so it is not practical for this corpus/runtime.
+- Configured similarity thresholds are too permissive for intermediate unanswerable cases. Portfolio GTE's configured threshold produced false-answer rates of 0.917 on development and 0.667 on challenge. Development calibration improves rejection but transfers with substantial false refusals, so no threshold was changed.
+- Hard-negative separation remains weak even for the strongest models and is a higher-value next training target than blindly increasing model size.
+- An independent review agent timed out before returning a final review. Its partial transcript covered an earlier draft and flagged the then-ungraded qrels and training overlap; both were already resolved or explicitly documented before the committed benchmark. Acceptance is based on the old-laptop 92-test suite, Ruff, strict data validation, smoke run, and successful six-model execution—not on the timed-out agent.
+- Final decision: keep Portfolio GTE as production default for now. MiniLM is the leading promotion candidate, pending a fresh locked challenge set because the current challenge is now inspected and its model differences are modest.
+- Added polished `evaluation/EVAL_V2_REPORT.md` and machine-readable `evaluation/EVAL_V2_RESULTS.csv`. Raw artifacts remain under ignored `evaluation/results/v2-full/` on the old laptop.
+
+## 2026-07-29 15:29 IST — Default-embedder correction
+
+- Rechecked the live production `/v1/config` endpoint and current source after the report draft. The actual live default is `bge-small`, derived positionally from `embedders[1]`; Portfolio GTE is configured and selectable but is not the default.
+- The preceding draft note calling Portfolio GTE the current default was incorrect. The polished report was corrected before commit.
+- Against the real BGE Small default, MiniLM improved development/challenge nDCG@5 by +0.136/+0.112 and Recall@5 by +0.125/+0.083 while cutting mean latency by 41.3% and peak allocated VRAM by 20.6%.
+- Recommendation corrected accordingly: MiniLM has enough measured advantage to replace BGE Small in a controlled follow-up. This evaluation branch still makes no production-default or deployment change. A separate explicit `default_embedder` configuration field is preferable to the current positional choice.
