@@ -1,0 +1,1428 @@
+{
+  "version": 2,
+  "tier": "basic",
+  "cases": [
+    {
+      "id": "b-location-v1",
+      "family_id": "b-location",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Where is Yash based?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "location"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-location-v2",
+      "family_id": "b-location",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What city and state does Yash work from?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "location"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-location-v3",
+      "family_id": "b-location",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Tell me Yash's location.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "location"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-education-v1",
+      "family_id": "b-education",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What degree is Yash pursuing?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "education"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-education-v2",
+      "family_id": "b-education",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Where and when is he studying computer engineering?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "education"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-education-v3",
+      "family_id": "b-education",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize Yash's current education.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "education"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-cgpa-v1",
+      "family_id": "b-cgpa",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What is Yash's CGPA?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "cgpa"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-cgpa-v2",
+      "family_id": "b-cgpa",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How strong is his reported academic score?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "cgpa"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-cgpa-v3",
+      "family_id": "b-cgpa",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Give the grade-point figure from his resume.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "cgpa"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-dates-v1",
+      "family_id": "b-aivid-dates",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "When did Yash work at AIVID?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-dates"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 1,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-dates-v2",
+      "family_id": "b-aivid-dates",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How long was his AIVID Techvision internship?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-dates"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 1,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-dates-v3",
+      "family_id": "b-aivid-dates",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "State the start and end months for the AIVID role.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-dates"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 1,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-push-v1",
+      "family_id": "b-aivid-push",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What push-notification system did he build?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-push"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-push-v2",
+      "family_id": "b-aivid-push",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How many roles per day did the AIVID notification work target?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-push"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-push-v3",
+      "family_id": "b-aivid-push",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize his Expo and Node notification achievement.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-push"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-scale-v1",
+      "family_id": "b-aivid-scale",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How many records per day did his AIVID features handle?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-scale"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-scale-v2",
+      "family_id": "b-aivid-scale",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What data scale did Yash report at AIVID?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-scale"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-scale-v3",
+      "family_id": "b-aivid-scale",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Give the daily database throughput mentioned for his internship.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-scale"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-future-v1",
+      "family_id": "b-future",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What did Yash do at Future AI Power?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "future-ai"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-future-v2",
+      "family_id": "b-future",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How large was the frontend team he led?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "future-ai"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-future-v3",
+      "family_id": "b-future",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize his April-to-June 2024 internship.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "future-ai"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-skills-v1",
+      "family_id": "b-skills",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "What backend and data tools does Yash know?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "skills"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#3": 1,
+        "about-and-experience.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-skills-v2",
+      "family_id": "b-skills",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "Summarize Yash's technical stack.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "skills"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#3": 1,
+        "about-and-experience.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-skills-v3",
+      "family_id": "b-skills",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "Does he have experience with React, databases, and cloud tools?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "skills"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#3": 1,
+        "about-and-experience.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-leetcode-v1",
+      "family_id": "b-leetcode",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What is Yash's LeetCode rating?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "leetcode"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-leetcode-v2",
+      "family_id": "b-leetcode",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How many coding problems has he practiced?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "leetcode"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-leetcode-v3",
+      "family_id": "b-leetcode",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize his competitive-programming achievement.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "leetcode"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-models-v1",
+      "family_id": "b-rag-models",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How many embedding routes are in RAG Playground?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-models"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#2": 2,
+        "projects.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-models-v2",
+      "family_id": "b-rag-models",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Which embedding choices can visitors compare?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-models"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#2": 2,
+        "projects.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-models-v3",
+      "family_id": "b-rag-models",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize the retrieval-model selector.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-models"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#2": 2,
+        "projects.md#0": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-interface-v1",
+      "family_id": "b-rag-interface",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "What does each RAG Playground answer show?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-visibility"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#0": 2,
+        "projects.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-interface-v2",
+      "family_id": "b-rag-interface",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "How is retrieval made inspectable to visitors?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-visibility"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#0": 2,
+        "projects.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-interface-v3",
+      "family_id": "b-rag-interface",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "List the model, evidence, score, and timing details exposed in the UI.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-visibility"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#0": 2,
+        "projects.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-purpose-v1",
+      "family_id": "b-nsk-purpose",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "What is the NSK project?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-purpose"
+      ],
+      "graded_qrels": {
+        "projects.md#3": 1,
+        "projects.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-purpose-v2",
+      "family_id": "b-nsk-purpose",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "Which sports and user workflows does Nashik Sports Klub manage?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-purpose"
+      ],
+      "graded_qrels": {
+        "projects.md#3": 1,
+        "projects.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-purpose-v3",
+      "family_id": "b-nsk-purpose",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "Summarize the facility-booking platform.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-purpose"
+      ],
+      "graded_qrels": {
+        "projects.md#3": 1,
+        "projects.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-race-v1",
+      "family_id": "b-nsk-race",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "What happened in the NSK 500-user concurrency test?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-race"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-race-v2",
+      "family_id": "b-nsk-race",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "How did the booking system prevent two users taking one slot?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-race"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-nsk-race-v3",
+      "family_id": "b-nsk-race",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "Summarize the reported race-condition result.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-race"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-chat-v1",
+      "family_id": "b-chat",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "How large is Yash's chat platform?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "chat-scale"
+      ],
+      "graded_qrels": {
+        "projects.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-chat-v2",
+      "family_id": "b-chat",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "What user and message counts are reported for the MERN chat?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "chat-scale"
+      ],
+      "graded_qrels": {
+        "projects.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-chat-v3",
+      "family_id": "b-chat",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "easy",
+      "question": "Summarize the chat application's usage scale.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "chat-scale"
+      ],
+      "graded_qrels": {
+        "projects.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-exact-v1",
+      "family_id": "b-rag-exact",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "Why does RAG Playground use exact cosine scans?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-exact"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#3": 1,
+        "rag-playground-case-study.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-exact-v2",
+      "family_id": "b-rag-exact",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "What is the scaling tradeoff of exact retrieval?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-exact"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#3": 1,
+        "rag-playground-case-study.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-rag-exact-v3",
+      "family_id": "b-rag-exact",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "dev",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "Summarize the exact-search design decision.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-exact"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#3": 1,
+        "rag-playground-case-study.md#4": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "direct_intent_seen",
+      "generalization_axis": "regression"
+    },
+    {
+      "id": "b-aivid-graph-v1",
+      "family_id": "b-aivid-graph",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What did Yash build with Microsoft Graph?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-graph"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-aivid-graph-v2",
+      "family_id": "b-aivid-graph",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "How were selected images sent to OneDrive?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-graph"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-aivid-graph-v3",
+      "family_id": "b-aivid-graph",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Summarize the Azure-token upload workflow.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-graph"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#2": 2,
+        "about-and-experience.md#1": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-aivid-ui-v1",
+      "family_id": "b-aivid-ui",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "How much frontend work did Yash deliver at AIVID?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-ui"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-aivid-ui-v2",
+      "family_id": "b-aivid-ui",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "Give the feature and component counts from AIVID.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-ui"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-aivid-ui-v3",
+      "family_id": "b-aivid-ui",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "Summarize his React/TypeScript output there.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "aivid-ui"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#1": 1,
+        "about-and-experience.md#2": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-nsk-security-v1",
+      "family_id": "b-nsk-security",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "How does NSK authenticate and secure traffic?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-security"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "composition"
+    },
+    {
+      "id": "b-nsk-security-v2",
+      "family_id": "b-nsk-security",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "What OTP, cookie, TLS, and WebSocket controls does NSK use?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-security"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "composition"
+    },
+    {
+      "id": "b-nsk-security-v3",
+      "family_id": "b-nsk-security",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "summary",
+      "difficulty": "medium",
+      "question": "Summarize security in the booking platform.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "nsk-security"
+      ],
+      "graded_qrels": {
+        "projects.md#2": 1,
+        "projects.md#3": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "composition"
+    },
+    {
+      "id": "b-rag-resources-v1",
+      "family_id": "b-rag-resources",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "What are the service container resource caps?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-resources"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#6": 2,
+        "rag-playground-case-study.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-rag-resources-v2",
+      "family_id": "b-rag-resources",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "How much memory is allocated to API, PostgreSQL, and Caddy?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-resources"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#6": 2,
+        "rag-playground-case-study.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-rag-resources-v3",
+      "family_id": "b-rag-resources",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "medium",
+      "question": "Summarize RAG Playground's modest-VPS limits.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "rag-resources"
+      ],
+      "graded_qrels": {
+        "rag-playground-case-study.md#6": 2,
+        "rag-playground-case-study.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-contact-v1",
+      "family_id": "b-contact",
+      "variant_id": 1,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "What is Yash's GitHub username?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "contact"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 1,
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-contact-v2",
+      "family_id": "b-contact",
+      "variant_id": 2,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Where is his public source-code profile?",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "contact"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 1,
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    },
+    {
+      "id": "b-contact-v3",
+      "family_id": "b-contact",
+      "variant_id": 3,
+      "tier": "basic",
+      "split": "challenge",
+      "category": "fact",
+      "difficulty": "easy",
+      "question": "Give the GitHub handle listed in his contact details.",
+      "history": [],
+      "answerable": true,
+      "required_claim_ids": [
+        "contact"
+      ],
+      "graded_qrels": {
+        "about-and-experience.md#0": 1,
+        "about-and-experience.md#5": 3
+      },
+      "hard_negative_chunk_ids": [],
+      "expected_behavior": "answer",
+      "notes": "Variants remain in one family and split; evaluate retrieval, not generation.",
+      "training_overlap": "fact_seen_query_form_held_out",
+      "generalization_axis": "paraphrase"
+    }
+  ]
+}

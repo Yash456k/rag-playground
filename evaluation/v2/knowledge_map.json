@@ -1,0 +1,266 @@
+{
+  "version": 2,
+  "claims": {
+    "location": {
+      "claim": "Yash is based in Ahmedabad, Gujarat, India.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#0",
+          "anchor": "based in Ahmedabad, Gujarat, India"
+        }
+      ]
+    },
+    "education": {
+      "claim": "He is pursuing a B.Tech in Computer Engineering at Indus Institute of Technology and Engineering from 2022 to 2026.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#0",
+          "anchor": "B.Tech in Computer Engineering at Indus Institute of Technology and Engineering from 2022 to 2026"
+        }
+      ]
+    },
+    "cgpa": {
+      "claim": "His reported CGPA is 9.66 out of 10.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#0",
+          "anchor": "CGPA of 9.66 out of 10"
+        }
+      ]
+    },
+    "aivid-dates": {
+      "claim": "He worked at AIVID Techvision from September 2024 through September 2025.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#1",
+          "anchor": "September 2024 through September 2025"
+        }
+      ]
+    },
+    "aivid-push": {
+      "claim": "At AIVID he built an Expo and Node.js push-notification system serving more than 1,000 user roles per day.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#1",
+          "anchor": "more than 1,000 user roles per day"
+        }
+      ]
+    },
+    "aivid-graph": {
+      "claim": "At AIVID he built a Microsoft Graph API workflow for uploading images to OneDrive and managing Azure tokens.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#1",
+          "anchor": "uploaded user-selected images to OneDrive while managing Azure access tokens"
+        }
+      ]
+    },
+    "aivid-scale": {
+      "claim": "At AIVID his features handled more than 100,000 database records per day.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#2",
+          "anchor": "more than 100,000 database records per day"
+        }
+      ]
+    },
+    "aivid-ui": {
+      "claim": "At AIVID he delivered over 20 React/TypeScript features and built or improved over 10 shared components.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#2",
+          "anchor": "more than 20 React and TypeScript frontend features"
+        }
+      ]
+    },
+    "future-ai": {
+      "claim": "At Future AI Power he led a four-person frontend team from April through June 2024.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#3",
+          "anchor": "led a four-person frontend team"
+        }
+      ]
+    },
+    "skills": {
+      "claim": "His stack spans React, Node.js, PostgreSQL, MongoDB, Redis, Elasticsearch, Azure, and AWS, among other technologies.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#4",
+          "anchor": "PostgreSQL, MongoDB, Mongoose, Redis, Elasticsearch"
+        }
+      ]
+    },
+    "leetcode": {
+      "claim": "He has solved more than 150 problems and reports a 1619 LeetCode rating in the top 20 percent.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#5",
+          "anchor": "LeetCode contest rating of 1619"
+        }
+      ]
+    },
+    "contact": {
+      "claim": "His public GitHub username is Yash456k.",
+      "evidence": [
+        {
+          "chunk_id": "about-and-experience.md#5",
+          "anchor": "github.com/Yash456k"
+        }
+      ]
+    },
+    "rag-models": {
+      "claim": "RAG Playground compares six embedding routes.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#0",
+          "anchor": "compare six resident embedding routes"
+        }
+      ]
+    },
+    "rag-visibility": {
+      "claim": "RAG Playground exposes retrieved chunks, scores, selected models, and stage latencies.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#1",
+          "anchor": "retrieved source chunks with cosine-similarity scores"
+        }
+      ]
+    },
+    "rag-stack": {
+      "claim": "Its backend uses FastAPI and PostgreSQL/pgvector and its frontend uses Vite and React TypeScript.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#1",
+          "anchor": "backend uses FastAPI, PostgreSQL with pgvector"
+        }
+      ]
+    },
+    "nsk-purpose": {
+      "claim": "NSK is a multi-tenant Pickleball and Cricket facility-booking platform with a 40-day admin schedule.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#2",
+          "anchor": "Pickleball and Cricket inventory"
+        }
+      ]
+    },
+    "nsk-race": {
+      "claim": "NSK uses temporary reservations and atomic transactions; in a 500-user one-slot test exactly one booking committed.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#3",
+          "anchor": "500 concurrent users toward one slot; exactly one booking committed"
+        }
+      ]
+    },
+    "nsk-security": {
+      "claim": "NSK uses role-based access, MSG91 OTP, JWT HttpOnly cookies, Nginx TLS, and secure WebSocket proxying.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#3",
+          "anchor": "MSG91 OTP verification"
+        }
+      ]
+    },
+    "chat-scale": {
+      "claim": "The real-time MERN chat supports over 100 users and has handled over 500 messages.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#4",
+          "anchor": "supports more than 100 users and has handled more than 500 messages"
+        }
+      ]
+    },
+    "chat-auth-ai": {
+      "claim": "The chat app uses Google OAuth/Firebase authentication and includes a Gemini chatbot.",
+      "evidence": [
+        {
+          "chunk_id": "projects.md#4",
+          "anchor": "AI chatbot powered by Google Gemini"
+        }
+      ]
+    },
+    "rag-grounding": {
+      "claim": "RAG Playground treats inputs as untrusted, grounds claims in excerpts, and refuses unsupported requests.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#1",
+          "anchor": "refuses unrelated or unsupported requests"
+        }
+      ]
+    },
+    "rag-training": {
+      "claim": "The portfolio embedders use reviewed pairs, hard negatives, deterministic seeds, and a separate evaluation set.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#2",
+          "anchor": "reviewed question-to-passage examples, hard negatives, deterministic seeds"
+        }
+      ]
+    },
+    "rag-prefixes": {
+      "claim": "E5 uses query and passage prefixes and model IDs map to server-side column allowlists.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#3",
+          "anchor": "E5 receives its required `query:` and `passage:` prefixes"
+        }
+      ]
+    },
+    "rag-exact": {
+      "claim": "Exact cosine scans preserve recall and are appropriate for the small corpus but scale linearly.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#4",
+          "anchor": "Exact cosine scans are intentional for this small corpus"
+        }
+      ]
+    },
+    "rag-resources": {
+      "claim": "The API is capped at 2.5 CPU cores and 3,500 MiB, PostgreSQL at 384 MiB, and Caddy at 96 MiB.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#5",
+          "anchor": "API container is capped at 2.5 CPU cores and 3,500 MiB"
+        }
+      ]
+    },
+    "rag-network": {
+      "claim": "The API and database bind to loopback and Caddy is the public HTTPS edge.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#6",
+          "anchor": "bind only to host loopback addresses"
+        }
+      ]
+    },
+    "rag-generation": {
+      "claim": "Generation runs on Groq with fallback attempts so local memory remains available for embedding models.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#7",
+          "anchor": "Generation is delegated to Groq"
+        }
+      ]
+    },
+    "rag-abuse": {
+      "claim": "Daily limits, explicit CORS origins, size limits, restricted containers, and server-only secrets protect the service.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#8",
+          "anchor": "salted per-IP daily limit and a global daily limit"
+        }
+      ]
+    },
+    "rag-verification": {
+      "claim": "Verification includes retrieval, SSE, injection/refusal, fallback, rate-limit, logs, and memory tests.",
+      "evidence": [
+        {
+          "chunk_id": "rag-playground-case-study.md#9",
+          "anchor": "prompt-injection and unsupported-question refusal checks"
+        }
+      ]
+    }
+  }
+}
