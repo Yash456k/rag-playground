@@ -5,7 +5,7 @@
     "overlap_characters": 140,
     "minimum_characters": 120
   },
-  "corpus_chunks_sha256": "b8574d3306981fe2e39da36f43aa5b7443d7555101a49af23a0e9bbb3fbf8669",
+  "corpus_chunks_sha256": "c62dea3b2dccd1c747b1f761f295e3611ee4ca705e77f2cde4b6612f6e745288",
   "chunk_ids": [
     "about-and-experience.md#0",
     "about-and-experience.md#1",
@@ -26,13 +26,14 @@
     "rag-playground-case-study.md#7"
   ],
   "source_file_sha256": {
-    "corpus/about-and-experience.md": "4562a6741ef7e384c5b8671f87ff126605c52308395d0a8c0ad3989781d5899a",
+    "corpus/about-and-experience.md": "a1e1d55140e196150c779a45640e57f852eefb0e105ab578bc7eb55359f4dfca",
     "corpus/projects.md": "bcc4aef6545cd0976f612b27f7dd1f10b0b07db7aaa49d4d4ddec901709e8b12",
     "corpus/rag-playground-case-study.md": "364aeae0d01d50e6623758b7959faa5e11731ef14438e57c9d3fa6ce7adb9518"
   },
   "hard_negative_review": {
     "status": "reviewed",
-    "reviewed_on": "2026-07-12",
-    "rule": "Every negative is topically plausible but does not contain the fact needed to answer its paired question; overlap tails were checked explicitly."
+    "reviewed_on": "2026-08-14",
+    "rule": "Every negative is topically plausible but does not contain the fact needed to answer its paired question; overlap tails were checked explicitly.",
+    "change_review": "Reviewed the URL-only update in about-and-experience.md#3. Chunk IDs and boundaries are unchanged, and every positive, hard-negative, development, and holdout reference retains its intended meaning."
   }
 }

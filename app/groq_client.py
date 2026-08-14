@@ -107,7 +107,7 @@ class GroqClient:
             if provider == "openrouter":
                 headers.update(
                     {
-                        "HTTP-Referer": "https://rag.yashx.me",
+                        "HTTP-Referer": "https://www.yash456k.com",
                         "X-Title": "Yash Khambhatta RAG Playground",
                     }
                 )

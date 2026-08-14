@@ -26,7 +26,7 @@ Yash has sustained algorithm and problem-solving practice through more than 150 
 
 ## Contact
 
-- Portfolio: https://www.yashx.me
+- Portfolio: https://www.yash456k.com
 - GitHub: https://github.com/Yash456k
 - LinkedIn: https://linkedin.com/in/yash-khambhatta/
 - Email: yash456k@gmail.com

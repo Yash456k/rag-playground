@@ -17,7 +17,7 @@ def test_training_splits_cover_locked_current_corpus() -> None:
     assert len(bundle.locked_holdout) == 16
     assert {record["positive_chunk_id"] for record in bundle.train} == set(bundle.chunks)
     assert bundle.hashes["corpus_chunks_sha256"] == (
-        "b8574d3306981fe2e39da36f43aa5b7443d7555101a49af23a0e9bbb3fbf8669"
+        "c62dea3b2dccd1c747b1f761f295e3611ee4ca705e77f2cde4b6612f6e745288"
     )
 
 

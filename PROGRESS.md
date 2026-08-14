@@ -4,10 +4,9 @@ Last updated: 2026-07-12 17:15 IST
 
 ## Goal status
 
-The public portfolio RAG is deployed and interactable at
-`https://rag-playground-alpha.vercel.app`. Its API is currently served through the
-temporary valid-TLS hostname `https://178-104-56-243.sslip.io` until the owner adds the
-optional branded DNS records.
+At the time of this record, the public portfolio RAG was deployed and interactable at
+`https://rag-playground-alpha.vercel.app`. Its API was served through the valid-TLS
+hostname `https://178-104-56-243.sslip.io`.
 
 - [x] Six selectable embedding routes are resident in production.
 - [x] Portfolio E5 Small and Portfolio GTE Small were genuinely trained, audited,
@@ -119,14 +118,12 @@ seven visible source cards, `0.906` top similarity, `41 ms` embedding, `6 ms` re
 - Public HTTPS health, strict CORS, container health, model smoke, vector coverage,
   artifact checksums, warmed resources, and listener/service parity passed.
 
-## Optional branded DNS
+## Branded DNS follow-up (retired)
 
-No A records currently resolve for `rag.yashx.me` or `rag-api.yashx.me`. The deployed
-fallback URLs are operational. When the owner is ready, add:
+The branded DNS plan considered in this record was never activated and is no longer a
+current deployment step. The current public portfolio is `https://www.yash456k.com`,
+while the live API remains `https://178-104-56-243.sslip.io`.
 
-- `A rag-api 178.104.56.243`
-- the Vercel-provided record for `rag.yashx.me`
-
-Then change the VPS API domain variables and Vercel `VITE_API_URL`, recreate API/proxy,
-and repeat public health, CORS, TLS, and browser checks. This optional branding step is
-not required for the currently working playground.
+Any future branded API hostname would require coordinated DNS, VPS API domain, proxy,
+and Vercel `VITE_API_URL` changes followed by public health, CORS, TLS, and browser
+verification.

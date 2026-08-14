@@ -1,6 +1,6 @@
 # RAG Playground
 
-A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's portfolio](https://www.yashx.me). Visitors can compare embedding and generation models while seeing the evidence and timing behind every grounded answer.
+A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's portfolio](https://www.yash456k.com). Visitors can compare embedding and generation models while seeing the evidence and timing behind every grounded answer.
 
 ## What visitors can inspect
 
@@ -136,10 +136,10 @@ PostgreSQL is reachable from the host only at `127.0.0.1:55432`; the API debug b
 The only required browser environment variable is:
 
 ```text
-VITE_API_URL=https://rag-api.yashx.me
+VITE_API_URL=https://178-104-56-243.sslip.io
 ```
 
-Set it for Vercel Production, Preview, and Development. The backend `FRONTEND_ORIGINS` must list the exact Vercel production URL and any configured custom frontend domain. No provider key is ever placed in Vercel.
+This is the current live API URL. Set it for Vercel Production, Preview, and Development. The backend `FRONTEND_ORIGINS` must list the exact Vercel production URL and any configured custom frontend domain. No provider key is ever placed in Vercel.
 
 OpenRouter uses the same server-side streaming path as Groq. Add
 `OPENROUTER_API_KEY` to the VPS `.env` to activate its choices. New custom models

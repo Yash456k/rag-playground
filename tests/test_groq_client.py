@@ -217,7 +217,7 @@ async def test_openrouter_free_uses_openrouter_endpoint_and_reports_resolved_mod
 
     call = transport.calls[0]
     assert call["endpoint"] == "https://openrouter.ai/api/v1/chat/completions"
-    assert call["headers"]["HTTP-Referer"] == "https://rag.yashx.me"
+    assert call["headers"]["HTTP-Referer"] == "https://www.yash456k.com"
     assert call["json"]["model"] == "openrouter/free"
     assert call["json"]["max_tokens"] == pipeline.generation.max_tokens
     assert "max_completion_tokens" not in call["json"]
