@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import re
 import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -21,6 +20,7 @@ from app.config import PipelineConfig, load_pipeline
 from app.database import Database
 from app.embeddings import EmbeddingRegistry
 from app.groq_client import GroqClient, GroqStreamError
+from app.retrieval_selection import select_diverse_chunks as _select_diverse_chunks
 from app.schemas import ChatRequest
 from app.security import get_client_ip, hash_ip, valid_verification_token
 from app.settings import Settings, get_settings
@@ -111,51 +111,6 @@ def _build_retrieval_query(request: ChatRequest) -> str:
         return request.question
     context = "\n".join(prior_user_messages)
     return f"Previous user context:\n{context}\n\nCurrent question:\n{request.question}"
-
-
-def _chunk_terms(content: str) -> set[str]:
-    return {
-        token
-        for token in re.findall(r"[a-z0-9+#.-]{3,}", content.casefold())
-        if token not in {"about", "and", "for", "from", "that", "the", "this", "with", "yash"}
-    }
-
-
-def _select_diverse_chunks(
-    candidates: list[dict[str, Any]], top_k: int
-) -> list[dict[str, Any]]:
-    """Prefer distinct evidence over adjacent chunks repeating the same claim."""
-    selected: list[dict[str, Any]] = []
-    selected_terms: list[set[str]] = []
-    for candidate in candidates:
-        terms = _chunk_terms(candidate["content"])
-        duplicate = False
-        for existing, existing_terms in zip(selected, selected_terms, strict=True):
-            union = terms | existing_terms
-            similarity = len(terms & existing_terms) / len(union) if union else 0.0
-            adjacent = (
-                candidate["source"] == existing["source"]
-                and abs(candidate["chunkIndex"] - existing["chunkIndex"]) <= 1
-            )
-            if similarity >= 0.60 or (adjacent and similarity >= 0.32):
-                duplicate = True
-                break
-        if duplicate:
-            continue
-        selected.append(candidate)
-        selected_terms.append(terms)
-        if len(selected) == top_k:
-            break
-    if len(selected) < top_k:
-        # Preserve diversity when possible, then backfill by similarity so a
-        # requested Top 3/5/7 route always returns that many available chunks.
-        for candidate in candidates:
-            if candidate in selected:
-                continue
-            selected.append(candidate)
-            if len(selected) == top_k:
-                break
-    return selected
 
 
 async def _reserve_request_limits(

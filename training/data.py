@@ -68,7 +68,10 @@ def build_chunk_snapshot(
         )
     chunks: dict[str, str] = {}
     for document in discover_documents(corpus_path):
-        for chunk in chunk_document(document, pipeline):
+        # Training artifacts remain locked to the reviewed automatic snapshot. Manual
+        # production boundaries may change retrieval without silently redefining the
+        # passages that the existing fine-tunes were trained against.
+        for chunk in chunk_document(document, pipeline, honor_manual=False):
             chunk_id = f"{chunk.source}#{chunk.index}"
             if chunk_id in chunks:
                 raise ValueError(f"duplicate corpus chunk id: {chunk_id}")

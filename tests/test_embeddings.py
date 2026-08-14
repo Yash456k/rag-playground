@@ -56,6 +56,30 @@ def test_remote_model_loader_forwards_pinned_revision(
     assert calls[0]["revision"] == config.revision
 
 
+def test_model_loader_uses_explicit_benchmark_device(
+    pipeline: PipelineConfig, monkeypatch
+) -> None:
+    calls: list[dict] = []
+
+    class FakeModel:
+        max_seq_length = 256
+
+        def __init__(self, _model: str, **kwargs) -> None:
+            calls.append(kwargs)
+
+    monkeypatch.setattr("app.embeddings.SentenceTransformer", FakeModel)
+    monkeypatch.setattr(
+        EmbeddingRegistry,
+        "_encode_sync",
+        staticmethod(lambda *_args, **_kwargs: np.zeros((1, 384), dtype=np.float32)),
+    )
+    registry = EmbeddingRegistry(pipeline, device="cuda")
+
+    registry._load_model(pipeline.embedder("minilm-l6"))
+
+    assert calls[0]["device"] == "cuda"
+
+
 def test_document_encoding_applies_configured_document_prefix(
     pipeline: PipelineConfig, monkeypatch
 ) -> None:

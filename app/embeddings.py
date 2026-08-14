@@ -17,8 +17,9 @@ logger = logging.getLogger(__name__)
 class EmbeddingRegistry:
     """Loads the complete embedding ladder once and keeps every model resident."""
 
-    def __init__(self, pipeline: PipelineConfig) -> None:
+    def __init__(self, pipeline: PipelineConfig, *, device: str = "cpu") -> None:
         self.pipeline = pipeline
+        self.device = device
         self.models: dict[str, SentenceTransformer] = {}
         self.encode_lock = asyncio.Lock()
 
@@ -29,7 +30,7 @@ class EmbeddingRegistry:
             model_kwargs["attn_implementation"] = "eager"
         logger.info("Loading resident embedder %s from %s", config.id, config.model)
         loader_kwargs: dict[str, Any] = {
-            "device": "cpu",
+            "device": self.device,
             "model_kwargs": model_kwargs,
             "trust_remote_code": False,
         }

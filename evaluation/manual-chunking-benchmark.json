@@ -1,0 +1,444 @@
+{
+  "acceptance": {
+    "allDevRoutesPass": true,
+    "deployable": true,
+    "independentReview": "mode-specific qrel mapping, offline/live query parity (26/26), training lock, marker failures, and topic-label qrel neutrality verified",
+    "factualAnswerPassRateAutomatic": 0.615385,
+    "factualAnswerPassRateManual": 0.923077,
+    "factualAnswerRegressions": 0,
+    "heldoutCoverageLosses": 0,
+    "retrievalMeaningfullyImproved": true
+  },
+  "answerQuality": {
+    "automatic": {
+      "factualCases": 13,
+      "factualPassed": 8,
+      "safetyCases": 3,
+      "safetyPassed": 2,
+      "totalCases": 16,
+      "totalPassed": 10
+    },
+    "improvedCases": [
+      "dev-aivid-measurable-impact",
+      "dev-nsk-concurrency-proof",
+      "dev-rag-runtime-tradeoff",
+      "dev-typo-aivid"
+    ],
+    "manual": {
+      "factualCases": 13,
+      "factualPassed": 12,
+      "safetyCases": 3,
+      "safetyPassed": 1,
+      "totalCases": 16,
+      "totalPassed": 13
+    },
+    "model": "deepseek/deepseek-v4-flash",
+    "regressedFactualCases": [],
+    "safetyRepeat": {
+      "automaticPassed": 5,
+      "manualPassed": 4,
+      "note": "Only difference was one stochastic citation failure on unsupported-salary refusal; both corpora failed general-coding citation 0/3.",
+      "persistentPromptInjectionPasses": {
+        "automatic": 3,
+        "manual": 3
+      },
+      "runsPerCase": 3
+    },
+    "servedModelParity": true
+  },
+  "baselineCommit": "a855b7b147ebc4e8c28699a6cf35b53ac4958ecb",
+  "configuration": {
+    "automaticChunks": 22,
+    "candidateDepth": 12,
+    "corpusPreservation": {
+      "historicalTrainingChunks": 17,
+      "historicalTrainingSha256": "c62dea3b2dccd1c747b1f761f295e3611ee4ca705e77f2cde4b6612f6e745288",
+      "orderedWordsPreserved": 1335
+    },
+    "embeddingArtifactParity": {
+      "bytes": 269077925,
+      "files": 24,
+      "sha256Mismatches": 0
+    },
+    "embeddingDevice": "cuda",
+    "embeddingGpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "manualChunks": 20,
+    "qrels": {
+      "devSha256": "79b3cfa18bd42b2a28b653d130e5580147d89092f2124281c5598a2e74988a2c",
+      "heldoutSha256": "c1bfc612db0e9c1ca0977c5e8ffe22bd32a7a170052dee0b13ba250ec6a10791",
+      "mode": "evidence-regex remapped in memory per chunking mode"
+    },
+    "selection": "shared app.retrieval_selection.select_diverse_chunks",
+    "topK": 5
+  },
+  "kind": "manual-semantic-chunking-benchmark",
+  "retrieval": {
+    "dev": {
+      "automaticCorpusSha256": "f5d7cfc823f4f4fb08fe9a10a913fb5e9197c7517b7d50f93dc7421f5f2a7042",
+      "byEmbedder": {
+        "bge-base": {
+          "automatic": {
+            "mrrAt5": 0.75641,
+            "passed": false,
+            "recallAt1": 0.576923,
+            "recallAt3": 0.846154,
+            "recallAt5": 0.884615,
+            "requiredCoverage": 0.846154
+          },
+          "delta": {
+            "mrrAt5": 0.205128,
+            "recallAt1": 0.307692,
+            "recallAt3": 0.115384,
+            "recallAt5": 0.115385,
+            "requiredCoverage": 0.153846
+          },
+          "manual": {
+            "mrrAt5": 0.961538,
+            "passed": true,
+            "recallAt1": 0.884615,
+            "recallAt3": 0.961538,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "bge-small": {
+          "automatic": {
+            "mrrAt5": 0.74359,
+            "passed": false,
+            "recallAt1": 0.5,
+            "recallAt3": 0.923077,
+            "recallAt5": 0.923077,
+            "requiredCoverage": 0.846154
+          },
+          "delta": {
+            "mrrAt5": 0.205128,
+            "recallAt1": 0.423077,
+            "recallAt3": 0.038461,
+            "recallAt5": 0.076923,
+            "requiredCoverage": 0.153846
+          },
+          "manual": {
+            "mrrAt5": 0.948718,
+            "passed": true,
+            "recallAt1": 0.923077,
+            "recallAt3": 0.961538,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "minilm-l6": {
+          "automatic": {
+            "mrrAt5": 0.660256,
+            "passed": false,
+            "recallAt1": 0.384615,
+            "recallAt3": 0.884615,
+            "recallAt5": 0.923077,
+            "requiredCoverage": 0.846154
+          },
+          "delta": {
+            "mrrAt5": 0.173077,
+            "recallAt1": 0.307693,
+            "recallAt3": 0.076923,
+            "recallAt5": 0.076923,
+            "requiredCoverage": 0.153846
+          },
+          "manual": {
+            "mrrAt5": 0.833333,
+            "passed": true,
+            "recallAt1": 0.692308,
+            "recallAt3": 0.961538,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "portfolio-e5-small": {
+          "automatic": {
+            "mrrAt5": 0.848718,
+            "passed": false,
+            "recallAt1": 0.730769,
+            "recallAt3": 0.884615,
+            "recallAt5": 0.923077,
+            "requiredCoverage": 0.846154
+          },
+          "delta": {
+            "mrrAt5": 0.074359,
+            "recallAt1": 0.115385,
+            "recallAt3": 0.076923,
+            "recallAt5": 0.076923,
+            "requiredCoverage": 0.153846
+          },
+          "manual": {
+            "mrrAt5": 0.923077,
+            "passed": true,
+            "recallAt1": 0.846154,
+            "recallAt3": 0.961538,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "portfolio-gte-small": {
+          "automatic": {
+            "mrrAt5": 0.833333,
+            "passed": false,
+            "recallAt1": 0.615385,
+            "recallAt3": 0.923077,
+            "recallAt5": 0.923077,
+            "requiredCoverage": 0.846154
+          },
+          "delta": {
+            "mrrAt5": 0.128205,
+            "recallAt1": 0.26923,
+            "recallAt3": 0.076923,
+            "recallAt5": 0.076923,
+            "requiredCoverage": 0.153846
+          },
+          "manual": {
+            "mrrAt5": 0.961538,
+            "passed": true,
+            "recallAt1": 0.884615,
+            "recallAt3": 1.0,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "qwen3-embedding": {
+          "automatic": {
+            "mrrAt5": 0.807692,
+            "passed": false,
+            "recallAt1": 0.730769,
+            "recallAt3": 0.730769,
+            "recallAt5": 0.923077,
+            "requiredCoverage": 0.923077
+          },
+          "delta": {
+            "mrrAt5": 0.141026,
+            "recallAt1": 0.192308,
+            "recallAt3": 0.230769,
+            "recallAt5": 0.076923,
+            "requiredCoverage": 0.076923
+          },
+          "manual": {
+            "mrrAt5": 0.948718,
+            "passed": true,
+            "recallAt1": 0.923077,
+            "recallAt3": 0.961538,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        }
+      },
+      "caseCount": 13,
+      "manualCorpusSha256": "7ddd7a8bb8a3d110a9388d8977347c8332a7c140b421a153b6ce5948172b07ed",
+      "pairedEvidenceGroups": {
+        "coverageLosses": 0,
+        "improved": 33,
+        "rankRegressions": [
+          {
+            "automaticRank": 3,
+            "caseId": "dev-rag-runtime-tradeoff",
+            "embedder": "bge-small",
+            "manualRank": 4
+          }
+        ],
+        "tied": 62,
+        "worseRankWithinTop5": 1
+      }
+    },
+    "heldout": {
+      "automaticCorpusSha256": "f5d7cfc823f4f4fb08fe9a10a913fb5e9197c7517b7d50f93dc7421f5f2a7042",
+      "byEmbedder": {
+        "bge-base": {
+          "automatic": {
+            "mrrAt5": 0.53125,
+            "passed": false,
+            "recallAt1": 0.4375,
+            "recallAt3": 0.4375,
+            "recallAt5": 0.5625,
+            "requiredCoverage": 0.5
+          },
+          "delta": {
+            "mrrAt5": 0.229167,
+            "recallAt1": 0.1875,
+            "recallAt3": 0.4375,
+            "recallAt5": 0.4375,
+            "requiredCoverage": 0.5
+          },
+          "manual": {
+            "mrrAt5": 0.760417,
+            "passed": true,
+            "recallAt1": 0.625,
+            "recallAt3": 0.875,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "bge-small": {
+          "automatic": {
+            "mrrAt5": 0.5875,
+            "passed": false,
+            "recallAt1": 0.4375,
+            "recallAt3": 0.5625,
+            "recallAt5": 0.6875,
+            "requiredCoverage": 0.625
+          },
+          "delta": {
+            "mrrAt5": 0.072917,
+            "recallAt1": 0.0625,
+            "recallAt3": 0.1875,
+            "recallAt5": 0.3125,
+            "requiredCoverage": 0.375
+          },
+          "manual": {
+            "mrrAt5": 0.660417,
+            "passed": false,
+            "recallAt1": 0.5,
+            "recallAt3": 0.75,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "minilm-l6": {
+          "automatic": {
+            "mrrAt5": 0.708333,
+            "passed": false,
+            "recallAt1": 0.625,
+            "recallAt3": 0.8125,
+            "recallAt5": 0.8125,
+            "requiredCoverage": 0.75
+          },
+          "delta": {
+            "mrrAt5": -0.072916,
+            "recallAt1": -0.125,
+            "recallAt3": -0.1875,
+            "recallAt5": 0.1875,
+            "requiredCoverage": 0.25
+          },
+          "manual": {
+            "mrrAt5": 0.635417,
+            "passed": false,
+            "recallAt1": 0.5,
+            "recallAt3": 0.625,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "portfolio-e5-small": {
+          "automatic": {
+            "mrrAt5": 0.604167,
+            "passed": false,
+            "recallAt1": 0.4375,
+            "recallAt3": 0.5625,
+            "recallAt5": 0.8125,
+            "requiredCoverage": 0.75
+          },
+          "delta": {
+            "mrrAt5": 0.135416,
+            "recallAt1": 0.1875,
+            "recallAt3": 0.3125,
+            "recallAt5": 0.1875,
+            "requiredCoverage": 0.25
+          },
+          "manual": {
+            "mrrAt5": 0.739583,
+            "passed": true,
+            "recallAt1": 0.625,
+            "recallAt3": 0.875,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        },
+        "portfolio-gte-small": {
+          "automatic": {
+            "mrrAt5": 0.65625,
+            "passed": false,
+            "recallAt1": 0.5625,
+            "recallAt3": 0.5625,
+            "recallAt5": 0.6875,
+            "requiredCoverage": 0.625
+          },
+          "delta": {
+            "mrrAt5": -0.0375,
+            "recallAt1": -0.0625,
+            "recallAt3": 0.0625,
+            "recallAt5": 0.1875,
+            "requiredCoverage": 0.25
+          },
+          "manual": {
+            "mrrAt5": 0.61875,
+            "passed": false,
+            "recallAt1": 0.5,
+            "recallAt3": 0.625,
+            "recallAt5": 0.875,
+            "requiredCoverage": 0.875
+          }
+        },
+        "qwen3-embedding": {
+          "automatic": {
+            "mrrAt5": 0.708333,
+            "passed": false,
+            "recallAt1": 0.5625,
+            "recallAt3": 0.8125,
+            "recallAt5": 0.8125,
+            "requiredCoverage": 0.75
+          },
+          "delta": {
+            "mrrAt5": 0.0,
+            "recallAt1": -0.0625,
+            "recallAt3": 0.1875,
+            "recallAt5": 0.1875,
+            "requiredCoverage": 0.25
+          },
+          "manual": {
+            "mrrAt5": 0.708333,
+            "passed": false,
+            "recallAt1": 0.5,
+            "recallAt3": 1.0,
+            "recallAt5": 1.0,
+            "requiredCoverage": 1.0
+          }
+        }
+      },
+      "caseCount": 8,
+      "manualCorpusSha256": "7ddd7a8bb8a3d110a9388d8977347c8332a7c140b421a153b6ce5948172b07ed",
+      "pairedEvidenceGroups": {
+        "coverageLosses": 0,
+        "improved": 21,
+        "rankRegressions": [
+          {
+            "automaticRank": 3,
+            "caseId": "heldout-leadership-signal",
+            "embedder": "minilm-l6",
+            "manualRank": 4
+          },
+          {
+            "automaticRank": 1,
+            "caseId": "heldout-query-privacy",
+            "embedder": "minilm-l6",
+            "manualRank": 4
+          },
+          {
+            "automaticRank": 1,
+            "caseId": "heldout-query-privacy",
+            "embedder": "bge-small",
+            "manualRank": 2
+          },
+          {
+            "automaticRank": 1,
+            "caseId": "heldout-aivid-scale",
+            "embedder": "qwen3-embedding",
+            "manualRank": 2
+          },
+          {
+            "automaticRank": 1,
+            "caseId": "heldout-query-privacy",
+            "embedder": "portfolio-gte-small",
+            "manualRank": 2
+          }
+        ],
+        "tied": 28,
+        "worseRankWithinTop5": 5
+      }
+    }
+  },
+  "schemaVersion": 1
+}

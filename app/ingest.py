@@ -19,6 +19,12 @@ from app.settings import get_settings
 
 logger = logging.getLogger(__name__)
 SUPPORTED_SUFFIXES = {".md", ".txt", ".pdf"}
+MANUAL_CHUNK_MARKER = re.compile(
+    r"<!--\s*rag-chunk:\s*"
+    r"([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\s*\|\s*([^<>\r\n]+?)\s*-->"
+)
+MANUAL_CHUNK_SENTINEL = re.compile(r"<!--\s*rag-chunk:", re.IGNORECASE)
+MANUAL_CHUNK_MAXIMUM_MULTIPLIER = 2
 
 
 @dataclass(frozen=True)
@@ -34,6 +40,7 @@ class Chunk:
     title: str
     index: int
     content: str
+    semantic_id: str | None = None
 
 
 def read_source(path: Path, root: Path) -> SourceDocument:
@@ -110,11 +117,70 @@ def _word_aligned_suffix(text: str, maximum: int) -> str:
     return text[start + boundary.end() :].lstrip()
 
 
-def chunk_document(document: SourceDocument, pipeline: PipelineConfig) -> list[Chunk]:
+def _strip_manual_chunk_markers(content: str) -> str:
+    def replacement(match: re.Match[str]) -> str:
+        before = content[match.start() - 1 : match.start()]
+        after = content[match.end() : match.end() + 1]
+        if before and after and not before.isspace() and not after.isspace():
+            return " "
+        return ""
+
+    return MANUAL_CHUNK_MARKER.sub(replacement, content)
+
+
+def _manual_chunks(document: SourceDocument, pipeline: PipelineConfig) -> list[Chunk] | None:
+    matches = list(MANUAL_CHUNK_MARKER.finditer(document.content))
+    marker_count = len(MANUAL_CHUNK_SENTINEL.findall(document.content))
+    if marker_count != len(matches):
+        raise RuntimeError(
+            f"Malformed manual chunk marker in {document.source}; expected "
+            "<!-- rag-chunk: stable-id | semantic topic -->"
+        )
+    if not matches:
+        return None
+    if document.content[: matches[0].start()].strip():
+        raise RuntimeError(f"{document.source}: content appears before the first manual chunk")
+
+    seen: set[str] = set()
+    chunks: list[Chunk] = []
+    maximum = pipeline.chunking.max_characters * MANUAL_CHUNK_MAXIMUM_MULTIPLIER
+    for index, match in enumerate(matches):
+        semantic_id = match.group(1)
+        if semantic_id in seen:
+            raise RuntimeError(f"{document.source}: duplicate manual chunk id {semantic_id!r}")
+        seen.add(semantic_id)
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(document.content)
+        body = document.content[match.end() : end].strip()
+        if not body:
+            raise RuntimeError(f"{document.source}: manual chunk {semantic_id!r} is empty")
+        topic = re.sub(r"\s+", " ", match.group(2)).strip()
+        content = f"Topic: {topic}\n\n{body}"
+        if len(content) > maximum:
+            raise RuntimeError(
+                f"{document.source}: manual chunk {semantic_id!r} has {len(content)} characters; "
+                f"maximum is {maximum}"
+            )
+        chunks.append(
+            Chunk(document.source, document.title, index, content, semantic_id=semantic_id)
+        )
+    return chunks
+
+
+def chunk_document(
+    document: SourceDocument,
+    pipeline: PipelineConfig,
+    *,
+    honor_manual: bool = True,
+) -> list[Chunk]:
     config = pipeline.chunking
+    if honor_manual:
+        manual = _manual_chunks(document, pipeline)
+        if manual is not None:
+            return manual
+    content = _strip_manual_chunk_markers(document.content)
     raw_sections = [
         re.sub(r"\s+", " ", section).strip()
-        for section in re.split(r"\n\s*\n", document.content)
+        for section in re.split(r"\n\s*\n", content)
         if section.strip()
     ]
     sections: list[str] = []
