@@ -1,197 +1,181 @@
 # RAG Playground
 
-A public, inspectable retrieval-augmented chat experience for [Yash Khambhatta's portfolio](https://www.yash456k.com). Visitors can compare embedding and generation models while seeing the evidence and timing behind every grounded answer.
+**A transparent, multi-model RAG system built into my portfolio.** Visitors can change the embedding model and LLM, stream a grounded answer, and inspect the retrieved evidence, similarity scores, fallbacks, and latency behind it.
 
-## What visitors can inspect
+[![Live demo](https://img.shields.io/badge/Live_demo-yash456k.com-C74634?style=for-the-badge)](https://www.yash456k.com/#playground)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
+[![React](https://img.shields.io/badge/React-19-20232A?style=flat-square&logo=react)](frontend/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](app/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=flat-square&logo=postgresql&logoColor=white)](sql/schema.sql)
+[![CI](https://github.com/Yash456k/rag-playground/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash456k/rag-playground/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
-- Six resident CPU embedders: MiniLM L6, BGE Small v1.5, BGE Base v1.5,
-  Qwen3 Embedding 0.6B, portfolio-tuned E5 Small, and portfolio-tuned GTE Small.
-- Three Groq generation choices, the OpenRouter free-model router, and DeepSeek V4
-  Flash through OpenRouter. Provider keys remain server-side.
-- Token-by-token answers streamed as SSE from a POST request using `fetch` and `ReadableStream`.
-- Retrieved chunks, cosine scores, requested and served models, fallback state, and per-stage latency.
+[![RAG Playground interface](docs/assets/rag-playground.png)](https://www.yash456k.com/#playground)
 
-Visitors control the embedder, generation model, retrieval depth (top 3, 5, or 7),
-and whether recent user turns expand follow-up retrieval. The UI also exposes the
-active query transform, score threshold, and whether the route is portfolio-tuned.
-Retrieval defaults live in [`config/pipeline.yaml`](config/pipeline.yaml).
-The production default is three focused chunks. Runtime chunks are capped at 650
-characters with only 60 characters of overlap to reduce repeated résumé claims.
+## Why I built it
 
-For a ground-up explanation of RAG and this exact system, read
-[`RAG_GUIDE.md`](RAG_GUIDE.md).
+Most portfolio chatbots hide the interesting part behind a text box. This one exposes the retrieval and generation pipeline so a visitor can answer questions such as:
+
+- Which chunks were retrieved, from which source, and with what cosine score?
+- Does a larger embedding model actually retrieve better evidence?
+- Which model was requested, which one served the answer, and did fallback engage?
+- How much time went to embedding, retrieval, first token, and generation?
+- Does a chunking change improve retrieval across every configured embedding route?
+
+The result is both a usable portfolio interface and an inspectable applied-AI system.
+
+## What is live
+
+- **Six CPU embedding routes:** MiniLM L6, BGE Small, BGE Base, Qwen3 Embedding 0.6B, and two portfolio-tuned small models.
+- **Five generation routes:** three Groq models plus OpenRouter's free router and DeepSeek V4 Flash.
+- **Real SSE streaming:** the browser consumes token events from a POST request with `fetch` and `ReadableStream`.
+- **Inspectable retrieval:** source excerpts, cosine scores, selected route, query transform, and retrieval depth.
+- **Observable generation:** requested/served model, fallback attempts, token usage, cost estimate, and stage latency.
+- **History-aware follow-ups:** recent user turns can expand the retrieval query without being treated as trusted evidence.
+
+## Measured chunking experiment
+
+I replaced the original heading-aware automatic splitter with 20 reviewed semantic chunks, then compared it against the exact 22-chunk baseline across all six embedding routes.
+
+The strongest check was a frozen **22-case post-freeze challenge** using new query forms over the same corpus. Eighteen answerable cases produced 108 paired query/route observations.
+
+| Challenge metric | Automatic | Manual | Paired delta |
+|---|---:|---:|---:|
+| Required-evidence Recall@5 | 0.866 | **0.968** | **+0.102** |
+| Complete evidence retrieved@5 | 0.833 | **0.954** | **+0.120** |
+| Mean reciprocal evidence rank@5 | 0.664 | **0.830** | **+0.166** |
+| Evidence coverage changes | — | **16 gains / 0 losses** | — |
+
+The paired 95% interval for Recall@5 was **[+0.019, +0.213]**. A more conservative bootstrap that keeps related query variants in shared-fact clusters also remained positive: **[+0.021, +0.221]**.
+
+The result is intentionally not presented as universal RAG generalization: the challenge was frozen after the candidate, but it still queries the same small portfolio corpus. Four of six challenge routes passed the older absolute route gates, and generated-answer evaluation was positive but mixed. The claim is narrower and defensible: **manual semantic boundaries improved this corpus's paired retrieval without a Top-5 evidence-coverage loss.**
+
+- [Readable before/after report](docs/manual-semantic-chunking-evaluation.md)
+- [Machine-readable challenge comparison](evaluation/manual-chunking-challenge-v2-rigorous.json)
+- [Evaluation design, locks, and limitations](evaluation/README.md)
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    Browser["React SPA on Vercel"] -->|"POST + SSE"| Caddy["Caddy HTTPS proxy"]
-    Caddy --> API["FastAPI · one worker"]
-    API --> Registry["6 resident CPU embedders"]
-    API --> PG["isolated pgvector PostgreSQL"]
-    API --> Groq["Groq streaming API"]
-    Registry -->|"selected vector space"| PG
+    Browser["React 19 + Vite"] -->|"POST /v1/chat · SSE"| Proxy["Caddy"]
+    Proxy --> API["FastAPI"]
+    API --> Query["History-aware query builder"]
+    Query --> Models["6 resident CPU embedders"]
+    Models --> DB["PostgreSQL + pgvector"]
+    DB --> Select["Exact cosine + diversity selection"]
+    Select --> Context["Grounded source excerpts"]
+    Context --> LLM["Groq / OpenRouter"]
+    LLM -->|"tokens + usage + provenance"| Browser
 ```
 
-Each chunk row owns six typed columns. The backend maps a validated embedder ID to a
-fixed SQL identifier; user input never becomes an SQL identifier. Exact cosine scans
-are intentional for this small corpus: they preserve recall and avoid six HNSW graphs
-in memory.
+Each corpus row stores six typed vectors. A validated embedder ID maps to a fixed SQL column; user input never becomes an SQL identifier. Exact cosine scans are deliberate for this corpus: they preserve recall and avoid maintaining six approximate-search indexes for a tiny dataset.
 
-## Repository layout
+Production and evaluation share the same query construction, candidate depth, diversity selector, and source-context formatter. Fresh reports serialize these settings so mismatched runs fail closed instead of producing a misleading comparison.
+
+## Request lifecycle
+
+1. Validate the question, history, embedder, LLM, and retrieval depth.
+2. Build the same history-aware retrieval query used by evaluation.
+3. Encode it with the selected resident embedder.
+4. Retrieve a deeper exact-cosine candidate set from the matching pgvector column.
+5. Apply shared diversity selection and minimum-score rules.
+6. Format only retrieved source excerpts into an untrusted-data prompt.
+7. Stream model, token, usage, and completion events to the browser.
+8. Record latency, selected sources, fallback attempts, and a salted IP hash.
+
+## Engineering choices
+
+| Concern | Implementation |
+|---|---|
+| Retrieval | Exact cosine, configurable Top-K, deeper candidate pool, shared diversity selection |
+| Embeddings | Six pinned routes, immutable remote revisions, safetensors only, remote code disabled |
+| Generation | Groq and OpenRouter behind one streaming interface with bounded fallback |
+| Storage | PostgreSQL 16 + pgvector, one typed vector column per embedding space |
+| Evaluation | Locked splits, semantic qrels, paired bootstrap intervals, exact sign tests, regression lists |
+| Runtime | Docker Compose, one API worker, resident CPU models, loopback-only API/database |
+| Frontend | React 19, TypeScript, Vite, streamed Markdown answers, inspectable evidence drawer |
+| Abuse control | Atomic per-IP/global limits and a model-weighted monthly OpenRouter budget |
+
+## Repository map
 
 ```text
-app/                 FastAPI, embedding registry, retrieval, limits, logging, ingestion
-config/pipeline.yaml Model registry and retrieval/generation defaults
-corpus/              Three curated resume, project, and engineering case-study documents
-evaluation/          Retrieval and live-answer cases, gates, and locked checksums
-deploy/Caddyfile     Streaming-safe TLS reverse proxy
-frontend/            Vite + React + TypeScript SPA
-scripts/             Safe ingestion and verification helpers
-sql/schema.sql       pgvector schema, six vector columns, logs, usage counters
-training/            Reviewed datasets, pinned recipes, and audit contract
-docker-compose.yml   Isolated production stack
+app/          FastAPI, retrieval, streaming, ingestion, limits, and logging
+frontend/     React + TypeScript portfolio and Ask AI interface
+config/       Embedding, generation, chunking, and retrieval configuration
+corpus/       Curated résumé, project, and engineering case-study sources
+evaluation/   Locked cases, qrels, gates, and generated comparison reports
+scripts/      Evaluation, ingestion, verification, and deployment helpers
+sql/          pgvector schema and operational tables
+training/     Reviewed datasets, pinned fine-tuning recipes, and artifact audits
 ```
 
-## Security and abuse controls
+## Run the interface locally
 
-- CORS accepts only explicit HTTPS frontend origins.
-- The API and database host ports bind to loopback; only Caddy binds the VPS public IPv4 on ports 80/443.
-- The system prompt allows answers only from supplied excerpts and treats the question, history, and corpus as untrusted data.
-- Questions are capped at 500 characters and history at six short messages.
-- PostgreSQL atomically enforces a 15-query per-IP daily bucket, a 120-query global
-  daily burst ceiling, and a model-weighted $1.80 monthly OpenRouter reservation ceiling.
-- OpenRouter requests pre-reserve a conservative 32,000 input tokens plus the
-  configured 600-token output maximum. Groq selections and the Groq fallback do not
-  consume the monetary ledger, while all requests still obey the daily abuse limits.
-- Query logs record selections, retrieved source IDs/scores, latency, fallback attempts, and a salted IP hash. Raw IP addresses are not stored.
-- The Groq key and verification token exist only in the VPS `.env`. Neither belongs in the frontend or Vercel.
-- The API container drops Linux capabilities, runs as UID 10001, and has a 3,500 MiB hard memory limit.
-
-The private `X-Verify-Fallback` header is for operator verification only. With the server-only token it prepends a deliberately invalid provider model, proving that the live fallback path engages. CORS does not allow browsers to send this header.
-
-## Local checks
+The frontend development server proxies `/api` to the live public API by default, so the UI can be explored without downloading six embedding models:
 
 ```bash
-python -m compileall -q app
-ruff check app tests
+git clone https://github.com/Yash456k/rag-playground.git
+cd rag-playground/frontend
+npm ci
+VITE_API_URL=/api npm run dev
+```
+
+Open `http://localhost:5173`. Public API rate limits still apply.
+
+## Run the full stack
+
+The complete backend requires Docker, the two reviewed local embedding artifacts under `model-artifacts/`, and server-side provider keys. Start from `.env.example`, replace every placeholder, and never commit `.env`.
+
+```bash
+docker compose build api
+docker compose up -d --wait db
+docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
+docker compose up -d api
+```
+
+The API binds to `127.0.0.1:18080` and PostgreSQL to `127.0.0.1:55432`. Caddy is the only public production entry point.
+
+## Checks
+
+```bash
 pytest -q
+ruff check .
 npm --prefix frontend ci
 npm --prefix frontend run check
 npm --prefix frontend run build
 docker compose --env-file .env.example config --quiet
 ```
 
-The model integration is verified in Docker because all remote revisions and both
-local safetensors artifacts must be exercised in the same CPU image used by production.
+The rigorous evaluation adds strict pairing, row-integrity failures, retrieval-protocol parity, prompt-budget accounting, deterministic report generation, answer-run exclusions, and shared-fact sensitivity tests.
 
-```bash
-docker run --rm --memory=4g --cpus=2.5 \
-  -v rag-playground-model-smoke:/models \
-  -v "$PWD/model-artifacts:/model-artifacts:ro" \
-  --entrypoint python rag-playground-api:local -m scripts.model_smoke
-```
+## API
 
-## VPS deployment
+| Endpoint | Purpose |
+|---|---|
+| `GET /v1/health` | Database readiness, chunk count, and loaded embedder inventory |
+| `GET /v1/config` | Public model/retrieval configuration without secrets |
+| `POST /v1/chat` | Validated chat request returning `text/event-stream` |
 
-Production lives only at `/opt/rag-playground` and uses the Compose project name `rag-playground`.
+SSE events are `meta`, `sources`, `model`, `token`, `usage`, `done`, and `error`.
 
-1. Install Docker Engine and the Compose plugin using the distribution-supported packages if the audited host does not already provide them.
-2. Copy this repository to `/opt/rag-playground`.
-3. Create `/opt/rag-playground/.env` as mode `600` from `.env.example`. Set the provider keys and ACME contact email, then generate independent random values for the database password, IP hash salt, and verification token.
-4. The example already targets the current sslip.io API hostname and VPS address. If either changes, update `PUBLIC_API_URL`, `API_DOMAIN`, `ALLOWED_HOSTS`, and `PUBLIC_IPV4` together; configure DNS first when using a branded hostname.
-5. Start the database, ingest once with no API model process competing for RAM, then start the stack:
+## Security and cost controls
 
-```bash
-docker compose up -d --wait --wait-timeout 120 db
-docker compose run --rm --no-deps api python -m app.ingest --corpus /app/corpus
-docker compose up -d
-```
+- Provider keys and verification tokens stay server-side.
+- CORS accepts only explicit HTTPS frontend origins.
+- API and database host ports bind to loopback.
+- The API container runs as UID 10001 with dropped capabilities and `no-new-privileges`.
+- Questions and history are bounded before prompt construction.
+- Corpus, history, and questions are treated as untrusted data, not instructions.
+- PostgreSQL atomically enforces per-IP, global daily, and model-weighted monthly limits.
+- Logs store a salted IP hash rather than the raw address.
 
-For later corpus refreshes, the wrapper prevents two six-model processes from coexisting:
+## Further reading
 
-```bash
-docker compose stop api
-./scripts/ingest.sh
-docker compose start api
-```
-
-To rebuild everything after editing files in `corpus/`, use the end-to-end helper. It
-checks and builds the frontend when Node is available, rebuilds the API image, safely
-stops the resident embedding process, re-ingests every vector space, restarts the stack,
-and verifies the public health endpoint:
-
-```bash
-./scripts/rebuild-data.sh
-```
-
-Use `./scripts/rebuild-data.sh --skip-frontend` for a data-only server refresh. The
-training corpus lock remains intentionally separate: changes intended for another
-fine-tuning run still require dataset review before retraining.
-
-PostgreSQL is reachable from the host only at `127.0.0.1:55432`; the API debug binding is `127.0.0.1:18080`. Caddy binds only the VPS public IPv4 to avoid the audited Tailscale-specific port 443 listener.
-
-## Frontend deployment
-
-The only required browser environment variable is:
-
-```text
-VITE_API_URL=https://178-104-56-243.sslip.io
-```
-
-This is the current live API URL. Set it for Vercel Production, Preview, and Development. The backend `FRONTEND_ORIGINS` must list the exact Vercel production URL and any configured custom frontend domain. No provider key is ever placed in Vercel.
-
-OpenRouter uses the same server-side streaming path as Groq. Add
-`OPENROUTER_API_KEY` to the VPS `.env` to activate its choices. New custom models
-only need a registry entry—no client code change:
-
-```yaml
-llms:
-  - id: vendor/model-id
-    label: Display name
-    description: OpenRouter · short description
-    provider: openrouter
-```
-
-`openrouter/free` is registered for zero-cost routing. OpenRouter selects a currently
-available free model for each request, and the UI reports the resolved model once
-generation starts. `deepseek/deepseek-v4-flash` is the low-cost paid OpenRouter choice.
-Fallback is limited to GPT-OSS 20B so a provider failure cannot silently escalate to a
-more expensive model.
-
-## API overview
-
-- `GET /v1/health` - database readiness, chunk count, and the exact resident embedder list.
-- `GET /v1/config` - public selector metadata and non-sensitive retrieval settings.
-- `POST /v1/chat` - validated JSON request; response is `text/event-stream`.
-
-SSE event types are `meta`, `sources`, `model`, `token`, `usage`, `done`, and `error`. A completed response reports both the requested and served model, fallback attempts, and `embeddingMs`, `retrievalMs`, `firstTokenMs`, `generationMs`, and `totalMs`.
-
-One stream can be checked from the production image without exposing the operator token:
-
-```bash
-docker compose exec -T api python -m scripts.verify_stream \
-  --url http://127.0.0.1:8000 \
-  --embedder bge-small \
-  --model openai/gpt-oss-20b
-```
-
-## Model attribution
-
-- `sentence-transformers/all-MiniLM-L6-v2` - Apache-2.0
-- `BAAI/bge-small-en-v1.5` and `BAAI/bge-base-en-v1.5` - MIT
-- `Qwen/Qwen3-Embedding-0.6B` - Apache-2.0
-- `intfloat/e5-small-v2` - MIT (base for the portfolio E5 artifact)
-- `thenlper/gte-small` - MIT (base for the portfolio GTE artifact)
-
-All repositories are pinned to immutable Hugging Face commit revisions in the pipeline configuration. Remote model code is disabled and safetensors are required.
-
-## Corpus provenance
-
-The three documents are manually curated from Yash's tracked resume, portfolio source,
-and this system's verified implementation. Stale claims were reconciled: the AIVID
-internship is dated September 2024 through September 2025, the current email is
-`yash456k@gmail.com`, and project links use their verified public repositories.
+- [RAG from first principles, using this system](RAG_GUIDE.md)
+- [Manual semantic chunking: rigorous before/after evaluation](docs/manual-semantic-chunking-evaluation.md)
+- [Evaluation suite and reproducibility notes](evaluation/README.md)
+- [Implementation and deployment record](PROGRESS.md)
 
 ## License
 
