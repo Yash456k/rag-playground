@@ -12,8 +12,11 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
+from app.retrieval_context import format_source_excerpts
+
 EVALUATION_ROOT = Path(__file__).resolve().parent
-SPLITS = ("dev", "heldout")
+SPLITS = ("dev", "heldout", "challenge-v2")
+LOCKED_SPLITS = frozenset({"heldout", "challenge-v2"})
 SECRET_KEY_PATTERN = re.compile(
     r"(?:api[-_]?key|authorization|password|secret|"
     r"(?:access|auth|verification|evaluation|bearer)?[-_]?token)$",
@@ -24,6 +27,7 @@ SECRET_VALUE_PATTERNS = (
     re.compile(r"(?i)(?:api[-_]?key|password|secret|token)\s*[:=]\s*\S+"),
     re.compile(r"\bgsk_[A-Za-z0-9_-]{12,}\b"),
 )
+CONTEXT_CHAR_BUDGETS = (1500, 2000, 2500)
 
 
 class EvaluationDataError(ValueError):
@@ -44,24 +48,32 @@ def _load_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def verify_heldout_lock(evaluation_root: Path = EVALUATION_ROOT) -> str:
-    heldout_path = evaluation_root / "heldout.json"
-    lock_path = evaluation_root / "heldout.sha256"
+def verify_split_lock(split: str, evaluation_root: Path = EVALUATION_ROOT) -> str:
+    if split not in LOCKED_SPLITS:
+        raise EvaluationDataError(f"Split is not lock-protected: {split}")
+    split_path = evaluation_root / f"{split}.json"
+    lock_path = evaluation_root / f"{split}.sha256"
     try:
         expected, filename = lock_path.read_text(encoding="ascii").strip().split(maxsplit=1)
-        raw = heldout_path.read_bytes()
+        raw = split_path.read_bytes()
     except (OSError, ValueError) as exc:
-        raise EvaluationDataError("Held-out lock is missing or malformed") from exc
+        raise EvaluationDataError(f"{split} lock is missing or malformed") from exc
     filename = filename.lstrip("*")
-    if filename != "heldout.json" or not re.fullmatch(r"[0-9a-f]{64}", expected):
-        raise EvaluationDataError("Held-out lock must be '<sha256>  heldout.json'")
+    expected_filename = f"{split}.json"
+    if filename != expected_filename or not re.fullmatch(r"[0-9a-f]{64}", expected):
+        raise EvaluationDataError(f"{split} lock must be '<sha256>  {expected_filename}'")
     actual = hashlib.sha256(raw).hexdigest()
     if not hmac.compare_digest(actual, expected):
         raise EvaluationDataError(
-            "heldout.json changed: restore it or intentionally regenerate heldout.sha256; "
+            f"{expected_filename} changed: restore it or intentionally regenerate "
+            f"{split}.sha256; "
             "never tune or train against this split"
         )
     return actual
+
+
+def verify_heldout_lock(evaluation_root: Path = EVALUATION_ROOT) -> str:
+    return verify_split_lock("heldout", evaluation_root)
 
 
 def _validate_patterns(patterns: Sequence[str], location: str) -> None:
@@ -144,8 +156,8 @@ def load_split(
 ) -> dict[str, Any]:
     if split not in SPLITS:
         raise EvaluationDataError(f"Unknown split: {split}")
-    if split == "heldout" and verify_lock:
-        verify_heldout_lock(evaluation_root)
+    if split in LOCKED_SPLITS and verify_lock:
+        verify_split_lock(split, evaluation_root)
     payload = _load_json(evaluation_root / f"{split}.json")
     if payload.get("version") != 1 or payload.get("split") != split:
         raise EvaluationDataError(f"{split}.json has the wrong version or split")
@@ -270,6 +282,35 @@ def evidence_group_ranks(
     return ranks
 
 
+def _context_redundancy(chunks: Sequence[dict[str, Any]]) -> float:
+    token_sets = [
+        set(re.findall(r"[a-z0-9]+", str(chunk.get("content", "")).lower())) for chunk in chunks[:5]
+    ]
+    similarities: list[float] = []
+    for left_index, left in enumerate(token_sets):
+        for right in token_sets[left_index + 1 :]:
+            union = left | right
+            similarities.append(0.0 if not union else len(left & right) / len(union))
+    return mean(similarities)
+
+
+def _context_prefix_within_budget(
+    chunks: Sequence[dict[str, Any]], budget: int
+) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    characters = 0
+    for chunk in chunks[:5]:
+        candidate = [*selected, chunk]
+        candidate_characters = len(format_source_excerpts(candidate))
+        if candidate_characters > budget:
+            break
+        selected.append(chunk)
+        characters = candidate_characters
+        if characters >= budget:
+            break
+    return selected
+
+
 def ranking_metrics(groups: Sequence[dict[str, Any]], chunks: Sequence[dict[str, Any]]) -> dict:
     if not groups:
         raise EvaluationDataError("Retrieval metrics require at least one evidence group")
@@ -279,10 +320,49 @@ def ranking_metrics(groups: Sequence[dict[str, Any]], chunks: Sequence[dict[str,
         for k in (1, 3, 5)
     }
     first = min((rank for rank in ranks if rank is not None and rank <= 5), default=None)
+    top_five = list(chunks[:5])
+    relevant_context = sum(
+        any(
+            evidence_option_matches(option, chunk) for group in groups for option in group["any_of"]
+        )
+        for chunk in top_five
+    )
+    budget_metrics: dict[str, Any] = {}
+    for budget in CONTEXT_CHAR_BUDGETS:
+        budgeted = _context_prefix_within_budget(top_five, budget)
+        budgeted_ranks = evidence_group_ranks(groups, budgeted)
+        budget_metrics.update(
+            {
+                f"recallAt{budget}Chars": sum(rank is not None for rank in budgeted_ranks)
+                / len(budgeted_ranks),
+                f"allEvidenceAt{budget}Chars": all(rank is not None for rank in budgeted_ranks),
+                f"contextChunksAt{budget}Chars": len(budgeted),
+                f"contextCharsAt{budget}Chars": len(format_source_excerpts(budgeted)),
+            }
+        )
     return {
         **recall,
+        **budget_metrics,
         "reciprocalRankAt5": 0.0 if first is None else 1.0 / first,
         "requiredCoveredAt5": all(rank is not None and rank <= 5 for rank in ranks),
+        **{
+            f"allEvidenceAt{k}": all(rank is not None and rank <= k for rank in ranks)
+            for k in (1, 3, 5)
+        },
+        "meanReciprocalEvidenceRankAt5": mean(
+            0.0 if rank is None or rank > 5 else 1.0 / rank for rank in ranks
+        ),
+        "meanEvidenceDiscountAt5": mean(
+            0.0 if rank is None or rank > 5 else 1.0 / math.log2(rank + 1) for rank in ranks
+        ),
+        "requiredContextPrecisionAt5": (0.0 if not top_five else relevant_context / len(top_five)),
+        "contextRedundancyAt5": _context_redundancy(top_five),
+        "contextCharsAt5": len(format_source_excerpts(top_five)),
+        "sourceDiversityAt5": (
+            0.0
+            if not top_five
+            else len({str(chunk.get("source", "")) for chunk in top_five}) / len(top_five)
+        ),
         "evidenceGroupRanks": ranks,
     }
 

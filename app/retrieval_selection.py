@@ -3,6 +3,10 @@ from __future__ import annotations
 import re
 from typing import Any
 
+GLOBAL_SIMILARITY_THRESHOLD = 0.60
+ADJACENT_SIMILARITY_THRESHOLD = 0.32
+ADJACENCY_DISTANCE = 1
+
 
 def _chunk_terms(content: str) -> set[str]:
     return {
@@ -12,9 +16,7 @@ def _chunk_terms(content: str) -> set[str]:
     }
 
 
-def select_diverse_chunks(
-    candidates: list[dict[str, Any]], top_k: int
-) -> list[dict[str, Any]]:
+def select_diverse_chunks(candidates: list[dict[str, Any]], top_k: int) -> list[dict[str, Any]]:
     """Prefer distinct evidence over adjacent chunks repeating the same claim."""
     selected: list[dict[str, Any]] = []
     selected_terms: list[set[str]] = []
@@ -26,9 +28,11 @@ def select_diverse_chunks(
             similarity = len(terms & existing_terms) / len(union) if union else 0.0
             adjacent = (
                 candidate["source"] == existing["source"]
-                and abs(candidate["chunkIndex"] - existing["chunkIndex"]) <= 1
+                and abs(candidate["chunkIndex"] - existing["chunkIndex"]) <= ADJACENCY_DISTANCE
             )
-            if similarity >= 0.60 or (adjacent and similarity >= 0.32):
+            if similarity >= GLOBAL_SIMILARITY_THRESHOLD or (
+                adjacent and similarity >= ADJACENT_SIMILARITY_THRESHOLD
+            ):
                 duplicate = True
                 break
         if duplicate:

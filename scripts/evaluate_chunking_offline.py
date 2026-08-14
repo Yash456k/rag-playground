@@ -14,20 +14,30 @@ import torch
 from app.config import EmbedderConfig, load_pipeline
 from app.embeddings import EmbeddingRegistry
 from app.ingest import chunk_document, discover_documents
+from app.retrieval_protocol import (
+    embedding_route_protocol,
+    retrieval_candidate_depth,
+    retrieval_protocol,
+)
+from app.retrieval_query import build_retrieval_query
 from app.retrieval_selection import select_diverse_chunks
-from evaluation.eval_lib import load_cases, load_gates, ranking_metrics, select_cases, write_report
+from evaluation.eval_lib import (
+    SPLITS,
+    load_cases,
+    load_gates,
+    ranking_metrics,
+    select_cases,
+    write_report,
+)
 from scripts.evaluate_retrieval import aggregate_embedder_rows
 from scripts.remap_evaluation_qrels import remap_cases_to_chunks
 
 
 def _retrieval_query(case: dict[str, Any]) -> str:
-    prior_user = [
-        message["content"] for message in case.get("history", [])[-4:] if message["role"] == "user"
-    ]
-    if not prior_user:
-        return case["question"]
-    context = "\n".join(prior_user)
-    return f"Previous user context:\n{context}\n\nCurrent question:\n{case['question']}"
+    return build_retrieval_query(
+        case["question"],
+        [(message["role"], message["content"]) for message in case.get("history", [])],
+    )
 
 
 def _sync(device: str) -> None:
@@ -92,7 +102,7 @@ def run_model(
                 f"expected {config.dimensions}"
             )
         scores = matrix @ vector
-        candidate_depth = min(12, top_k * 3)
+        candidate_depth = retrieval_candidate_depth(top_k)
         order = np.argsort(-scores, kind="stable")[:candidate_depth]
         candidates = [
             {
@@ -128,6 +138,10 @@ def run_model(
         "revision": config.revision,
         "dimensions": config.dimensions,
         "device": device,
+        "queryPrefix": config.query_prefix,
+        "documentPrefix": config.document_prefix,
+        "dtype": config.dtype,
+        "minimumScore": config.minimum_score,
         "loadSeconds": round(load_seconds, 3),
         "corpusEncodeSeconds": round(corpus_seconds, 3),
         "meanQueryMs": round(sum(query_times) / len(query_times), 3),
@@ -147,7 +161,7 @@ def run_model(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Offline production-parity chunking evaluation")
-    parser.add_argument("--split", choices=("dev", "heldout"), required=True)
+    parser.add_argument("--split", choices=SPLITS, required=True)
     parser.add_argument("--chunking", choices=("auto", "manual"), required=True)
     parser.add_argument("--embedder", action="append", default=[])
     parser.add_argument("--device", default="cpu")
@@ -232,6 +246,8 @@ def main() -> int:
         "caseIds": [case["id"] for case in cases],
         "qrelOptionsRemapped": qrel_changes,
         "topK": args.top_k,
+        "retrievalProtocol": retrieval_protocol(args.top_k),
+        "embeddingRoutes": {config.id: embedding_route_protocol(config) for config in configs},
         "device": args.device,
         "gatesEnforced": not args.no_gate,
         "gates": gates,
