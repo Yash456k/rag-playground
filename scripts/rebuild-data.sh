@@ -64,7 +64,7 @@ trap - ERR
 
 health_url="${PUBLIC_API_URL:-}"
 if [[ -z "$health_url" && -f .env ]]; then
-  health_url="$(grep -E '^PUBLIC_API_URL=' .env | tail -n 1 | cut -d= -f2-)"
+  health_url="$(grep -E '^PUBLIC_API_URL=' .env | tail -n 1 | cut -d= -f2- | tr -d '\r')"
 fi
 if [[ -n "$health_url" ]]; then
   curl --fail --silent --show-error "${health_url%/}/v1/health" >/dev/null
