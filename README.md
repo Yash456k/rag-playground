@@ -98,8 +98,8 @@ Production lives only at `/opt/rag-playground` and uses the Compose project name
 
 1. Install Docker Engine and the Compose plugin using the distribution-supported packages if the audited host does not already provide them.
 2. Copy this repository to `/opt/rag-playground`.
-3. Create `/opt/rag-playground/.env` as mode `600` from `.env.example`. Generate independent random values for the database password, IP hash salt, and verification token.
-4. Point the API subdomain's A record at the VPS public IPv4.
+3. Create `/opt/rag-playground/.env` as mode `600` from `.env.example`. Set the provider keys and ACME contact email, then generate independent random values for the database password, IP hash salt, and verification token.
+4. The example already targets the current sslip.io API hostname and VPS address. If either changes, update `PUBLIC_API_URL`, `API_DOMAIN`, `ALLOWED_HOSTS`, and `PUBLIC_IPV4` together; configure DNS first when using a branded hostname.
 5. Start the database, ingest once with no API model process competing for RAM, then start the stack:
 
 ```bash

@@ -1,12 +1,11 @@
 # RAG Playground deployment record
 
-Last updated: 2026-07-12 17:15 IST
+Last updated: 2026-08-14 13:11 IST
 
 ## Goal status
 
-At the time of this record, the public portfolio RAG was deployed and interactable at
-`https://rag-playground-alpha.vercel.app`. Its API was served through the valid-TLS
-hostname `https://178-104-56-243.sslip.io`.
+The public portfolio RAG is deployed at `https://www.yash456k.com`. Its API is served
+through the valid-TLS hostname `https://178-104-56-243.sslip.io`.
 
 - [x] Six selectable embedding routes are resident in production.
 - [x] Portfolio E5 Small and Portfolio GTE Small were genuinely trained, audited,
@@ -81,42 +80,44 @@ readable by UID 10001.
 
 ## Current deployment evidence
 
-Deployed feature revision: `249cd75` (`main`, pushed to GitHub and built on the VPS).
+Deployed feature revision: `ef69510` (`main`, pushed to GitHub and built on the VPS).
 This deployment record is committed afterward and does not change the running image.
 
 - Public and loopback `/v1/health` both report `status=ok`.
-- Database contains 3 documents / 17 chunks.
-- Vector coverage is 17/17 for all six columns.
+- Database contains 3 documents / 22 chunks.
+- Vector coverage is 22/22 for all six columns.
 - API reports the exact same six IDs in `loaded` and `expected`.
-- Strict CORS echoes only the Vercel production origin in the verified preflight.
+- Strict CORS accepts `https://www.yash456k.com`; the retired `https://rag.yashx.me`
+  origin is rejected with HTTP 400 and is absent from the production environment.
 - API and PostgreSQL bind only to `127.0.0.1`; Caddy owns the public IPv4 ports 80/443.
-- SSH, fail2ban, Tailscale, host PostgreSQL, and the pre-existing loopback services remain
-  active with their audited listeners.
-- Current `docker stats`: API `489.6 MiB / 3.418 GiB`, PostgreSQL
-  `30.7 MiB / 384 MiB`, Caddy `14.9 MiB / 96 MiB`.
-- Local and VPS Git worktrees were clean at the audited source revision.
+- Current `docker stats`: API `501.9 MiB / 3.418 GiB`, PostgreSQL
+  `34.01 MiB / 384 MiB`, Caddy `22.48 MiB / 96 MiB`.
+- The deployed API image contains the `www.yash456k.com` OpenRouter referer and no
+  `rag.yashx.me` referer.
 
 ## Public browser verification
 
-The deployed Vercel UI showed pipeline online, 6 resident embedders, 3 LLM routes, and
-7 default chunks. The custom GTE route displayed “portfolio fine-tune,” symmetric text
-encoding, threshold `0.77`, and top seven/history-on. Top three/history-off was selected
-and observed in the active readout, then defaults were restored.
+The custom domain serves the current Vercel build with canonical and OpenGraph URLs set
+to `https://www.yash456k.com/`. The public config reports six resident embedders, five
+LLM routes, top-three retrieval by default, and history-aware retrieval enabled.
 
-A real public question—“What measurable engineering impact did Yash have at AIVID
-Techvision?”—completed on Portfolio GTE + GPT-OSS 20B with a concise `[S1]`-cited answer,
-seven visible source cards, `0.906` top similarity, `41 ms` embedding, `6 ms` retrieval,
-`565 ms` first token, and `694 ms` total latency.
+A real public question—“What is Yash's portfolio URL?”—completed on Portfolio GTE +
+GPT-OSS 20B with the cited answer `https://www.yash456k.com` from three source chunks.
+The top similarity was `0.88661`; embedding took `26.6 ms`, retrieval `4.9 ms`, first
+token `415.0 ms`, and the full streamed answer `438.4 ms`. Twenty token events and one
+clean `done` event arrived with no fallback or error.
 
 ## Verification commands
 
-- Backend: 62 tests passed.
+- Backend: 74 tests passed under the production Python 3.12 image.
 - Ruff: all application, tests, scripts, training, and evaluation paths passed.
-- Frontend: TypeScript, ESLint, 2 Vitest tests, and Vite production build passed.
+- Frontend: TypeScript, ESLint, 4 Vitest tests, and Vite production build passed.
+- `npm audit` reported zero vulnerabilities after the lockfile refresh.
 - Git diff whitespace validation passed.
 - VPS Compose configuration validated with the production engine.
-- Public HTTPS health, strict CORS, container health, model smoke, vector coverage,
-  artifact checksums, warmed resources, and listener/service parity passed.
+- GitHub backend/frontend CI and the Vercel deployment passed for `ef69510`.
+- Public HTTPS health, strict CORS, container health, re-ingestion, vector coverage,
+  custom-domain metadata, and a real public SSE answer passed.
 
 ## Branded DNS follow-up (retired)
 
