@@ -1,0 +1,3470 @@
+{
+  "schemaVersion": 1,
+  "kind": "paired-semantic-chunking-comparison",
+  "split": "dev",
+  "sample": {
+    "answerableCases": 13,
+    "evidenceGroups": 16,
+    "embeddingRoutes": 6,
+    "pairedRouteCases": 78,
+    "bootstrapUnit": "case (embedding routes averaged within each sampled case)",
+    "bootstrapSamples": 10000,
+    "bootstrapSeed": 20260814
+  },
+  "lineage": {
+    "evaluationSplit": {
+      "artifact": "evaluation/dev.json",
+      "sha256": "79b3cfa18bd42b2a28b653d130e5580147d89092f2124281c5598a2e74988a2c",
+      "lockArtifact": null,
+      "lockSha256": null
+    },
+    "automatic": {
+      "artifact": "archive:raw/retrieval/dev/automatic",
+      "summaryFile": "chunking-auto-dev-20260814T085643240647Z.json",
+      "summarySha256": "3b6e4e50a5f56a3df1f2fc4523e2286c54bb9b4b3515ada2eb5cbd4b4a36f58f",
+      "detailsFile": "chunking-auto-dev-20260814T085643240647Z.jsonl",
+      "detailsSha256": "98290599792006df081ad4a8ef96933acad0317ae64a1e5fe43fea932b56c336",
+      "corpusSha256": "f5d7cfc823f4f4fb08fe9a10a913fb5e9197c7517b7d50f93dc7421f5f2a7042"
+    },
+    "manual": {
+      "artifact": "archive:raw/retrieval/dev/manual",
+      "summaryFile": "chunking-manual-dev-20260814T090325016203Z.json",
+      "summarySha256": "bf4a1055ebc51265135631b7b81922c11bb0c7e5ea08eefcf33e60a3fc88e22d",
+      "detailsFile": "chunking-manual-dev-20260814T090325016203Z.jsonl",
+      "detailsSha256": "9c807cdbd58fa105948ea30e6240955b2cf9f32eab79ed8223d479bde44d574e",
+      "corpusSha256": "7ddd7a8bb8a3d110a9388d8977347c8332a7c140b421a153b6ce5948172b07ed"
+    }
+  },
+  "configurationParity": {
+    "topK": 5,
+    "caseIdsMatch": true,
+    "embeddingModelRuntimeMatch": true,
+    "embeddingRouteProtocolArtifactVerified": false,
+    "embeddingRoutes": null,
+    "retrievalProtocolArtifactVerified": false,
+    "retrievalProtocol": null,
+    "embedders": [
+      "bge-base",
+      "bge-small",
+      "minilm-l6",
+      "portfolio-e5-small",
+      "portfolio-gte-small",
+      "qwen3-embedding"
+    ],
+    "device": [
+      "cuda"
+    ],
+    "corpusHashesMatchReports": true,
+    "reportedQuestionFieldsMatch": true
+  },
+  "sourceGateStatus": {
+    "automatic": {
+      "gatesEnforcedDuringRun": false,
+      "passed": false,
+      "passingRoutes": 0,
+      "routeCount": 6,
+      "byEmbedder": {
+        "bge-base": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt3",
+              "actual": 0.846154,
+              "required": 0.85
+            },
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.884615,
+              "required": 0.95
+            },
+            {
+              "gate": "minRequiredCoverage",
+              "actual": 0.846154,
+              "required": 0.9
+            }
+          ]
+        },
+        "bge-small": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt1",
+              "actual": 0.5,
+              "required": 0.55
+            },
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.923077,
+              "required": 0.95
+            },
+            {
+              "gate": "minRequiredCoverage",
+              "actual": 0.846154,
+              "required": 0.9
+            }
+          ]
+        },
+        "minilm-l6": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt1",
+              "actual": 0.384615,
+              "required": 0.55
+            },
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.923077,
+              "required": 0.95
+            },
+            {
+              "gate": "minMrrAt5",
+              "actual": 0.660256,
+              "required": 0.72
+            },
+            {
+              "gate": "minRequiredCoverage",
+              "actual": 0.846154,
+              "required": 0.9
+            }
+          ]
+        },
+        "portfolio-e5-small": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.923077,
+              "required": 0.95
+            },
+            {
+              "gate": "minRequiredCoverage",
+              "actual": 0.846154,
+              "required": 0.9
+            }
+          ]
+        },
+        "portfolio-gte-small": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.923077,
+              "required": 0.95
+            },
+            {
+              "gate": "minRequiredCoverage",
+              "actual": 0.846154,
+              "required": 0.9
+            }
+          ]
+        },
+        "qwen3-embedding": {
+          "passed": false,
+          "gateFailures": [
+            {
+              "gate": "minRecallAt3",
+              "actual": 0.730769,
+              "required": 0.85
+            },
+            {
+              "gate": "minRecallAt5",
+              "actual": 0.923077,
+              "required": 0.95
+            }
+          ]
+        }
+      }
+    },
+    "manual": {
+      "gatesEnforcedDuringRun": false,
+      "passed": true,
+      "passingRoutes": 6,
+      "routeCount": 6,
+      "byEmbedder": {
+        "bge-base": {
+          "passed": true,
+          "gateFailures": []
+        },
+        "bge-small": {
+          "passed": true,
+          "gateFailures": []
+        },
+        "minilm-l6": {
+          "passed": true,
+          "gateFailures": []
+        },
+        "portfolio-e5-small": {
+          "passed": true,
+          "gateFailures": []
+        },
+        "portfolio-gte-small": {
+          "passed": true,
+          "gateFailures": []
+        },
+        "qwen3-embedding": {
+          "passed": true,
+          "gateFailures": []
+        }
+      }
+    }
+  },
+  "chunkTopology": {
+    "automatic": {
+      "chunkCount": 22,
+      "bySource": {
+        "about-and-experience.md": 6,
+        "projects.md": 6,
+        "rag-playground-case-study.md": 10
+      },
+      "characters": {
+        "min": 162,
+        "median": 489.0,
+        "mean": 483.090909,
+        "p95": 611,
+        "max": 637
+      },
+      "words": {
+        "min": 16,
+        "median": 70.5,
+        "mean": 67.863636,
+        "p95": 87,
+        "max": 92
+      }
+    },
+    "manual": {
+      "chunkCount": 20,
+      "bySource": {
+        "about-and-experience.md": 6,
+        "projects.md": 4,
+        "rag-playground-case-study.md": 10
+      },
+      "characters": {
+        "min": 229,
+        "median": 559.5,
+        "mean": 561.0,
+        "p95": 833,
+        "max": 1156
+      },
+      "words": {
+        "min": 22,
+        "median": 77.0,
+        "mean": 77.25,
+        "p95": 119,
+        "max": 154
+      }
+    }
+  },
+  "metrics": {
+    "byEmbedder": {
+      "bge-base": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.576923,
+          "manual": 0.884615,
+          "delta": 0.307692,
+          "deltaCi95": [
+            0.114423,
+            0.538462
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.961538,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 1.0,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.75641,
+          "manual": 0.961538,
+          "delta": 0.205128,
+          "deltaCi95": [
+            0.038462,
+            0.397436
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.538462,
+          "manual": 0.846154,
+          "delta": 0.307692,
+          "deltaCi95": [
+            0.076923,
+            0.538462
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.70641,
+          "manual": 0.932692,
+          "delta": 0.226282,
+          "deltaCi95": [
+            0.069231,
+            0.410897
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.751596,
+          "manual": 0.949713,
+          "delta": 0.198117,
+          "deltaCi95": [
+            0.05678,
+            0.375545
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.215385,
+          "manual": 0.215385,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.061538,
+            0.061538
+          ],
+          "wins": 2,
+          "ties": 9,
+          "losses": 2,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.088847,
+          "manual": 0.087589,
+          "delta": -0.001257,
+          "deltaCi95": [
+            -0.012348,
+            0.010223
+          ],
+          "wins": 8,
+          "ties": 0,
+          "losses": 5,
+          "signTestPValue": 0.581055,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2690.615385,
+          "manual": 3321.307692,
+          "delta": 630.692308,
+          "deltaCi95": [
+            495.461538,
+            769.230769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.369231,
+          "manual": 0.430769,
+          "delta": 0.061538,
+          "deltaCi95": [
+            -0.0,
+            0.123077
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.961538,
+          "delta": 0.192308,
+          "deltaCi95": [
+            0.0,
+            0.423077
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.961538,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.961538,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.923077,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.384615,
+          "manual": 1.692308,
+          "delta": -0.692308,
+          "deltaCi95": [
+            -1.0,
+            -0.384615
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.076923,
+          "manual": 2.692308,
+          "delta": -0.384615,
+          "deltaCi95": [
+            -0.615385,
+            -0.153846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.0,
+          "manual": 3.153846,
+          "delta": -0.846154,
+          "deltaCi95": [
+            -1.307692,
+            -0.461538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1245.538462,
+          "manual": 1068.076923,
+          "delta": -177.461538,
+          "deltaCi95": [
+            -315.771154,
+            -29.917308
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1626.538462,
+          "manual": 1777.692308,
+          "delta": 151.153846,
+          "deltaCi95": [
+            18.0,
+            278.388462
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2143.538462,
+          "manual": 2040.461538,
+          "delta": -103.076923,
+          "deltaCi95": [
+            -197.615385,
+            11.848077
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      },
+      "bge-small": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.5,
+          "manual": 0.923077,
+          "delta": 0.423077,
+          "deltaCi95": [
+            0.153846,
+            0.692308
+          ],
+          "wins": 6,
+          "ties": 7,
+          "losses": 0,
+          "signTestPValue": 0.03125,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 0.961538,
+          "delta": 0.038462,
+          "deltaCi95": [
+            0.0,
+            0.115385
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.74359,
+          "manual": 0.948718,
+          "delta": 0.205128,
+          "deltaCi95": [
+            0.076923,
+            0.346154
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.461538,
+          "manual": 0.923077,
+          "delta": 0.461538,
+          "deltaCi95": [
+            0.230769,
+            0.692308
+          ],
+          "wins": 6,
+          "ties": 7,
+          "losses": 0,
+          "signTestPValue": 0.03125,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.945513,
+          "delta": 0.253205,
+          "deltaCi95": [
+            0.115385,
+            0.397436
+          ],
+          "wins": 7,
+          "ties": 6,
+          "losses": 0,
+          "signTestPValue": 0.015625,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.751825,
+          "manual": 0.958872,
+          "delta": 0.207048,
+          "deltaCi95": [
+            0.101735,
+            0.315939
+          ],
+          "wins": 7,
+          "ties": 6,
+          "losses": 0,
+          "signTestPValue": 0.015625,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.215385,
+          "manual": 0.215385,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.085721,
+          "manual": 0.090208,
+          "delta": 0.004487,
+          "deltaCi95": [
+            -0.004142,
+            0.015275
+          ],
+          "wins": 7,
+          "ties": 0,
+          "losses": 6,
+          "signTestPValue": 1.0,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2731.307692,
+          "manual": 3307.153846,
+          "delta": 575.846154,
+          "deltaCi95": [
+            435.607692,
+            720.157692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.415385,
+          "manual": 0.4,
+          "delta": -0.015385,
+          "deltaCi95": [
+            -0.092308,
+            0.061538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.807692,
+          "manual": 0.923077,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 0.923077,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.115385,
+            0.115385
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 0.961538,
+          "delta": 0.038462,
+          "deltaCi95": [
+            0.0,
+            0.115385
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.307692,
+          "manual": 1.923077,
+          "delta": -0.384615,
+          "deltaCi95": [
+            -0.692308,
+            0.0
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.153846,
+          "manual": 2.615385,
+          "delta": -0.538462,
+          "deltaCi95": [
+            -0.923077,
+            -0.230769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.076923,
+          "manual": 3.307692,
+          "delta": -0.769231,
+          "deltaCi95": [
+            -1.153846,
+            -0.384615
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1269.076923,
+          "manual": 1211.230769,
+          "delta": -57.846154,
+          "deltaCi95": [
+            -184.230769,
+            65.155769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1709.538462,
+          "manual": 1669.461538,
+          "delta": -40.076923,
+          "deltaCi95": [
+            -250.461538,
+            162.232692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2222.538462,
+          "manual": 2100.153846,
+          "delta": -122.384615,
+          "deltaCi95": [
+            -245.155769,
+            0.542308
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      },
+      "minilm-l6": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.384615,
+          "manual": 0.692308,
+          "delta": 0.307692,
+          "deltaCi95": [
+            0.076923,
+            0.538462
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 0.961538,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.660256,
+          "manual": 0.833333,
+          "delta": 0.173077,
+          "deltaCi95": [
+            0.044872,
+            0.314103
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.384615,
+          "manual": 0.692308,
+          "delta": 0.307692,
+          "deltaCi95": [
+            0.076923,
+            0.538462
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.63141,
+          "manual": 0.830128,
+          "delta": 0.198718,
+          "deltaCi95": [
+            0.076923,
+            0.339744
+          ],
+          "wins": 6,
+          "ties": 7,
+          "losses": 0,
+          "signTestPValue": 0.03125,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.706573,
+          "manual": 0.873702,
+          "delta": 0.167129,
+          "deltaCi95": [
+            0.071887,
+            0.27153
+          ],
+          "wins": 6,
+          "ties": 7,
+          "losses": 0,
+          "signTestPValue": 0.03125,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.215385,
+          "manual": 0.215385,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.084351,
+          "manual": 0.082508,
+          "delta": -0.001843,
+          "deltaCi95": [
+            -0.009418,
+            0.005556
+          ],
+          "wins": 9,
+          "ties": 0,
+          "losses": 4,
+          "signTestPValue": 0.266846,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2680.0,
+          "manual": 3309.923077,
+          "delta": 629.923077,
+          "deltaCi95": [
+            462.615385,
+            810.232692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.384615,
+          "manual": 0.384615,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.807692,
+          "manual": 0.769231,
+          "delta": -0.038462,
+          "deltaCi95": [
+            -0.269231,
+            0.192308
+          ],
+          "wins": 1,
+          "ties": 10,
+          "losses": 2,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 0.923077,
+          "delta": 0.038462,
+          "deltaCi95": [
+            0.0,
+            0.115385
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 0.961538,
+          "delta": 0.038462,
+          "deltaCi95": [
+            0.0,
+            0.115385
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.769231,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.230769,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.076923,
+          "manual": 1.769231,
+          "delta": -0.307692,
+          "deltaCi95": [
+            -0.538462,
+            -0.076923
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.076923,
+          "manual": 2.538462,
+          "delta": -0.538462,
+          "deltaCi95": [
+            -0.769231,
+            -0.307692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.076923,
+          "manual": 3.307692,
+          "delta": -0.769231,
+          "deltaCi95": [
+            -1.0,
+            -0.538462
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1123.0,
+          "manual": 1095.615385,
+          "delta": -27.384615,
+          "deltaCi95": [
+            -207.696154,
+            149.692308
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1711.538462,
+          "manual": 1643.307692,
+          "delta": -68.230769,
+          "deltaCi95": [
+            -183.463462,
+            35.078846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2215.769231,
+          "manual": 2107.307692,
+          "delta": -108.461538,
+          "deltaCi95": [
+            -252.078846,
+            25.463462
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      },
+      "portfolio-e5-small": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.730769,
+          "manual": 0.846154,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 0.961538,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.848718,
+          "manual": 0.923077,
+          "delta": 0.074359,
+          "deltaCi95": [
+            0.0,
+            0.2
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.846154,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.802564,
+          "manual": 0.913462,
+          "delta": 0.110897,
+          "deltaCi95": [
+            0.0,
+            0.24359
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.832643,
+          "manual": 0.935518,
+          "delta": 0.102875,
+          "deltaCi95": [
+            0.0,
+            0.21826
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.215385,
+          "manual": 0.215385,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.083683,
+          "manual": 0.083347,
+          "delta": -0.000336,
+          "deltaCi95": [
+            -0.006017,
+            0.005484
+          ],
+          "wins": 6,
+          "ties": 0,
+          "losses": 7,
+          "signTestPValue": 1.0,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2692.461538,
+          "manual": 3056.538462,
+          "delta": 364.076923,
+          "deltaCi95": [
+            177.767308,
+            541.928846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.369231,
+          "manual": 0.369231,
+          "delta": -0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.807692,
+          "manual": 0.923077,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 0.961538,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.884615,
+          "manual": 0.961538,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.923077,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.307692,
+          "manual": 1.846154,
+          "delta": -0.461538,
+          "deltaCi95": [
+            -0.846154,
+            -0.153846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.076923,
+          "manual": 2.846154,
+          "delta": -0.230769,
+          "deltaCi95": [
+            -0.538462,
+            0.076923
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.0,
+          "manual": 3.538462,
+          "delta": -0.461538,
+          "deltaCi95": [
+            -0.846154,
+            -0.076923
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1259.846154,
+          "manual": 1175.615385,
+          "delta": -84.230769,
+          "deltaCi95": [
+            -209.232692,
+            26.311538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1657.923077,
+          "manual": 1759.153846,
+          "delta": 101.230769,
+          "deltaCi95": [
+            -89.846154,
+            265.857692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2126.307692,
+          "manual": 2153.307692,
+          "delta": 27.0,
+          "deltaCi95": [
+            -105.617308,
+            154.307692
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      },
+      "portfolio-gte-small": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.615385,
+          "manual": 0.884615,
+          "delta": 0.269231,
+          "deltaCi95": [
+            0.076923,
+            0.5
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.833333,
+          "manual": 0.961538,
+          "delta": 0.128205,
+          "deltaCi95": [
+            0.0,
+            0.269231
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.538462,
+          "manual": 0.846154,
+          "delta": 0.307692,
+          "deltaCi95": [
+            0.076923,
+            0.538462
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.75641,
+          "manual": 0.942308,
+          "delta": 0.185897,
+          "deltaCi95": [
+            0.057692,
+            0.326923
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.799445,
+          "manual": 0.957415,
+          "delta": 0.15797,
+          "deltaCi95": [
+            0.052657,
+            0.273354
+          ],
+          "wins": 5,
+          "ties": 8,
+          "losses": 0,
+          "signTestPValue": 0.0625,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.215385,
+          "manual": 0.215385,
+          "delta": 0.0,
+          "deltaCi95": [
+            -0.046154,
+            0.046154
+          ],
+          "wins": 1,
+          "ties": 11,
+          "losses": 1,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.088909,
+          "manual": 0.085546,
+          "delta": -0.003363,
+          "deltaCi95": [
+            -0.011834,
+            0.00607
+          ],
+          "wins": 9,
+          "ties": 0,
+          "losses": 4,
+          "signTestPValue": 0.266846,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2682.615385,
+          "manual": 3098.230769,
+          "delta": 415.615385,
+          "deltaCi95": [
+            219.461538,
+            615.313462
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.384615,
+          "manual": 0.369231,
+          "delta": -0.015385,
+          "deltaCi95": [
+            -0.046154,
+            0.0
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.346154
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.192308
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 1.0,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 1.0,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.230769,
+          "manual": 1.846154,
+          "delta": -0.384615,
+          "deltaCi95": [
+            -0.769231,
+            -0.076923
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.153846,
+          "manual": 2.846154,
+          "delta": -0.307692,
+          "deltaCi95": [
+            -0.538462,
+            -0.076923
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.076923,
+          "manual": 3.384615,
+          "delta": -0.692308,
+          "deltaCi95": [
+            -1.153846,
+            -0.230769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1201.153846,
+          "manual": 1155.615385,
+          "delta": -45.538462,
+          "deltaCi95": [
+            -194.388462,
+            91.003846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1739.076923,
+          "manual": 1742.076923,
+          "delta": 3.0,
+          "deltaCi95": [
+            -144.542308,
+            147.386538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2200.461538,
+          "manual": 2036.846154,
+          "delta": -163.615385,
+          "deltaCi95": [
+            -324.155769,
+            -1.228846
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      },
+      "qwen3-embedding": {
+        "recallAt1": {
+          "sampleCount": 13,
+          "automatic": 0.730769,
+          "manual": 0.923077,
+          "delta": 0.192308,
+          "deltaCi95": [
+            0.0,
+            0.423077
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "recallAt3": {
+          "sampleCount": 13,
+          "automatic": 0.730769,
+          "manual": 0.961538,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.038462,
+            0.461538
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "recallAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "reciprocalRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.807692,
+          "manual": 0.948718,
+          "delta": 0.141026,
+          "deltaCi95": [
+            0.0,
+            0.333333
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt1": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.923077,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt3": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.923077,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt5": {
+          "sampleCount": 13,
+          "automatic": 0.923077,
+          "manual": 1.0,
+          "delta": 0.076923,
+          "deltaCi95": [
+            0.0,
+            0.230769
+          ],
+          "wins": 1,
+          "ties": 12,
+          "losses": 0,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "meanReciprocalEvidenceRankAt5": {
+          "sampleCount": 13,
+          "automatic": 0.775,
+          "manual": 0.945513,
+          "delta": 0.170513,
+          "deltaCi95": [
+            0.010256,
+            0.362821
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "meanEvidenceDiscountAt5": {
+          "sampleCount": 13,
+          "automatic": 0.810221,
+          "manual": 0.958872,
+          "delta": 0.148652,
+          "deltaCi95": [
+            0.008704,
+            0.329023
+          ],
+          "wins": 4,
+          "ties": 9,
+          "losses": 0,
+          "signTestPValue": 0.125,
+          "direction": "higher"
+        },
+        "requiredContextPrecisionAt5": {
+          "sampleCount": 13,
+          "automatic": 0.230769,
+          "manual": 0.215385,
+          "delta": -0.015385,
+          "deltaCi95": [
+            -0.061538,
+            0.030769
+          ],
+          "wins": 1,
+          "ties": 10,
+          "losses": 2,
+          "signTestPValue": 1.0,
+          "direction": "higher"
+        },
+        "contextRedundancyAt5": {
+          "sampleCount": 13,
+          "automatic": 0.083864,
+          "manual": 0.090399,
+          "delta": 0.006535,
+          "deltaCi95": [
+            -0.00044,
+            0.014173
+          ],
+          "wins": 5,
+          "ties": 0,
+          "losses": 8,
+          "signTestPValue": 0.581055,
+          "direction": "lower"
+        },
+        "contextCharsAt5": {
+          "sampleCount": 13,
+          "automatic": 2587.769231,
+          "manual": 3209.307692,
+          "delta": 621.538462,
+          "deltaCi95": [
+            337.534615,
+            897.080769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "sourceDiversityAt5": {
+          "sampleCount": 13,
+          "automatic": 0.430769,
+          "manual": 0.353846,
+          "delta": -0.076923,
+          "deltaCi95": [
+            -0.138462,
+            -0.030769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "recallAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.730769,
+          "manual": 0.923077,
+          "delta": 0.192308,
+          "deltaCi95": [
+            0.0,
+            0.423077
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "recallAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.730769,
+          "manual": 0.923077,
+          "delta": 0.192308,
+          "deltaCi95": [
+            0.0,
+            0.423077
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "recallAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.846154,
+          "manual": 0.961538,
+          "delta": 0.115385,
+          "deltaCi95": [
+            0.0,
+            0.307692
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "allEvidenceAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.923077,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 0.692308,
+          "manual": 0.923077,
+          "delta": 0.230769,
+          "deltaCi95": [
+            0.0,
+            0.461538
+          ],
+          "wins": 3,
+          "ties": 10,
+          "losses": 0,
+          "signTestPValue": 0.25,
+          "direction": "higher"
+        },
+        "allEvidenceAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 0.769231,
+          "manual": 0.923077,
+          "delta": 0.153846,
+          "deltaCi95": [
+            0.0,
+            0.384615
+          ],
+          "wins": 2,
+          "ties": 11,
+          "losses": 0,
+          "signTestPValue": 0.5,
+          "direction": "higher"
+        },
+        "contextChunksAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 2.384615,
+          "manual": 1.923077,
+          "delta": -0.461538,
+          "deltaCi95": [
+            -0.846154,
+            0.0
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 3.461538,
+          "manual": 2.615385,
+          "delta": -0.846154,
+          "deltaCi95": [
+            -1.230769,
+            -0.461538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextChunksAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 4.230769,
+          "manual": 3.307692,
+          "delta": -0.923077,
+          "deltaCi95": [
+            -1.384615,
+            -0.461538
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt1500Chars": {
+          "sampleCount": 13,
+          "automatic": 1229.076923,
+          "manual": 1147.615385,
+          "delta": -81.461538,
+          "deltaCi95": [
+            -214.540385,
+            57.080769
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2000Chars": {
+          "sampleCount": 13,
+          "automatic": 1727.076923,
+          "manual": 1657.846154,
+          "delta": -69.230769,
+          "deltaCi95": [
+            -265.230769,
+            128.538462
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        },
+        "contextCharsAt2500Chars": {
+          "sampleCount": 13,
+          "automatic": 2150.769231,
+          "manual": 2149.0,
+          "delta": -1.769231,
+          "deltaCi95": [
+            -133.386538,
+            124.769231
+          ],
+          "wins": null,
+          "ties": null,
+          "losses": null,
+          "signTestPValue": null,
+          "direction": "descriptive"
+        }
+      }
+    },
+    "macroAcrossEmbedders": {
+      "recallAt1": {
+        "sampleCount": 13,
+        "automatic": 0.589744,
+        "manual": 0.858974,
+        "delta": 0.269231,
+        "deltaCi95": [
+          0.108974,
+          0.461538
+        ],
+        "wins": 8,
+        "ties": 5,
+        "losses": 0,
+        "signTestPValue": 0.007812,
+        "direction": "higher"
+      },
+      "recallAt3": {
+        "sampleCount": 13,
+        "automatic": 0.865385,
+        "manual": 0.967949,
+        "delta": 0.102564,
+        "deltaCi95": [
+          0.025641,
+          0.192308
+        ],
+        "wins": 5,
+        "ties": 8,
+        "losses": 0,
+        "signTestPValue": 0.0625,
+        "direction": "higher"
+      },
+      "recallAt5": {
+        "sampleCount": 13,
+        "automatic": 0.916667,
+        "manual": 1.0,
+        "delta": 0.083333,
+        "deltaCi95": [
+          0.012821,
+          0.166667
+        ],
+        "wins": 4,
+        "ties": 9,
+        "losses": 0,
+        "signTestPValue": 0.125,
+        "direction": "higher"
+      },
+      "reciprocalRankAt5": {
+        "sampleCount": 13,
+        "automatic": 0.775,
+        "manual": 0.929487,
+        "delta": 0.154487,
+        "deltaCi95": [
+          0.052991,
+          0.279487
+        ],
+        "wins": 7,
+        "ties": 6,
+        "losses": 0,
+        "signTestPValue": 0.015625,
+        "direction": "higher"
+      },
+      "allEvidenceAt1": {
+        "sampleCount": 13,
+        "automatic": 0.551282,
+        "manual": 0.846154,
+        "delta": 0.294872,
+        "deltaCi95": [
+          0.115385,
+          0.5
+        ],
+        "wins": 7,
+        "ties": 6,
+        "losses": 0,
+        "signTestPValue": 0.015625,
+        "direction": "higher"
+      },
+      "allEvidenceAt3": {
+        "sampleCount": 13,
+        "automatic": 0.807692,
+        "manual": 0.935897,
+        "delta": 0.128205,
+        "deltaCi95": [
+          0.025641,
+          0.282372
+        ],
+        "wins": 5,
+        "ties": 8,
+        "losses": 0,
+        "signTestPValue": 0.0625,
+        "direction": "higher"
+      },
+      "allEvidenceAt5": {
+        "sampleCount": 13,
+        "automatic": 0.858974,
+        "manual": 1.0,
+        "delta": 0.141026,
+        "deltaCi95": [
+          0.012821,
+          0.307692
+        ],
+        "wins": 4,
+        "ties": 9,
+        "losses": 0,
+        "signTestPValue": 0.125,
+        "direction": "higher"
+      },
+      "meanReciprocalEvidenceRankAt5": {
+        "sampleCount": 13,
+        "automatic": 0.72735,
+        "manual": 0.918269,
+        "delta": 0.190919,
+        "deltaCi95": [
+          0.082265,
+          0.312393
+        ],
+        "wins": 8,
+        "ties": 5,
+        "losses": 0,
+        "signTestPValue": 0.007812,
+        "direction": "higher"
+      },
+      "meanEvidenceDiscountAt5": {
+        "sampleCount": 13,
+        "automatic": 0.775384,
+        "manual": 0.939015,
+        "delta": 0.163632,
+        "deltaCi95": [
+          0.070793,
+          0.265102
+        ],
+        "wins": 8,
+        "ties": 5,
+        "losses": 0,
+        "signTestPValue": 0.007812,
+        "direction": "higher"
+      },
+      "requiredContextPrecisionAt5": {
+        "sampleCount": 13,
+        "automatic": 0.217949,
+        "manual": 0.215385,
+        "delta": -0.002564,
+        "deltaCi95": [
+          -0.046154,
+          0.038462
+        ],
+        "wins": 3,
+        "ties": 8,
+        "losses": 2,
+        "signTestPValue": 1.0,
+        "direction": "higher"
+      },
+      "contextRedundancyAt5": {
+        "sampleCount": 13,
+        "automatic": 0.085896,
+        "manual": 0.086599,
+        "delta": 0.000704,
+        "deltaCi95": [
+          -0.005768,
+          0.008224
+        ],
+        "wins": 8,
+        "ties": 0,
+        "losses": 5,
+        "signTestPValue": 0.581055,
+        "direction": "lower"
+      },
+      "contextCharsAt5": {
+        "sampleCount": 13,
+        "automatic": 2677.461538,
+        "manual": 3217.076923,
+        "delta": 539.615385,
+        "deltaCi95": [
+          403.973077,
+          689.951282
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "sourceDiversityAt5": {
+        "sampleCount": 13,
+        "automatic": 0.392308,
+        "manual": 0.384615,
+        "delta": -0.007692,
+        "deltaCi95": [
+          -0.035897,
+          0.015385
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "recallAt1500Chars": {
+        "sampleCount": 13,
+        "automatic": 0.794872,
+        "manual": 0.916667,
+        "delta": 0.121795,
+        "deltaCi95": [
+          0.012821,
+          0.25
+        ],
+        "wins": 5,
+        "ties": 7,
+        "losses": 1,
+        "signTestPValue": 0.21875,
+        "direction": "higher"
+      },
+      "recallAt2000Chars": {
+        "sampleCount": 13,
+        "automatic": 0.865385,
+        "manual": 0.948718,
+        "delta": 0.083333,
+        "deltaCi95": [
+          0.019231,
+          0.166667
+        ],
+        "wins": 5,
+        "ties": 8,
+        "losses": 0,
+        "signTestPValue": 0.0625,
+        "direction": "higher"
+      },
+      "recallAt2500Chars": {
+        "sampleCount": 13,
+        "automatic": 0.891026,
+        "manual": 0.967949,
+        "delta": 0.076923,
+        "deltaCi95": [
+          0.012821,
+          0.166667
+        ],
+        "wins": 4,
+        "ties": 9,
+        "losses": 0,
+        "signTestPValue": 0.125,
+        "direction": "higher"
+      },
+      "allEvidenceAt1500Chars": {
+        "sampleCount": 13,
+        "automatic": 0.74359,
+        "manual": 0.910256,
+        "delta": 0.166667,
+        "deltaCi95": [
+          0.025641,
+          0.333333
+        ],
+        "wins": 5,
+        "ties": 7,
+        "losses": 1,
+        "signTestPValue": 0.21875,
+        "direction": "higher"
+      },
+      "allEvidenceAt2000Chars": {
+        "sampleCount": 13,
+        "automatic": 0.807692,
+        "manual": 0.935897,
+        "delta": 0.128205,
+        "deltaCi95": [
+          0.025641,
+          0.294872
+        ],
+        "wins": 5,
+        "ties": 8,
+        "losses": 0,
+        "signTestPValue": 0.0625,
+        "direction": "higher"
+      },
+      "allEvidenceAt2500Chars": {
+        "sampleCount": 13,
+        "automatic": 0.820513,
+        "manual": 0.935897,
+        "delta": 0.115385,
+        "deltaCi95": [
+          0.012821,
+          0.282051
+        ],
+        "wins": 4,
+        "ties": 9,
+        "losses": 0,
+        "signTestPValue": 0.125,
+        "direction": "higher"
+      },
+      "contextChunksAt1500Chars": {
+        "sampleCount": 13,
+        "automatic": 2.282051,
+        "manual": 1.833333,
+        "delta": -0.448718,
+        "deltaCi95": [
+          -0.730769,
+          -0.192308
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "contextChunksAt2000Chars": {
+        "sampleCount": 13,
+        "automatic": 3.166667,
+        "manual": 2.692308,
+        "delta": -0.474359,
+        "deltaCi95": [
+          -0.692308,
+          -0.282051
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "contextChunksAt2500Chars": {
+        "sampleCount": 13,
+        "automatic": 4.076923,
+        "manual": 3.333333,
+        "delta": -0.74359,
+        "deltaCi95": [
+          -1.051282,
+          -0.435897
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "contextCharsAt1500Chars": {
+        "sampleCount": 13,
+        "automatic": 1221.282051,
+        "manual": 1142.294872,
+        "delta": -78.987179,
+        "deltaCi95": [
+          -189.387179,
+          17.295513
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "contextCharsAt2000Chars": {
+        "sampleCount": 13,
+        "automatic": 1695.282051,
+        "manual": 1708.25641,
+        "delta": 12.974359,
+        "deltaCi95": [
+          -73.115385,
+          98.309615
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      },
+      "contextCharsAt2500Chars": {
+        "sampleCount": 13,
+        "automatic": 2176.564103,
+        "manual": 2097.846154,
+        "delta": -78.717949,
+        "deltaCi95": [
+          -150.269872,
+          -6.422756
+        ],
+        "wins": null,
+        "ties": null,
+        "losses": null,
+        "signTestPValue": null,
+        "direction": "descriptive"
+      }
+    },
+    "byCategory": {
+      "background": {
+        "caseCount": 2,
+        "routeCaseCount": 12,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.833333,
+            "manual": 1.0,
+            "delta": 0.166667
+          },
+          "recallAt3": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "recallAt5": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "allEvidenceAt5": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.916667,
+            "manual": 1.0,
+            "delta": 0.083333
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.2,
+            "manual": 0.2,
+            "delta": 0.0
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.090525,
+            "manual": 0.083598,
+            "delta": -0.006927
+          },
+          "contextCharsAt5": {
+            "automatic": 2592.916667,
+            "manual": 2860.916667,
+            "delta": 268.0
+          }
+        }
+      },
+      "experience": {
+        "caseCount": 3,
+        "routeCaseCount": 18,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.666667,
+            "manual": 0.722222,
+            "delta": 0.055556
+          },
+          "recallAt3": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "recallAt5": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "allEvidenceAt5": {
+            "automatic": 1.0,
+            "manual": 1.0,
+            "delta": 0.0
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.833333,
+            "manual": 0.861111,
+            "delta": 0.027778
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.2,
+            "manual": 0.2,
+            "delta": 0.0
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.099544,
+            "manual": 0.096642,
+            "delta": -0.002901
+          },
+          "contextCharsAt5": {
+            "automatic": 2567.444444,
+            "manual": 2985.0,
+            "delta": 417.555556
+          }
+        }
+      },
+      "history": {
+        "caseCount": 1,
+        "routeCaseCount": 6,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.5,
+            "manual": 1.0,
+            "delta": 0.5
+          },
+          "recallAt3": {
+            "automatic": 0.833333,
+            "manual": 1.0,
+            "delta": 0.166667
+          },
+          "recallAt5": {
+            "automatic": 0.833333,
+            "manual": 1.0,
+            "delta": 0.166667
+          },
+          "allEvidenceAt5": {
+            "automatic": 0.833333,
+            "manual": 1.0,
+            "delta": 0.166667
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.638889,
+            "manual": 1.0,
+            "delta": 0.361111
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.166667,
+            "manual": 0.2,
+            "delta": 0.033333
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.073985,
+            "manual": 0.07692,
+            "delta": 0.002935
+          },
+          "contextCharsAt5": {
+            "automatic": 2754.5,
+            "manual": 3556.333333,
+            "delta": 801.833333
+          }
+        }
+      },
+      "projects": {
+        "caseCount": 3,
+        "routeCaseCount": 18,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.388889,
+            "manual": 1.0,
+            "delta": 0.611111
+          },
+          "recallAt3": {
+            "automatic": 0.888889,
+            "manual": 1.0,
+            "delta": 0.111111
+          },
+          "recallAt5": {
+            "automatic": 0.944444,
+            "manual": 1.0,
+            "delta": 0.055556
+          },
+          "allEvidenceAt5": {
+            "automatic": 0.944444,
+            "manual": 1.0,
+            "delta": 0.055556
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.615741,
+            "manual": 1.0,
+            "delta": 0.384259
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.255556,
+            "manual": 0.2,
+            "delta": -0.055556
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.081047,
+            "manual": 0.079772,
+            "delta": -0.001275
+          },
+          "contextCharsAt5": {
+            "automatic": 2770.944444,
+            "manual": 3324.333333,
+            "delta": 553.388889
+          }
+        }
+      },
+      "rag-engineering": {
+        "caseCount": 3,
+        "routeCaseCount": 18,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.638889,
+            "manual": 0.722222,
+            "delta": 0.083333
+          },
+          "recallAt3": {
+            "automatic": 0.75,
+            "manual": 0.861111,
+            "delta": 0.111111
+          },
+          "recallAt5": {
+            "automatic": 0.861111,
+            "manual": 1.0,
+            "delta": 0.138889
+          },
+          "allEvidenceAt5": {
+            "automatic": 0.722222,
+            "manual": 1.0,
+            "delta": 0.277778
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.714815,
+            "manual": 0.8125,
+            "delta": 0.097685
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.211111,
+            "manual": 0.266667,
+            "delta": 0.055556
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.072745,
+            "manual": 0.08572,
+            "delta": 0.012975
+          },
+          "contextCharsAt5": {
+            "automatic": 2747.666667,
+            "manual": 3530.222222,
+            "delta": 782.555556
+          }
+        }
+      },
+      "robustness": {
+        "caseCount": 1,
+        "routeCaseCount": 6,
+        "metrics": {
+          "recallAt1": {
+            "automatic": 0.416667,
+            "manual": 0.833333,
+            "delta": 0.416667
+          },
+          "recallAt3": {
+            "automatic": 0.5,
+            "manual": 1.0,
+            "delta": 0.5
+          },
+          "recallAt5": {
+            "automatic": 0.666667,
+            "manual": 1.0,
+            "delta": 0.333333
+          },
+          "allEvidenceAt5": {
+            "automatic": 0.333333,
+            "manual": 1.0,
+            "delta": 0.666667
+          },
+          "meanReciprocalEvidenceRankAt5": {
+            "automatic": 0.491667,
+            "manual": 0.916667,
+            "delta": 0.425
+          },
+          "requiredContextPrecisionAt5": {
+            "automatic": 0.266667,
+            "manual": 0.2,
+            "delta": -0.066667
+          },
+          "contextRedundancyAt5": {
+            "automatic": 0.101603,
+            "manual": 0.095274,
+            "delta": -0.006329
+          },
+          "contextCharsAt5": {
+            "automatic": 2608.5,
+            "manual": 3025.166667,
+            "delta": 416.666667
+          }
+        }
+      }
+    }
+  },
+  "sensitivity": {
+    "factClusterBootstrap": null
+  },
+  "rankChanges": {
+    "coverageGains": [
+      {
+        "caseId": "dev-history-nsk-followup",
+        "category": "history",
+        "embedder": "bge-base",
+        "evidenceLabel": "NSK race prevention and proof",
+        "automaticRank": null,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "qwen3-embedding",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": null,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "bge-base",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": null,
+        "manualRank": 4
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "bge-small",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": null,
+        "manualRank": 3
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": null,
+        "manualRank": 3
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "portfolio-e5-small",
+        "evidenceLabel": "resident-model runtime tradeoff",
+        "automaticRank": null,
+        "manualRank": 4
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "portfolio-gte-small",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": null,
+        "manualRank": 2
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "bge-small",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": null,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": null,
+        "manualRank": 2
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "portfolio-e5-small",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": null,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "portfolio-gte-small",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": null,
+        "manualRank": 1
+      }
+    ],
+    "coverageLosses": [],
+    "rankImprovementsWithinTop5": [
+      {
+        "caseId": "dev-education",
+        "category": "background",
+        "embedder": "bge-small",
+        "evidenceLabel": "education and CGPA",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-education",
+        "category": "background",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "education and CGPA",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-future-ai-leadership",
+        "category": "experience",
+        "embedder": "bge-small",
+        "evidenceLabel": "Future AI Power leadership",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-history-nsk-followup",
+        "category": "history",
+        "embedder": "bge-small",
+        "evidenceLabel": "NSK race prevention and proof",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-history-nsk-followup",
+        "category": "history",
+        "embedder": "portfolio-gte-small",
+        "evidenceLabel": "NSK race prevention and proof",
+        "automaticRank": 3,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "embedder": "bge-base",
+        "evidenceLabel": "NSK concurrency design and load-test result",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "embedder": "bge-small",
+        "evidenceLabel": "NSK concurrency design and load-test result",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "NSK concurrency design and load-test result",
+        "automaticRank": 3,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "embedder": "portfolio-gte-small",
+        "evidenceLabel": "NSK concurrency design and load-test result",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "embedder": "qwen3-embedding",
+        "evidenceLabel": "NSK concurrency design and load-test result",
+        "automaticRank": 4,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "bge-base",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": 3,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "bge-small",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": 3,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "portfolio-e5-small",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": 3,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-nsk-security-delivery",
+        "category": "projects",
+        "embedder": "portfolio-gte-small",
+        "evidenceLabel": "NSK security and delivery stack",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-rag-inspectability",
+        "category": "rag-engineering",
+        "embedder": "minilm-l6",
+        "evidenceLabel": "visible retrieval and generation telemetry",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "bge-base",
+        "evidenceLabel": "resident-model runtime tradeoff",
+        "automaticRank": 2,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "portfolio-e5-small",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": 5,
+        "manualRank": 2
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "qwen3-embedding",
+        "evidenceLabel": "resident-model runtime tradeoff",
+        "automaticRank": 5,
+        "manualRank": 4
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "qwen3-embedding",
+        "evidenceLabel": "remote generation and fallback tradeoff",
+        "automaticRank": 4,
+        "manualRank": 3
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "bge-base",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": 5,
+        "manualRank": 1
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "embedder": "qwen3-embedding",
+        "evidenceLabel": "AIVID data scale despite typos",
+        "automaticRank": 5,
+        "manualRank": 1
+      }
+    ],
+    "rankRegressionsWithinTop5": [
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "embedder": "bge-small",
+        "evidenceLabel": "resident-model runtime tradeoff",
+        "automaticRank": 3,
+        "manualRank": 4
+      }
+    ]
+  },
+  "interpretationRules": {
+    "confidenceIntervals": "paired percentile bootstrap; descriptive with tiny samples",
+    "signTests": "two-sided exact binomial tests; ties excluded; no multiple-testing correction",
+    "requiredContextPrecisionAt5": "lower bound: qrels label required evidence, not every potentially useful chunk",
+    "fixedContextBudgets": "rank-preserving Top-5 prefix measured as production-formatted source excerpts, stopped before the next whole chunk would exceed the character budget",
+    "heldoutProtection": "output contains case IDs and evidence labels, never held-out question text"
+  }
+}

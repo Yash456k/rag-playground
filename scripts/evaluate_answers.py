@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from evaluation.eval_lib import (  # noqa: E402
     EVALUATION_ROOT,
+    SPLITS,
     EvaluationDataError,
     evidence_group_ranks,
     evidence_option_matches,
@@ -170,9 +171,7 @@ def _claim_group_results(groups: Sequence[dict[str, Any]], answer: str) -> list[
     ]
 
 
-def _forbidden_results(
-    forbidden: Sequence[dict[str, Any]], answer: str
-) -> list[dict[str, Any]]:
+def _forbidden_results(forbidden: Sequence[dict[str, Any]], answer: str) -> list[dict[str, Any]]:
     return [
         {
             "label": item["label"],
@@ -189,9 +188,7 @@ def _citation_results(
     normalized_answer = normalize_text(answer)
     cited = [int(value) for value in re.findall(r"\[S(\d+)\]", normalized_answer, re.I)]
     unique = sorted(set(cited))
-    malformed = re.findall(
-        r"\[S[^\]]*\]", re.sub(r"\[S\d+\]", "", normalized_answer), re.I
-    )
+    malformed = re.findall(r"\[S[^\]]*\]", re.sub(r"\[S\d+\]", "", normalized_answer), re.I)
     valid = not malformed and all(1 <= index <= len(sources) for index in unique)
     cited_chunks = [sources[index - 1] for index in unique if 1 <= index <= len(sources)]
     group_support = [
@@ -273,9 +270,7 @@ def evaluate_answer(
     }
 
 
-def aggregate_answer_rows(
-    rows: Sequence[dict[str, Any]], gates: dict[str, Any]
-) -> dict[str, Any]:
+def aggregate_answer_rows(rows: Sequence[dict[str, Any]], gates: dict[str, Any]) -> dict[str, Any]:
     if not rows:
         raise EvaluationDataError("Cannot aggregate an empty answer result")
     latencies = [
@@ -286,9 +281,7 @@ def aggregate_answer_rows(
         and isinstance(row["response"]["done"]["latencies"].get("totalMs"), int | float)
     ]
     pass_rate = mean(float(row["evaluation"]["passed"]) for row in rows)
-    completion_rate = mean(
-        float(row["evaluation"]["gates"]["completion"]) for row in rows
-    )
+    completion_rate = mean(float(row["evaluation"]["gates"]["completion"]) for row in rows)
     p95 = percentile(latencies, 0.95)
     metrics = {
         "requestCount": len(rows),
@@ -296,8 +289,7 @@ def aggregate_answer_rows(
         "completionRate": round(completion_rate, 6),
         "fallbackRate": round(
             mean(
-                float(bool((row["response"].get("done") or {}).get("fallbackUsed")))
-                for row in rows
+                float(bool((row["response"].get("done") or {}).get("fallbackUsed"))) for row in rows
             ),
             6,
         ),
@@ -312,8 +304,7 @@ def aggregate_answer_rows(
     if metrics["p95TotalMs"] is None or metrics["p95TotalMs"] > gates["maxP95TotalMs"]:
         failures.append("maxP95TotalMs")
     if gates.get("requireAllSafetyCases") and any(
-        row["category"] in {"refusal", "prompt-injection"}
-        and not row["evaluation"]["passed"]
+        row["category"] in {"refusal", "prompt-injection"} and not row["evaluation"]["passed"]
         for row in rows
     ):
         failures.append("requireAllSafetyCases")
@@ -357,7 +348,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Grade live POST SSE portfolio answers against hiring-question contracts"
     )
     parser.add_argument("--base-url", required=True)
-    parser.add_argument("--split", choices=["dev", "heldout", "all"], default="all")
+    parser.add_argument("--split", choices=[*SPLITS, "all"], default="all")
     parser.add_argument("--embedder", action="append", default=[])
     parser.add_argument("--model", action="append", default=[])
     parser.add_argument("--case", action="append", default=[])
@@ -381,7 +372,7 @@ def run(args: argparse.Namespace) -> int:
     if not 5 <= args.timeout_seconds <= 300:
         raise EvaluationDataError("--timeout-seconds must be between 5 and 300")
 
-    splits = ["dev", "heldout"] if args.split == "all" else [args.split]
+    splits = list(SPLITS) if args.split == "all" else [args.split]
     cases = select_cases(
         load_cases(splits, args.evaluation_dir),
         case_ids=args.case,
@@ -392,9 +383,7 @@ def run(args: argparse.Namespace) -> int:
 
     rows: list[dict[str, Any]] = []
     with httpx.Client(timeout=args.timeout_seconds, follow_redirects=True) as client:
-        embedders, models = _resolve_selections(
-            client, base_url, args.embedder, args.model
-        )
+        embedders, models = _resolve_selections(client, base_url, args.embedder, args.model)
         requested = len(cases) * len(embedders) * len(models) * args.runs
         if requested > args.request_budget:
             raise EvaluationDataError(
@@ -452,8 +441,7 @@ def run(args: argparse.Namespace) -> int:
                 [
                     row
                     for row in rows
-                    if row["request"]["embedder"] == embedder
-                    and row["request"]["model"] == model
+                    if row["request"]["embedder"] == embedder and row["request"]["model"] == model
                 ],
                 gate_config,
             )

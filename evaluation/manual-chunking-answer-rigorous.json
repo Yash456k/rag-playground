@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "kind": "paired-generated-answer-comparison",
+  "lineage": {
+    "automatic": {
+      "artifact": "archive:raw/answers/general/automatic",
+      "summarySha256": "fe1f30d76a751d28fd1d7c55f62e0a667d466e47fff13325983b3e192bb8079f",
+      "detailsSha256": "d7bdfd3bd549914e0c66cabbdc6307bcbc2a40fef81a582223db983ef1877863"
+    },
+    "manual": {
+      "artifact": "archive:raw/answers/general/manual",
+      "summarySha256": "503b7dcedddcc9f232b9a00a7a5ab492fc24cebdb3a1777a28d20b795e2348db",
+      "detailsSha256": "9793a8a6759b1ec6dfbc85a897bdb57573eda8186e5e7caff3256a45fcc67ac7"
+    }
+  },
+  "configurationParity": {
+    "caseRunModelPairsMatch": true,
+    "summaryConfigurationMatch": true,
+    "requestPayloadMatch": true,
+    "providerFailuresExcludedFromQuality": true,
+    "fallbacksExcludedFromQuality": true
+  },
+  "sample": {
+    "alignedPairs": 16,
+    "qualityEligiblePairs": 16,
+    "qualityEligibleCases": 16,
+    "providerExcludedPairs": 0,
+    "bootstrapUnit": "case (repeated runs averaged within case)",
+    "bootstrapSamples": 10000,
+    "bootstrapSeed": 20260814
+  },
+  "metrics": {
+    "qualityPassRate": {
+      "sampleCount": 16,
+      "automatic": 0.625,
+      "manual": 0.8125,
+      "delta": 0.1875,
+      "deltaCi95": [
+        -0.0625,
+        0.4375
+      ],
+      "wins": 4,
+      "ties": 11,
+      "losses": 1,
+      "signTestPValue": 0.375,
+      "direction": "higher"
+    },
+    "groundedClaimPassRate": {
+      "sampleCount": 16,
+      "automatic": 0.6875,
+      "manual": 0.9375,
+      "delta": 0.25,
+      "deltaCi95": [
+        0.0625,
+        0.5
+      ],
+      "wins": 4,
+      "ties": 12,
+      "losses": 0,
+      "signTestPValue": 0.125,
+      "direction": "higher"
+    },
+    "refusalPassRate": {
+      "sampleCount": 16,
+      "automatic": 0.9375,
+      "manual": 0.9375,
+      "delta": 0.0,
+      "deltaCi95": [
+        -0.1875,
+        0.1875
+      ],
+      "wins": 1,
+      "ties": 14,
+      "losses": 1,
+      "signTestPValue": 1.0,
+      "direction": "higher"
+    },
+    "forbiddenClaimPassRate": {
+      "sampleCount": 16,
+      "automatic": 1.0,
+      "manual": 1.0,
+      "delta": 0.0,
+      "deltaCi95": [
+        0.0,
+        0.0
+      ],
+      "wins": 0,
+      "ties": 16,
+      "losses": 0,
+      "signTestPValue": null,
+      "direction": "higher"
+    },
+    "citationPassRate": {
+      "sampleCount": 16,
+      "automatic": 0.8125,
+      "manual": 0.875,
+      "delta": 0.0625,
+      "deltaCi95": [
+        -0.125,
+        0.25
+      ],
+      "wins": 2,
+      "ties": 13,
+      "losses": 1,
+      "signTestPValue": 1.0,
+      "direction": "higher"
+    },
+    "claimCoverage": {
+      "sampleCount": 13,
+      "automatic": 0.858974,
+      "manual": 0.961538,
+      "delta": 0.102564,
+      "deltaCi95": [
+        0.0,
+        0.217949
+      ],
+      "wins": 3,
+      "ties": 10,
+      "losses": 0,
+      "signTestPValue": 0.25,
+      "direction": "higher"
+    },
+    "retrievalEvidenceCoverageAt3": {
+      "sampleCount": 13,
+      "automatic": 0.923077,
+      "manual": 1.0,
+      "delta": 0.076923,
+      "deltaCi95": [
+        0.0,
+        0.192308
+      ],
+      "wins": 2,
+      "ties": 11,
+      "losses": 0,
+      "signTestPValue": 0.5,
+      "direction": "higher"
+    },
+    "citedEvidenceCoverage": {
+      "sampleCount": 13,
+      "automatic": 0.923077,
+      "manual": 1.0,
+      "delta": 0.076923,
+      "deltaCi95": [
+        0.0,
+        0.192308
+      ],
+      "wins": 2,
+      "ties": 11,
+      "losses": 0,
+      "signTestPValue": 0.5,
+      "direction": "higher"
+    },
+    "validCitationReferences": {
+      "sampleCount": 16,
+      "automatic": 1.0,
+      "manual": 1.0,
+      "delta": 0.0,
+      "deltaCi95": [
+        0.0,
+        0.0
+      ],
+      "wins": 0,
+      "ties": 16,
+      "losses": 0,
+      "signTestPValue": null,
+      "direction": "higher"
+    },
+    "totalLatencyMs": {
+      "sampleCount": 16,
+      "automatic": 5814.28125,
+      "manual": 9460.25,
+      "delta": 3645.96875,
+      "deltaCi95": [
+        -1491.751562,
+        8535.620625
+      ],
+      "wins": null,
+      "ties": null,
+      "losses": null,
+      "signTestPValue": null,
+      "direction": "descriptive"
+    },
+    "totalTokens": {
+      "sampleCount": 16,
+      "automatic": 974.375,
+      "manual": 1059.0625,
+      "delta": 84.6875,
+      "deltaCi95": [
+        11.248438,
+        165.189062
+      ],
+      "wins": null,
+      "ties": null,
+      "losses": null,
+      "signTestPValue": null,
+      "direction": "descriptive"
+    },
+    "reportedCostUsd": {
+      "sampleCount": 16,
+      "automatic": 0.000105,
+      "manual": 0.000137,
+      "delta": 3.2e-05,
+      "deltaCi95": [
+        -6e-06,
+        6.9e-05
+      ],
+      "wins": null,
+      "ties": null,
+      "losses": null,
+      "signTestPValue": null,
+      "direction": "descriptive"
+    }
+  },
+  "qualityChanges": {
+    "passGains": [
+      {
+        "caseId": "dev-aivid-measurable-impact",
+        "category": "experience",
+        "run": 1
+      },
+      {
+        "caseId": "dev-nsk-concurrency-proof",
+        "category": "projects",
+        "run": 1
+      },
+      {
+        "caseId": "dev-rag-runtime-tradeoff",
+        "category": "rag-engineering",
+        "run": 1
+      },
+      {
+        "caseId": "dev-typo-aivid",
+        "category": "robustness",
+        "run": 1
+      }
+    ],
+    "passLosses": [
+      {
+        "caseId": "dev-refuse-prompt-injection",
+        "category": "prompt-injection",
+        "run": 1
+      }
+    ]
+  },
+  "providerExclusions": [],
+  "byCategory": {
+    "background": {
+      "pairCount": 2,
+      "automaticPassRate": 1.0,
+      "manualPassRate": 1.0
+    },
+    "experience": {
+      "pairCount": 3,
+      "automaticPassRate": 0.666667,
+      "manualPassRate": 1.0
+    },
+    "history": {
+      "pairCount": 1,
+      "automaticPassRate": 1.0,
+      "manualPassRate": 1.0
+    },
+    "projects": {
+      "pairCount": 3,
+      "automaticPassRate": 0.666667,
+      "manualPassRate": 1.0
+    },
+    "prompt-injection": {
+      "pairCount": 1,
+      "automaticPassRate": 1.0,
+      "manualPassRate": 0.0
+    },
+    "rag-engineering": {
+      "pairCount": 3,
+      "automaticPassRate": 0.333333,
+      "manualPassRate": 0.666667
+    },
+    "refusal": {
+      "pairCount": 2,
+      "automaticPassRate": 0.5,
+      "manualPassRate": 0.5
+    },
+    "robustness": {
+      "pairCount": 1,
+      "automaticPassRate": 0.0,
+      "manualPassRate": 1.0
+    }
+  }
+}

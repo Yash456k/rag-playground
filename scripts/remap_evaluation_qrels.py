@@ -8,12 +8,10 @@ from typing import Any
 
 from app.config import load_pipeline
 from app.ingest import chunk_document, discover_documents
-from evaluation.eval_lib import load_split, regex_matches
+from evaluation.eval_lib import LOCKED_SPLITS, SPLITS, load_split, regex_matches
 
 
-def remap_cases_to_chunks(
-    cases: list[dict[str, Any]], chunks: list[dict[str, Any]]
-) -> int:
+def remap_cases_to_chunks(cases: list[dict[str, Any]], chunks: list[dict[str, Any]]) -> int:
     """Resolve reviewed evidence regexes against one concrete chunking mode."""
     changed = 0
     for case in cases:
@@ -54,7 +52,7 @@ def remap_split(split: str, *, repo_root: Path) -> tuple[dict, int]:
     payload = load_split(
         split,
         repo_root / "evaluation",
-        verify_lock=split != "heldout",
+        verify_lock=split not in LOCKED_SPLITS,
     )
     changed = remap_cases_to_chunks(payload["cases"], chunks)
     for case in payload["cases"]:
@@ -66,7 +64,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Remap reviewed evidence regexes to current production chunk indexes."
     )
-    parser.add_argument("--split", choices=("dev", "heldout"), required=True)
+    parser.add_argument("--split", choices=SPLITS, required=True)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).parents[1])
     args = parser.parse_args()
@@ -81,9 +79,12 @@ def main() -> None:
             encoding="utf-8",
         )
         result["sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
-        if args.split == "heldout":
-            lock = root / "evaluation" / "heldout.sha256"
-            lock.write_text(f"{result['sha256']}  heldout.json\n", encoding="ascii")
+        if args.split in LOCKED_SPLITS:
+            lock = root / "evaluation" / f"{args.split}.sha256"
+            lock.write_text(
+                f"{result['sha256']}  {args.split}.json\n",
+                encoding="ascii",
+            )
     print(json.dumps(result, sort_keys=True))
 
 

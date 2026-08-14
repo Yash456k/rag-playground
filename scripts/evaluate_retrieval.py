@@ -12,8 +12,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from app.retrieval_protocol import embedding_route_protocol, retrieval_protocol  # noqa: E402
 from evaluation.eval_lib import (  # noqa: E402
+    CONTEXT_CHAR_BUDGETS,
     EVALUATION_ROOT,
+    SPLITS,
     EvaluationDataError,
     load_cases,
     load_gates,
@@ -32,9 +35,7 @@ METRIC_GATE_MAP = {
 }
 
 
-def aggregate_embedder_rows(
-    rows: list[dict[str, Any]], gates: dict[str, float]
-) -> dict[str, Any]:
+def aggregate_embedder_rows(rows: list[dict[str, Any]], gates: dict[str, float]) -> dict[str, Any]:
     if not rows:
         raise EvaluationDataError("Cannot aggregate an empty retrieval result")
     metrics = {
@@ -42,11 +43,39 @@ def aggregate_embedder_rows(
         "recallAt3": mean(row["metrics"]["recallAt3"] for row in rows),
         "recallAt5": mean(row["metrics"]["recallAt5"] for row in rows),
         "mrrAt5": mean(row["metrics"]["reciprocalRankAt5"] for row in rows),
-        "requiredCoverage": mean(
-            float(row["metrics"]["requiredCoveredAt5"]) for row in rows
+        "requiredCoverage": mean(float(row["metrics"]["requiredCoveredAt5"]) for row in rows),
+        "allEvidenceAt1": mean(float(row["metrics"]["allEvidenceAt1"]) for row in rows),
+        "allEvidenceAt3": mean(float(row["metrics"]["allEvidenceAt3"]) for row in rows),
+        "allEvidenceAt5": mean(float(row["metrics"]["allEvidenceAt5"]) for row in rows),
+        "meanReciprocalEvidenceRankAt5": mean(
+            row["metrics"]["meanReciprocalEvidenceRankAt5"] for row in rows
         ),
+        "meanEvidenceDiscountAt5": mean(row["metrics"]["meanEvidenceDiscountAt5"] for row in rows),
+        "requiredContextPrecisionAt5": mean(
+            row["metrics"]["requiredContextPrecisionAt5"] for row in rows
+        ),
+        "contextRedundancyAt5": mean(row["metrics"]["contextRedundancyAt5"] for row in rows),
+        "meanContextCharsAt5": mean(row["metrics"]["contextCharsAt5"] for row in rows),
+        "sourceDiversityAt5": mean(row["metrics"]["sourceDiversityAt5"] for row in rows),
         "meanQueryMs": mean(row["queryMs"] for row in rows),
     }
+    for budget in CONTEXT_CHAR_BUDGETS:
+        metrics.update(
+            {
+                f"recallAt{budget}Chars": mean(
+                    row["metrics"][f"recallAt{budget}Chars"] for row in rows
+                ),
+                f"allEvidenceAt{budget}Chars": mean(
+                    float(row["metrics"][f"allEvidenceAt{budget}Chars"]) for row in rows
+                ),
+                f"meanContextChunksAt{budget}Chars": mean(
+                    row["metrics"][f"contextChunksAt{budget}Chars"] for row in rows
+                ),
+                f"meanContextCharsAt{budget}Chars": mean(
+                    row["metrics"][f"contextCharsAt{budget}Chars"] for row in rows
+                ),
+            }
+        )
     metrics = {key: round(value, 6) for key, value in metrics.items()}
     failures = [
         {
@@ -76,6 +105,9 @@ async def run_retrieval(
     from app.config import load_pipeline
     from app.database import Database
     from app.embeddings import EmbeddingRegistry
+    from app.retrieval_protocol import retrieval_candidate_depth
+    from app.retrieval_query import build_retrieval_query
+    from app.retrieval_selection import select_diverse_chunks
     from app.settings import get_settings
 
     load_pipeline.cache_clear()
@@ -95,8 +127,15 @@ async def run_retrieval(
         for config in selected_configs:
             for case in cases:
                 started = time.perf_counter()
-                vector = await registry.encode_query(config.id, case["question"])
-                chunks = await database.retrieve(config, vector, top_k)
+                query = build_retrieval_query(
+                    case["question"],
+                    [(message["role"], message["content"]) for message in case.get("history", [])],
+                )
+                vector = await registry.encode_query(config.id, query)
+                candidates = await database.retrieve(
+                    config, vector, retrieval_candidate_depth(top_k)
+                )
+                chunks = select_diverse_chunks(candidates, top_k)
                 elapsed_ms = round((time.perf_counter() - started) * 1000, 3)
                 rows.append(
                     {
@@ -119,7 +158,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Evaluate every configured embedding route against locked portfolio qrels"
     )
-    parser.add_argument("--split", choices=["dev", "heldout", "all"], default="all")
+    parser.add_argument("--split", choices=[*SPLITS, "all"], default="all")
     parser.add_argument("--embedder", action="append", default=[])
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--category", action="append", default=[])
@@ -134,7 +173,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def async_main(args: argparse.Namespace) -> int:
     if not 5 <= args.top_k <= 12:
         raise EvaluationDataError("--top-k must be between 5 and 12")
-    splits = ["dev", "heldout"] if args.split == "all" else [args.split]
+    splits = list(SPLITS) if args.split == "all" else [args.split]
     all_cases = load_cases(splits, args.evaluation_dir)
     cases = select_cases(
         all_cases,
@@ -170,6 +209,12 @@ def async_main(args: argparse.Namespace) -> int:
         "splits": splits,
         "caseIds": [case["id"] for case in cases],
         "topK": args.top_k,
+        "retrievalProtocol": retrieval_protocol(args.top_k),
+        "embeddingRoutes": {
+            config.id: embedding_route_protocol(config)
+            for config in pipeline.embedders
+            if config.id in embedder_ids
+        },
         "gatesEnforced": not args.no_gate,
         "gates": gates,
         "embedders": by_embedder,
