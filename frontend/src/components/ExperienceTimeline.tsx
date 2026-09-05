@@ -3,7 +3,7 @@ import type { KeyboardEvent } from 'react'
 import { experienceItems } from '../data/experience'
 
 const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
-const labels = ['Internship', 'Degree', 'Current role']
+const labels = ['Internship', 'Degree', 'Full-time']
 
 export function ExperienceTimeline() {
   const [active, setActive] = useState(2)

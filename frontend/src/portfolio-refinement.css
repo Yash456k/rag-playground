@@ -290,3 +290,5 @@ body, .portfolio-site { background: #f5f3ec; }
   .quiet-work .project-revolver-item[data-slot='active'] small { font-size: 12px; }
   .quiet-work.work-section .projects-intro .view-all-projects { font-size: 11px; }
 }
+
+.quiet-work.work-section .split-work-layout { flex: 0; margin-block: auto; align-items: start; }
