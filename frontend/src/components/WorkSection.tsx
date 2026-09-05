@@ -17,7 +17,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
 
   return (
-    <section className="portfolio-section work-section quiet-work" id="work" aria-labelledby="work-title">
+    <section className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
           <header className="split-panel-intro career-intro">
@@ -34,7 +34,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
           <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''}`}>
             <div className="project-selector-view" aria-hidden={projectOpen} inert={projectOpen}>
               <header className="split-panel-intro projects-intro">
-                <h2 id="projects-title">Selected work</h2>
+                <h2 id="projects-title">Projects</h2>
                 <a
                   className="view-all-projects"
                   href="/projects"
