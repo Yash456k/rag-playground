@@ -190,6 +190,7 @@ function ActivityCard({ activity, kind, position, range, onSwapComplete }: Activ
     <article
       className={`activity-card activity-card--${kind} is-${position}`}
       aria-hidden={position === 'behind' || position === 'swapping-out'}
+      inert={position === 'behind' || position === 'swapping-out'}
       onAnimationEnd={position === 'swapping-in' ? onSwapComplete : undefined}
     >
       <header className="activity-card-header">

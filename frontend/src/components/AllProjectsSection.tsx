@@ -21,7 +21,7 @@ export function AllProjectsSection({ onNavigate }: AllProjectsSectionProps) {
         <div className="all-projects-intro">
           <p className="section-kicker"><span /> Built and shipped</p>
           <h2 id="all-projects-title">Every project,<br /><em>in one place.</em></h2>
-          <p>A growing JSON-driven archive of production systems, experiments, and things that made it into users’ hands.</p>
+          <p>Production systems, useful experiments, and things that made it into people’s hands.</p>
           <a className="route-back-link" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }}>
             <span aria-hidden="true">←</span> Back to portfolio
           </a>

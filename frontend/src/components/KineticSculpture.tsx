@@ -39,12 +39,13 @@ export function KineticSculpture() {
     const draw = (time: number) => {
       frame = 0
       if (!visible || document.hidden) return
+      if (!paused && !reducedMotion && time - last < 32) { frame = requestAnimationFrame(draw); return }
       const delta = Math.min(time - last, 50)
       last = time
       if (!paused && !reducedMotion && !dragging) rotation.current.y += delta * .00012
       const { x: rx, y: ry } = rotation.current
       context.clearRect(0, 0, width, height)
-      const scale = Math.min(width * .25, height * .25)
+      const scale = Math.min(width * .25, height * .28)
       const segments: { x: number; y: number; bx: number; by: number; z: number; accent: boolean }[] = []
       for (let strand = 0; strand < lines.length; strand++) {
         const points = lines[strand].map(([x, y, z]) => {

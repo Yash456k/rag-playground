@@ -228,3 +228,64 @@ body, .portfolio-site { background: #f5f3ec; }
 
 .activity-instrument .activity-deck--loading { min-height: 148px; height: 148px; }
 .activity-instrument .activity-loading-card { height: 148px; min-height: 0; background: transparent; border: 0; box-shadow: none; }
+
+/* Keep the selector's three positions visible independently of screen height. */
+.work-section .project-view-stack { height: auto; min-height: 600px; }
+.work-section .project-selector-view { grid-template-rows: auto auto; align-content: start; }
+.work-section .project-revolver-stage { display: grid; grid-template-rows: 350px auto; min-height: 410px; height: auto; }
+.work-section .project-revolver { height: 350px; min-height: 350px; }
+.work-section .project-revolver-viewport { min-height: 290px; }
+.work-section .project-selection-receipt { justify-content: flex-end; padding: 12px 0 0; }
+.work-section .project-selection-receipt > button { width: auto; max-width: 100%; grid-template-columns: auto minmax(0,220px) 32px; gap: 10px; padding: 0; color: #47503b; background: transparent; overflow: visible; min-height: 44px; }
+.work-section .project-selection-receipt > button:hover { background: transparent; color: #bd4932; }
+.work-section .project-action-window { border: 0; padding: 5px 0; width: auto; }
+.work-section .project-action-name { font: 400 13px/1.2 'DM Sans',sans-serif; }
+.work-section .project-action-arrow { display: grid; place-items: center; border-radius: 50%; }
+.landing-summary { font-size: 16px; }
+.hero-overline { font-size: 10px; }
+.portfolio-nav nav a { font-size: 12px; }
+.work-section .split-panel-intro .work-overline { font-size: 10px; }
+.journey-meta { font-size: 10px; }
+.journey-label { font-size: 10px; }
+.journey-description { font-size: 13px; line-height: 1.7; min-height: 70px; }
+.journey-thesis { font-size: 14px; }
+.journey-proof dd { font-size: 10px; }
+.journey-page-footer { font-size: 9px; }
+.work-section .section-header > p, .work-section .section-header > a { font-size: 10px; }
+.project-revolver-item small { font-size: 12px; }
+.revolver-step { font-size: 10px; }
+.work-section .projects-intro .view-all-projects { font-size: 10px; }
+.all-projects-section { background: #f5f3ec; }
+.all-projects-grid article { border-radius: 0; background: transparent; box-shadow: none; border-width: 1px 0 0; padding: 25px 15px; }
+.all-projects-grid article:hover { box-shadow: none; }
+.all-projects-grid article > strong { font-size: 13px; }
+.all-projects-grid article > ul li { font-size: 11px; }
+.all-projects-grid article header, .all-projects-grid article > p { font-size: 9px; }
+.project-focus-copy > p:last-child { font-size: 14px; line-height: 1.7; }
+.project-focus-highlights li { font-size: 12px; }
+.project-focus-footer li { font-size: 9px; }
+@media (max-width: 1050px) and (min-width: 761px) {
+  .work-section .split-work-layout { gap: 32px; }
+  .journey-meta { font-size: 8px; }.journey-label { font-size: 8px; }
+  .journey-description { font-size: 12px; }
+  .journey-page-footer { font-size: 7px; }
+  .work-section .projects-intro .view-all-projects { font-size: 8px; }
+}
+@media (max-width: 760px) {
+  .landing-summary { font-size: 13px; }
+  .hero-overline { font-size: 8px; }
+  .portfolio-nav nav a { font-size: 11px; }
+  .work-section .split-panel-intro .work-overline { font-size: 9px; }
+  .journey-meta { font-size: 9px; }.journey-label { font-size: 9px; }
+  .journey-description { font-size: 12px; min-height: 90px; }.journey-thesis { font-size: 12px; }
+  .journey-proof dd { font-size: 9px; }.journey-page-footer { font-size: 8px; }
+  .work-section .section-header > p, .work-section .section-header > a { font-size: 8px; }
+  .work-section .projects-intro .view-all-projects { font-size: 8px; }
+  .project-revolver-item small { font-size: 10px; }
+  .work-section .project-view-stack { min-height: 580px; }
+}
+
+@media (max-width: 760px) {
+  .portfolio-nav nav .nav-contact { display: none; }
+  .landing-actions { flex-direction: row; align-items: center; }
+}

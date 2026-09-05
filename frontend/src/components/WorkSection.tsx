@@ -27,7 +27,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
           <header className="split-panel-intro career-intro">
             <p className="work-overline"><span>The experience</span><span>01 — 03</span></p>
             <h2 id="work-title">A little further.<br /><em>Every chapter.</em></h2>
-            
+
           </header>
           <ExperienceTimeline />
         </section>
