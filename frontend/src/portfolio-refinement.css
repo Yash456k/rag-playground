@@ -289,3 +289,11 @@ body, .portfolio-site { background: #f5f3ec; }
   .portfolio-nav nav .nav-contact { display: none; }
   .landing-actions { flex-direction: row; align-items: center; }
 }
+
+.work-section > .section-header { position: relative; top: auto; right: auto; left: auto; width: 100%; max-width: none; margin: 0; }
+.work-section .split-work-layout { width: 100%; max-width: none; }
+.work-section .project-revolver { touch-action: pan-y; }
+@media (max-width: 760px) {
+  .work-section > .section-header { gap: 16px; }
+  .work-section > .section-header > a { max-width: 135px; }
+}
