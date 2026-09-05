@@ -93,3 +93,14 @@
 @media (prefers-reduced-motion: reduce) {
   .activity-focus .activity-card.is-swapping-in, .activity-focus .activity-card.is-swapping-out { animation-duration: .01ms; }
 }
+
+@media (max-width: 550px) {
+  .activity-focus .activity-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); min-height: 132px; }
+  .activity-focus .activity-stat { padding-inline: 8px; }
+  .activity-focus .activity-stat strong { font-size: 23px; }
+  .activity-focus .activity-total strong { font-size: 30px; }
+  .activity-focus .activity-stat > span, .activity-focus .activity-stat small { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.3; }
+  .activity-focus .activity-calendar.is-year .activity-months span:nth-child(even) { visibility: hidden; }
+  .activity-focus .activity-calendar { padding-left: 34px; }
+  .activity-focus .activity-card-footer { align-items: flex-start; }
+}
