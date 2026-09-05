@@ -1,4 +1,4 @@
-/* Kinetic portfolio: warm paper, dark ink, one vermilion thread. */
+/* Portfolio: warm paper, dark ink, and clear project evidence. */
 :root { --ink: #232521; --red: #bd4932; --red-dark: #9d3523; --muted: #76766d; --paper-solid: #f5f3ec; --line: #d9d9ce; }
 body, .portfolio-site { background: #f5f3ec; }
 ::selection { color: #fff; background: #bd4932; }
@@ -26,48 +26,6 @@ body, .portfolio-site { background: #f5f3ec; }
 .primary-link:hover span { transform: translate(3px,3px); }
 .text-link { border: 0; color: #767a6e; font-size: 10px; }
 .text-link span { padding-left: 8px; }
-.kinetic-object { position: relative; width: 100%; height: clamp(290px, 43vh, 410px); margin: 0; align-self: center; }
-.kinetic-object::before { content: ''; position: absolute; inset: 8% 19% 9%; border: 1px solid #d9dacf; border-radius: 50%; pointer-events: none; }
-.kinetic-object::after { content: ''; position: absolute; bottom: 12%; left: 25%; right: 25%; height: 14px; background: #353b2c; opacity: .08; filter: blur(12px); border-radius: 50%; pointer-events: none; }
-.kinetic-object canvas { position: relative; width: 100%; height: calc(100% - 22px); display: block; cursor: grab; touch-action: pan-y; }
-.kinetic-object canvas:active { cursor: grabbing; }
-.kinetic-object canvas:focus-visible { outline: 1px dashed #bd4932; outline-offset: -10px; border-radius: 50%; }
-.object-coordinate { position: absolute; left: 0; top: 4px; color: #868b7c; font: 400 7px/1 monospace; letter-spacing: .08em; }
-.object-cross { position: absolute; color: #afb2a6; font: 300 17px/1 monospace; }
-.cross-one { top: 13%; right: 12%; }.cross-two { bottom: 13%; left: 12%; }
-.kinetic-object figcaption { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; color: #818577; font: 400 9px/1.4 'DM Sans', sans-serif; }
-.kinetic-object figcaption button { color: #73796a; background: none; border: 0; font-size: 9px; padding: 4px 0 4px 12px; }
-.kinetic-object figcaption button:hover { color: var(--red); }
-.kinetic-object figcaption button:disabled { cursor: default; }
-/* The activity graph becomes a quiet instrument along the foot of the hero. */
-.activity-instrument { position: relative; width: 100%; border-top: 1px solid #d9d9ce; padding: 15px 0 8px; }
-.activity-instrument .activity-deck { display: block; }
-.activity-instrument .activity-toolbar { position: absolute; right: 0; top: -4px; z-index: 5; margin: 0; gap: 12px; transform: scale(.85); transform-origin: right top; }
-.activity-instrument .activity-range-switch, .activity-instrument .activity-switch { border: 0; box-shadow: none; background: #eaeae1; }
-.activity-instrument .activity-switch-glider { background: #343a2e; box-shadow: none; }
-.activity-instrument .activity-card-stack { height: 148px; }
-.activity-instrument .activity-card { --activity-text: #33372f; --activity-muted: #818576; --activity-empty: #e2e3d9; --activity-border: #ddded4; --activity-one: #e0b9a8; --activity-two: #cf9581; --activity-three: #c1755a; --activity-four: #b95438; --activity-five: #af3b23; inset: 0; display: grid; grid-template-columns: minmax(300px, .8fr) minmax(0, 1.4fr); grid-template-rows: 38px 88px 20px; gap: 0 64px; padding: 0; background: transparent; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
-.activity-instrument .activity-card--github { --activity-one: #c4d0bc; --activity-two: #a0b58f; --activity-three: #799666; --activity-four: #577345; --activity-five: #345429; }
-.activity-instrument .activity-card.is-behind { visibility: hidden; }
-.activity-instrument .activity-card.is-swapping-in { animation: instrument-in 350ms ease both; }
-.activity-instrument .activity-card.is-swapping-out { animation: instrument-out 250ms ease both; }
-.activity-instrument .activity-card-header { grid-column: 1; grid-row: 1; }
-.activity-instrument .activity-card-mark { display: none; }
-.activity-instrument .activity-card-identity p { font-size: 10px; font-weight: 500; }
-.activity-instrument .activity-card-identity div > span { display: none; }
-.activity-instrument .activity-live { font-size: 8px; }
-.activity-instrument .activity-live i { background: #7c8c69; box-shadow: none; }
-.activity-instrument .activity-metrics { grid-column: 1; grid-row: 2; margin: 0; border: 0; min-height: 0; grid-template-columns: 1.1fr 1fr 1fr; }
-.activity-instrument .activity-stat { padding: 8px 16px; align-content: center; }
-.activity-instrument .activity-stat:first-child { padding-left: 0; }
-.activity-instrument .activity-stat strong { font-size: 28px; font-weight: 400; letter-spacing: -.05em; }
-.activity-instrument .activity-total strong { font-size: 40px; }
-.activity-instrument .activity-stat > span { font-size: 7px; font-weight: 400; }
-.activity-instrument .activity-calendar { grid-column: 2; grid-row: 1 / 4; align-self: center; margin: 26px 0 0; padding-left: 28px; }
-.activity-instrument .activity-cell { border-radius: 1px; }
-.activity-instrument .activity-card-footer { grid-column: 1; grid-row: 3; margin: 0; padding: 0; border: 0; font-size: 8px; color: #828779; }
-.activity-instrument .activity-card-footer > span:last-child { display: none; }
-.activity-instrument .activity-caption { display: none; }
 .landing-footer { display: flex; justify-content: space-between; align-items: center; border-color: #d9d9ce; padding-top: 14px; gap: 15px; }
 .landing-footer .landing-signature { display: flex; align-items: center; gap: 7px; color: #73796a; font-size: 9px; margin: 0; }
 .landing-signature strong { font-weight: 500; color: #424a39; }
@@ -145,12 +103,9 @@ body, .portfolio-site { background: #f5f3ec; }
 @keyframes instrument-out { to { opacity: 0; transform: translateY(-8px); } }
 @media (prefers-reduced-motion: no-preference) {
   .landing-copy { animation: chapter-arrive 850ms 80ms cubic-bezier(.22,1,.36,1) both; }
-  .kinetic-object { animation: instrument-in 1000ms 100ms ease both; }
-  .activity-instrument { animation: chapter-arrive 800ms 220ms ease both; }
 }
 @media (min-width: 1000px) and (max-height: 740px) {
   .landing-hero { min-height: 330px; padding-top: 12px; }
-  .kinetic-object { height: 300px; }
   .landing-copy h1 { font-size: min(7.1vw,105px); }
   .hero-overline { margin-bottom: 20px; }
   .landing-summary { margin-top: 22px; }
@@ -164,9 +119,6 @@ body, .portfolio-site { background: #f5f3ec; }
   .nav-discipline { display: none; }
   .landing-hero { grid-template-columns: 1.3fr 1fr; gap: 0; }
   .landing-copy h1 { font-size: clamp(61px,7.8vw,85px); }
-  .kinetic-object { height: 310px; }
-  .activity-instrument .activity-card { gap: 0 30px; grid-template-columns: minmax(275px,.9fr) minmax(0,1.1fr); }
-  .activity-instrument .activity-stat strong { font-size: 23px; }.activity-instrument .activity-total strong { font-size: 34px; }
   .work-section .split-work-layout { gap: 42px; }
   .work-section .split-panel-intro h2 { font-size: 51px; }
   .journey-page h3 { font-size: 31px; }
@@ -184,22 +136,6 @@ body, .portfolio-site { background: #f5f3ec; }
   .landing-summary { font-size: 12px; margin-top: 22px; max-width: 315px; }
   .landing-actions { margin-top: 19px; gap: 24px; }
   .primary-link { font-size: 10px; }.text-link { font-size: 9px; }
-  .kinetic-object { width: 100%; height: 250px; max-width: 480px; margin: 0 auto; }
-  .object-coordinate { font-size: 6px; top: 8px; }
-  .kinetic-object figcaption { font-size: 8px; }.kinetic-object figcaption button { font-size: 8px; }
-  .activity-instrument { padding-top: 12px; }
-  .activity-instrument .activity-toolbar { top: -1px; transform: scale(.72); }
-  .activity-instrument .activity-card-stack { height: 228px; }
-  .activity-instrument .activity-card { display: grid; grid-template-columns: 1fr; grid-template-rows: 32px 76px 104px 16px; gap: 0; }
-  .activity-instrument .activity-card-header { grid-column: 1; grid-row: 1; }
-  .activity-instrument .activity-live { display: none; }
-  .activity-instrument .activity-metrics { grid-column: 1; grid-row: 2; }
-  .activity-instrument .activity-stat strong { font-size: 24px; }.activity-instrument .activity-total strong { font-size: 34px; }
-  .activity-instrument .activity-calendar { grid-column: 1; grid-row: 3; margin: 8px 0 0; align-self: center; }
-  .activity-instrument .activity-card-footer { grid-column: 1; grid-row: 4; }
-  .activity-instrument .activity-months { margin-bottom: 8px; }
-  .activity-instrument .activity-grid { gap: 2px; }
-  .activity-instrument .activity-calendar.is-quarter .activity-grid { max-width: 210px; }
   .footer-note { display: none; }.landing-footer { padding-top: 12px; }.landing-footer .landing-signature { font-size: 7px; }
   .scroll-cue { font-size: 6px; gap: 4px; }
   .section-navigator { display: none; }
@@ -223,11 +159,8 @@ body, .portfolio-site { background: #f5f3ec; }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-site { scroll-behavior: auto; }
   .journey-progress, .journey-point { transition: none; }
-  .journey-page:not([hidden]), .activity-instrument .activity-card.is-swapping-in, .activity-instrument .activity-card.is-swapping-out { animation-duration: .01ms; }
 }
 
-.activity-instrument .activity-deck--loading { min-height: 148px; height: 148px; }
-.activity-instrument .activity-loading-card { height: 148px; min-height: 0; background: transparent; border: 0; box-shadow: none; }
 
 /* Keep the selector's three positions visible independently of screen height. */
 .work-section .project-view-stack { height: auto; min-height: 600px; }

@@ -1,5 +1,4 @@
 import { ActivityDeck } from './ActivityDeck'
-import { KineticSculpture } from './KineticSculpture'
 
 type LandingSectionProps = { onNavigate: (path: string) => void }
 
@@ -25,9 +24,8 @@ export function LandingSection({ onNavigate }: LandingSectionProps) {
             <a className="text-link" href="#playground">Ask this portfolio <span aria-hidden="true">↗</span></a>
           </div>
         </div>
-        <KineticSculpture />
+        <div className="activity-focus"><ActivityDeck /></div>
       </div>
-      <div className="activity-instrument"><ActivityDeck /></div>
       <div className="landing-footer">
         <p className="landing-signature"><span className="signature-dot" /> Building at <strong>AIVID Techvision</strong></p>
         <span className="footer-note">Thoughtfully made. Always evolving.</span>

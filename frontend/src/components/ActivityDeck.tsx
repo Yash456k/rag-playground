@@ -104,7 +104,8 @@ function monthMarkers(weeks: HeatmapDay[][]): Array<{ week: number; label: strin
       previousMonth = month
     }
   })
-  return markers
+  // Omit a short leading month rather than colliding with the next label.
+  return markers.filter((marker, index) => !markers[index + 1] || markers[index + 1].week - marker.week >= 4)
 }
 
 function CodexMark() {
