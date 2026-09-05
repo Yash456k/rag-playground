@@ -1,13 +1,6 @@
 import { ActivityDeck } from './ActivityDeck'
 
-/*
-const highlights = [
-  { value: '9.66', label: 'CGPA / 10' },
-  { value: '100K+', label: 'records handled daily' },
-  { value: '20+', label: 'production features shipped' },
-  { value: '150+', label: 'problems solved' },
-] as const
-*/
+
 
 type LandingSectionProps = {
   onNavigate: (path: string) => void
@@ -33,12 +26,14 @@ export function LandingSection({ onNavigate }: LandingSectionProps) {
 
       <div className="landing-hero">
         <div className="landing-copy">
+          <p className="hero-overline"><span /> Full-stack engineer <span className="hero-overline-divider">/</span> Applied AI</p>
           <h1 id="landing-title">
             I build stuff
             <em>I find interesting.</em>
           </h1>
           <p className="landing-summary">
-            Yes, I use AI to build. I can also explain how everything works, ask me anything.
+            Thoughtful interfaces. Reliable systems. A little applied AI.
+            I build across the stack, and care about how it all fits together.
           </p>
           <div className="landing-actions">
             <a className="primary-link" href="#work">Explore selected work <span aria-hidden="true">↘</span></a>
@@ -50,14 +45,7 @@ export function LandingSection({ onNavigate }: LandingSectionProps) {
       </div>
 
       <div className="landing-footer">
-        {/* <dl className="highlight-strip">
-          {highlights.map((highlight) => (
-            <div key={highlight.label}>
-              <dt>{highlight.value}</dt>
-              <dd>{highlight.label}</dd>
-            </div>
-          ))}
-        </dl> */}
+        <p className="landing-signature"><span className="signature-dot" /> Currently building at <strong>AIVID Techvision</strong></p>
         <a className="scroll-cue" href="#work" aria-label="Continue to experience and projects">
           <span>Scroll to explore</span>
           <b aria-hidden="true">↓</b>

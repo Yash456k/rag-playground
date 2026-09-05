@@ -1,5 +1,11 @@
 const experience = [
   {
+    period: '2026 — Present',
+    role: 'Full-stack engineer',
+    company: 'AIVID Techvision',
+    detail: 'Joined in March as an intern and converted full-time in June. Working across frontend systems, backend services, platform reliability, and developer experience.',
+  },
+  {
     period: '2024 — 2025',
     role: 'Full Stack Developer Intern',
     company: 'AIVID Techvision',
@@ -15,7 +21,7 @@ const experience = [
     period: '2022 — 2026',
     role: 'B.Tech, Computer Engineering',
     company: 'Indus University',
-    detail: 'Maintaining a 9.66/10 CGPA while building production software beyond the classroom.',
+    detail: 'Graduated in June 2026 with a 9.66/10 CGPA while building production software beyond the classroom.',
   },
 ] as const
 
@@ -46,7 +52,7 @@ export function AboutSection({ onNavigate }: AboutSectionProps) {
           </a>
           <div className="availability-note">
             <span aria-hidden="true" />
-            Open to full-time software engineering opportunities
+            Full-stack engineer at AIVID Techvision
           </div>
         </div>
 

@@ -3,42 +3,7 @@ import projectsData from '../data/projects.json'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
 import type { ProjectItem } from './projectTypes'
-
-type ExperienceItem = {
-  id: string
-  date: string
-  title: string
-  subline?: string
-  organization: string
-  detail: string
-  milestone?: boolean
-}
-
-const experienceItems: readonly ExperienceItem[] = [
-  {
-    id: 'aivid-internship',
-    date: 'Sep 2024 → Sep 2025',
-    title: 'Full-stack intern',
-    organization: 'AIVID Techvision',
-    detail: 'Built a notification platform serving more than 1,000 roles a day, Microsoft Graph workflows, analytics APIs handling over 100,000 records daily, and shared React systems.',
-  },
-  {
-    id: 'graduation',
-    date: 'Jun 2026',
-    title: 'Graduated B.Tech',
-    organization: 'Indus University',
-    detail: 'Completed a B.Tech in Computer Engineering with a 9.66/10 CGPA while building and shipping production software.',
-    milestone: true,
-  },
-  {
-    id: 'aivid-fulltime',
-    date: 'Mar 2026 → Present',
-    title: 'Full-stack engineer',
-    subline: 'Intern, converted full-time Jun 2026',
-    organization: 'AIVID Techvision',
-    detail: 'Joined the engineering team in March 2026 and converted full-time in June 2026, owning production work across frontend systems, backend services, platform reliability, and developer experience.',
-  },
-]
+import { ExperienceTimeline } from './ExperienceTimeline'
 
 const projectItems = projectsData as readonly ProjectItem[]
 
@@ -47,10 +12,8 @@ type WorkSectionProps = {
 }
 
 export function WorkSection({ onNavigate }: WorkSectionProps) {
-  const [activeExperience, setActiveExperience] = useState('aivid-fulltime')
   const [activeProjectIndex, setActiveProjectIndex] = useState(1)
   const [projectOpen, setProjectOpen] = useState(false)
-  const selectedExperience = experienceItems.find((item) => item.id === activeExperience) ?? experienceItems[0]
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
 
   return (
@@ -61,38 +24,12 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
 
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
-          <header className="split-panel-intro">
-            <h2 id="work-title">Experience</h2>
+          <header className="split-panel-intro career-intro">
+            <p className="work-overline"><span>01 / The journey</span><span>2024 — Today</span></p>
+            <h2 id="work-title">Experience<span className="heading-period">.</span></h2>
+            <p className="work-subtitle">A little more responsibility. Every chapter.</p>
           </header>
-
-          <div className="experience-stage">
-            <nav className="experience-rail" aria-label="Experience timeline">
-              {experienceItems.map((item) => (
-                <button
-                  type="button"
-                  className={`experience-stop ${item.id === selectedExperience.id ? 'is-active' : ''} ${item.milestone ? 'is-milestone' : 'is-range'}`}
-                  key={item.id}
-                  aria-pressed={item.id === selectedExperience.id}
-                  onMouseEnter={() => setActiveExperience(item.id)}
-                  onFocus={() => setActiveExperience(item.id)}
-                  onClick={() => setActiveExperience(item.id)}
-                >
-                  <span className={item.milestone ? 'experience-node' : 'experience-bracket'} aria-hidden="true" />
-                  <time>{item.date}</time>
-                  <strong>{item.title}</strong>
-                  {item.subline && <small>{item.subline}</small>}
-                </button>
-              ))}
-            </nav>
-
-            <article className="experience-detail-card" aria-live="polite">
-              <p>{selectedExperience.organization}</p>
-              <h3>{selectedExperience.title}</h3>
-              <time>{selectedExperience.date}</time>
-              {selectedExperience.subline && <small className="experience-detail-subline">{selectedExperience.subline}</small>}
-              <p>{selectedExperience.detail}</p>
-            </article>
-          </div>
+          <ExperienceTimeline />
         </section>
 
         <section
@@ -100,8 +37,9 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
           aria-labelledby={projectOpen ? 'project-focus-title' : 'projects-title'}
         >
           <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''}`}>
-            <div className="project-selector-view" aria-hidden={projectOpen}>
+            <div className="project-selector-view" aria-hidden={projectOpen} inert={projectOpen}>
               <header className="split-panel-intro projects-intro">
+                <p className="work-overline"><span>02 / Selected work</span><span>0{projectItems.length} projects</span></p>
                 <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
                 <a
                   className="view-all-projects"
@@ -119,7 +57,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 onOpen={() => setProjectOpen(true)}
               />
             </div>
-            <div className="project-detail-view" aria-hidden={!projectOpen}>
+            <div className="project-detail-view" aria-hidden={!projectOpen} inert={!projectOpen}>
               <ProjectDetail project={selectedProject} onBack={() => setProjectOpen(false)} />
             </div>
           </div>
