@@ -137,7 +137,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
                 aria-hidden={Math.abs(slot) > 1} tabIndex={Math.abs(slot) > 1 ? -1 : 0}
                 aria-pressed={index === activeIndex && Math.abs(slot) <= 1}
                 aria-label={`${index === activeIndex ? 'Selected project' : 'Select project'}: ${project.title}`}
-                onClick={() => { if (!suppressClick.current) select(absolute) }}>
+                onClick={(event) => { if (event.detail === 0 || !suppressClick.current) select(absolute) }}>
                 <span className="reel-number">{project.number}</span>
                 <span><strong>{project.title}</strong><small>{project.summary}</small></span>
               </button>

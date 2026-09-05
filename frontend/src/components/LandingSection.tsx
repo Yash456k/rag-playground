@@ -19,7 +19,7 @@ export function LandingSection({ onNavigate }: LandingSectionProps) {
         </a>
         <nav aria-label="Portfolio">
           <a href="/projects" onClick={(event) => { event.preventDefault(); onNavigate('/projects') }}>Projects</a>
-          <a href="/about" onClick={(event) => { event.preventDefault(); onNavigate('/about') }}>About me</a>
+          <a href="/about" onClick={(event) => { event.preventDefault(); onNavigate('/about') }}>About</a>
           <a className="nav-contact" href="mailto:yash456k@gmail.com">Let&apos;s talk</a>
         </nav>
       </header>

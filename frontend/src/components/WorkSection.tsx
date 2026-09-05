@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import projectsData from '../data/projects.json'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
@@ -14,7 +14,16 @@ type WorkSectionProps = {
 export function WorkSection({ onNavigate }: WorkSectionProps) {
   const [activeProjectIndex, setActiveProjectIndex] = useState(1)
   const [projectOpen, setProjectOpen] = useState(false)
+  const panel = useRef<HTMLElement>(null)
+  const interacted = useRef(false)
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
+
+  useEffect(() => {
+    if (!interacted.current) return
+    const target = panel.current?.querySelector<HTMLButtonElement>(projectOpen ? '.project-focus-header button' : '.reel-open')
+    target?.focus({ preventScroll: true })
+    if (projectOpen) panel.current?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
+  }, [projectOpen])
 
   return (
     <section className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
@@ -28,6 +37,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
         </section>
 
         <section
+          ref={panel}
           className={`work-mobile-panel projects-panel ${projectOpen ? 'is-project-detail' : ''}`}
           aria-labelledby={projectOpen ? 'project-focus-title' : 'projects-title'}
         >
@@ -48,7 +58,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 projects={projectItems}
                 activeIndex={activeProjectIndex}
                 onChange={setActiveProjectIndex}
-                onOpen={() => setProjectOpen(true)}
+                onOpen={() => { interacted.current = true; setProjectOpen(true) }}
               />
             </div>
             <div className="project-detail-view" aria-hidden={!projectOpen} inert={!projectOpen}>

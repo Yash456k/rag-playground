@@ -109,7 +109,7 @@
   .about-layout { grid-template-columns: 1fr; }.all-projects-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 550px) {
-  .portfolio-wordmark { font-size: 16px; }.portfolio-nav nav { gap: 16px; }.portfolio-nav nav a { font-size: 12px; }.portfolio-nav .nav-contact { display: none; }
+  .portfolio-wordmark { font-size: 16px; }.portfolio-nav nav { gap: 16px; }.portfolio-nav nav a { font-size: 12px; }.portfolio-nav nav .nav-contact { display: none; }
   .landing-summary { font-size: 14px; }.landing-actions { gap: 20px; }.primary-link { font-size: 11px; }.text-link { font-size: 11px; }
   .tactile-work { padding: 45px 24px; }.tactile-work .view-all-projects { font-size: 11px; }
   .career-card { padding: 23px; }.career-card h3 { font-size: 30px; }.career-card p { font-size: 13px; line-height: 1.75; }
@@ -122,3 +122,8 @@
   .all-projects-grid article { padding: 22px; }.all-projects-grid article h3 { font-size: 28px; }
 }
 @media (prefers-reduced-motion: reduce) { .career-card,.career-card-content,.career-card.is-current .career-card-content,.project-selector-view,.project-detail-view { transition: none; } }
+
+@media (max-width: 550px) { .portfolio-nav { gap: 20px; } .portfolio-wordmark { flex-shrink: 0; white-space: nowrap; } .portfolio-nav nav a { line-height: 1.35; white-space: nowrap; } }
+
+.about-header .route-header-home, .all-projects-header .route-header-home { position: static; font-size: 12px; }
+.about-header > p, .all-projects-header > p { font-size: 11px; }
