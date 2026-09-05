@@ -1,61 +1,46 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { experienceItems } from '../data/experience'
 
-export function ExperienceTimeline() {
-  const [activeId, setActiveId] = useState(experienceItems[0].id)
+const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
+const labels = ['First production code', 'The foundation', 'Owning the system']
 
+export function ExperienceTimeline() {
+  const [active, setActive] = useState(2)
+  const buttons = useRef<(HTMLButtonElement | null)[]>([])
+  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let next = index
+    if (event.key === 'ArrowRight') next = (index + 1) % chapters.length
+    else if (event.key === 'ArrowLeft') next = (index + chapters.length - 1) % chapters.length
+    else if (event.key === 'Home') next = 0
+    else if (event.key === 'End') next = chapters.length - 1
+    else return
+    event.preventDefault(); setActive(next); buttons.current[next]?.focus()
+  }
   return (
-    <div className="career-timeline" aria-label="Experience timeline">
-      {experienceItems.map((item) => {
-        const expanded = activeId === item.id
-        return (
-          <article className={`career-entry ${expanded ? 'is-expanded' : ''} ${item.current ? 'is-current' : ''}`} key={item.id}>
-            <div className="career-axis" aria-hidden="true">
-              <span className="career-year">{item.year}</span>
-              <span className="career-dot" />
-            </div>
-            <div className="career-content">
-              <h3 className="career-heading">
-                <button
-                  type="button"
-                  id={`career-trigger-${item.id}`}
-                  aria-expanded={expanded}
-                  aria-controls={`career-panel-${item.id}`}
-                  onClick={() => setActiveId((current) => current === item.id ? '' : item.id)}
-                >
-                  <span className="career-heading-copy">
-                    <span className="career-organization">{item.organization}{item.current && <span className="career-current">Now</span>}</span>
-                    <span className="career-title">{item.title}</span>
-                    <span className="career-period">{item.period}</span>
-                  </span>
-                  <span className="career-toggle" aria-hidden="true">{expanded ? '−' : '+'}</span>
-                </button>
-              </h3>
-              <div
-                className="career-expansion"
-                id={`career-panel-${item.id}`}
-                role="region"
-                aria-labelledby={`career-trigger-${item.id}`}
-                aria-hidden={!expanded}
-                inert={!expanded}
-              >
-                <div className="career-expansion-inner">
-                  <div className="career-story">
-                    <p className="career-chapter">{item.label}</p>
-                    <p className="career-summary">{item.summary}</p>
-                    <p className="career-detail">{item.detail}</p>
-                    <dl className="career-proof">
-                      {item.proof.map((proof) => (
-                        <div key={proof.label}><dt>{proof.value}</dt><dd>{proof.label}</dd></div>
-                      ))}
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="journey">
+      <div className="journey-track" role="tablist" aria-label="Career chapters">
+        <span className="journey-progress" style={{ width: `${active * 50}%` }} aria-hidden="true" />
+        {chapters.map((chapter, index) => (
+          <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`chapter-tab-${chapter.id}`} aria-controls={`chapter-${chapter.id}`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={(event) => onKeyDown(event, index)}>
+            <span className="journey-point" aria-hidden="true" />
+            <span className="journey-date">{index === 0 ? '2024' : index === 1 ? '2026' : 'Now'}{index === 2 && <i aria-hidden="true" />}</span>
+            <span className="journey-label">{labels[index]}</span>
+          </button>
+        ))}
+      </div>
+      <div className="journey-pages">
+        {chapters.map((chapter, index) => (
+          <article className="journey-page" key={chapter.id} id={`chapter-${chapter.id}`} role="tabpanel" aria-labelledby={`chapter-tab-${chapter.id}`} tabIndex={0} hidden={active !== index}>
+            <div className="journey-meta"><span>{chapter.organization}</span><span>{chapter.period}</span></div>
+            <h3>{chapter.title}</h3>
+            <p className="journey-thesis">{chapter.summary}</p>
+            <p className="journey-description">{chapter.detail}</p>
+            <dl className="journey-proof">{chapter.proof.map((proof) => <div key={proof.label}><dt>{proof.value}</dt><dd>{proof.label}</dd></div>)}</dl>
+            <div className="journey-page-footer"><span>Chapter 0{index + 1} / 03</span><span aria-hidden="true">{index === 2 ? 'Still writing this one ↗' : 'Every chapter builds on the last.'}</span></div>
           </article>
-        )
-      })}
+        ))}
+      </div>
     </div>
   )
 }

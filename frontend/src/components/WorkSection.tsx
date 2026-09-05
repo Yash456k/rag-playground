@@ -19,15 +19,15 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   return (
     <section className="portfolio-section work-section" id="work" aria-labelledby="work-title">
       <header className="section-header centered-section-header">
-        <p><span>02</span> Experience + projects</p>
+        <p><span>02 /</span> A practice in building</p><a href="#playground">Meet the AI behind this site ↗</a>
       </header>
 
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
           <header className="split-panel-intro career-intro">
-            <p className="work-overline"><span>01 / The journey</span><span>2024 — Today</span></p>
-            <h2 id="work-title">Experience<span className="heading-period">.</span></h2>
-            <p className="work-subtitle">A little more responsibility. Every chapter.</p>
+            <p className="work-overline"><span>The experience</span><span>01 — 03</span></p>
+            <h2 id="work-title">A little further.<br /><em>Every chapter.</em></h2>
+            
           </header>
           <ExperienceTimeline />
         </section>
@@ -39,8 +39,8 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
           <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''}`}>
             <div className="project-selector-view" aria-hidden={projectOpen} inert={projectOpen}>
               <header className="split-panel-intro projects-intro">
-                <p className="work-overline"><span>02 / Selected work</span><span>0{projectItems.length} projects</span></p>
-                <h2 id="projects-title">Things that<br /><em>made it out.</em></h2>
+                <p className="work-overline"><span>Selected projects</span><span>0{projectItems.length} in the collection</span></p>
+                <h2 id="projects-title">Built to be<br /><em>used.</em></h2>
                 <a
                   className="view-all-projects"
                   href="/projects"
