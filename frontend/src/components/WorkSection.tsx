@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
 import projectsData from '../data/projects.json'
 import { ProjectDetail } from './ProjectDetail'
 import { ProjectRevolver } from './ProjectRevolver'
 import type { ProjectItem } from './projectTypes'
 import { ExperienceTimeline } from './ExperienceTimeline'
+import { projectPointerPosition } from '../lib/revolver'
 
 const projectItems = projectsData as readonly ProjectItem[]
+const projectDates = projectItems.map((project) => project.date)
 
 type WorkSectionProps = {
   onNavigate: (path: string) => void
@@ -14,6 +16,10 @@ type WorkSectionProps = {
 export function WorkSection({ onNavigate }: WorkSectionProps) {
   const [activeProjectIndex, setActiveProjectIndex] = useState(1)
   const [projectOpen, setProjectOpen] = useState(false)
+  const work = useRef<HTMLElement>(null)
+  const updateProjectPointer = useCallback((position: number) => {
+    work.current?.style.setProperty('--project-position', String(projectPointerPosition(position, projectDates)))
+  }, [])
   const panel = useRef<HTMLElement>(null)
   const interacted = useRef(false)
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
@@ -26,14 +32,14 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   }, [projectOpen])
 
   return (
-    <section className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
+    <section ref={work} style={{ '--project-position': projectPointerPosition(1, projectDates) } as CSSProperties} className="portfolio-section work-section tactile-work" id="work" aria-labelledby="work-title">
       <div className="split-work-layout">
         <section className="work-mobile-panel experience-panel" aria-labelledby="work-title">
           <header className="split-panel-intro career-intro">
             <h2 id="work-title">Experience</h2>
 
           </header>
-          <ExperienceTimeline />
+          <ExperienceTimeline project={selectedProject} projectOpen={projectOpen} />
         </section>
 
         <section
@@ -58,6 +64,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 projects={projectItems}
                 activeIndex={activeProjectIndex}
                 onChange={setActiveProjectIndex}
+                onPositionChange={updateProjectPointer}
                 onOpen={() => { interacted.current = true; setProjectOpen(true) }}
               />
             </div>

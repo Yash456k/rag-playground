@@ -142,3 +142,50 @@
 @media (prefers-reduced-motion: reduce) {
   .portfolio-site { scroll-snap-type: none; }
 }
+
+/* Project details belong to the page flow, never a nested scroll box. */
+.tactile-work .project-focus-view { height: auto; min-height: 0; max-height: none; overflow: visible; padding-right: 0; }
+.tactile-work .project-detail-view { align-self: start; overflow: visible; }
+.tactile-work .project-view-stack { overflow: visible; }
+
+/* The centre seat stays still while the barrel rolls through it. */
+.reel-seat { position: absolute; inset: 50% 0 auto; height: 110px; transform: translateY(-50%); pointer-events: none; border-radius: 11px; background: linear-gradient(90deg,#d9dfc43d,#fdfaf34d 80%,transparent); border-left: 2px solid #ab5940; }
+.reel-seat > span { display: block; width: 100%; height: 100%; border-radius: inherit; }
+.reel-seat-pulse { animation: reel-seat-lock 230ms ease-out; }
+.reel-item { padding-left: 12px; }
+.reel-item[aria-pressed='true'] .reel-number { color: #aa4731; font-weight: 600; }
+.reel-item[aria-pressed='true'] strong { color: #293d24; }
+.is-firing .reel-item[aria-pressed='true'] .reel-item-copy { animation: reel-release 150ms cubic-bezier(.3,.8,.3,1) both; }
+.is-firing .reel-seat { animation: reel-seat-lock 190ms ease-out; }
+.reel-open:disabled { cursor: default; }
+@keyframes reel-seat-lock { 0% { background-color: #b8885033; box-shadow: inset 3px 0 #a45036; } 45% { background-color: #b888501a; } 100% { background-color: transparent; box-shadow: inset 0 0 transparent; } }
+@keyframes reel-release { 0% { transform: translateX(0) scale(1); opacity: 1; } 35% { transform: translateX(-4px) scale(.988); opacity: 1; } 100% { transform: translateX(26px) scale(1.015); opacity: 0; } }
+
+/* A small project-date pointer shares the experience rail without taking it over. */
+.career-timeline { position: relative; padding-top: 34px; }
+.project-timeline-pointer { position: absolute; top: 0; left: calc(18px + (100% - 36px) * var(--project-position)); color: #a6523a; pointer-events: auto; }
+.project-marker-label { display: flex; align-items: center; gap: 7px; width: max-content; padding: 4px 7px; border: 1px solid #c89d834a; border-radius: 5px; background: #faf5ec; font-size: 10px; line-height: 1.2; transform: translateX(calc(var(--project-position) * -100%)); transition: color 180ms,background 180ms; }
+.project-marker-label b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.project-timeline-pointer::after { content: ''; position: absolute; top: 27px; left: -4px; width: 0; height: 0; border: 4px solid transparent; border-top: 6px solid #a6523a; }
+.project-timeline-pointer.is-open .project-marker-label { background: #a6523a; color: #fffaf2; }
+.career-dates button[aria-selected='true'] { color: #4b6742; }
+.career-dates button[aria-selected='true'] > span { background: #627b4f; box-shadow: 0 0 0 1px #627b4f; }
+
+/* Horizontal dragging lifts the top card; a committed gesture peels it away. */
+.career-stack { cursor: grab; user-select: none; }
+.career-stack.is-dragging { cursor: grabbing; }
+.career-stack.is-dragging .career-card.is-current { transition: none; box-shadow: 0 24px 42px #39413225; }
+.career-card.is-peeling { transition: transform 240ms cubic-bezier(.25,.75,.35,1),opacity 210ms ease; pointer-events: none; }
+.career-card.is-peeling .career-card-content { opacity: 1; transform: none; transition: none; }
+.career-drag-hint { color: #89917f; font-size: 11px; }
+@media (max-width: 550px) {
+  .reel-seat { height: 92px; }
+  .reel-item { padding-left: 9px; grid-template-columns: 18px minmax(0,1fr); }
+  .project-marker-label { font-size: 10px; }
+  .career-drag-hint { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .career-stack.is-dragging .career-card.is-current { transform: none !important; }
+  .project-marker-label { transition: none; }
+  .reel-seat-pulse,.is-firing .reel-seat,.is-firing .reel-item[aria-pressed='true'] .reel-item-copy { animation: none; }
+}

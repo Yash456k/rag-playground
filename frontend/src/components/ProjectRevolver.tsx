@@ -8,10 +8,16 @@ type ProjectRevolverProps = {
   activeIndex: number
   onChange: (index: number) => void
   onOpen: () => void
+  onPositionChange: (position: number) => void
 }
 
-export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: ProjectRevolverProps) {
+export function ProjectRevolver({ projects, activeIndex, onChange, onOpen, onPositionChange }: ProjectRevolverProps) {
   const [position, setPosition] = useState(activeIndex)
+  const [seat, setSeat] = useState(0)
+  const [firing, setFiring] = useState(false)
+  const fireTimer = useRef<number | null>(null)
+  const firingLock = useRef(false)
+  const needsSeat = useRef(false)
   const physical = useRef({ position: activeIndex, velocity: 0, target: activeIndex })
   const frame = useRef<number | null>(null)
   const root = useRef<HTMLDivElement>(null)
@@ -25,6 +31,8 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       physical.current.position = physical.current.target
       physical.current.velocity = 0
       setPosition(physical.current.target)
+      onPositionChange(physical.current.target)
+      needsSeat.current = false
       frame.current = null
       return
     }
@@ -35,10 +43,16 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       previous = now
       state.position = next.position
       state.velocity = next.velocity
+      onPositionChange(state.position)
+      if (needsSeat.current && Math.abs(state.position - state.target) < .035) {
+        needsSeat.current = false
+        setSeat((count) => count + 1)
+      }
       if (Math.abs(state.position - state.target) < .0005 && Math.abs(state.velocity) < .005) {
         state.position = state.target
         state.velocity = 0
         setPosition(state.target)
+        onPositionChange(state.target)
         frame.current = null
       } else {
         setPosition(state.position)
@@ -46,11 +60,16 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       }
     }
     frame.current = requestAnimationFrame(tick)
+  }, [onPositionChange])
+
+  useEffect(() => () => {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    if (fireTimer.current !== null) window.clearTimeout(fireTimer.current)
   }, [])
 
-  useEffect(() => () => { if (frame.current !== null) cancelAnimationFrame(frame.current) }, [])
-
   const select = useCallback((target: number) => {
+    if (firingLock.current) return
+    needsSeat.current = true
     physical.current.target = target
     onChange(wrapIndex(target, projects.length))
     animate()
@@ -93,7 +112,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     rotate(event.key === 'ArrowDown' ? 1 : -1)
   }
   const pointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return
+    if (event.button !== 0 || firingLock.current) return
     suppressClick.current = false
     gesture.current = { start: event.pointerType === 'touch' ? event.clientX : event.clientY, origin: physical.current.position, dragged: false, touch: event.pointerType === 'touch' }
   }
@@ -111,6 +130,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     physical.current.position = drag.origin - delta / spacing
     physical.current.velocity = 0
     setPosition(physical.current.position)
+    onPositionChange(physical.current.position)
   }
   const pointerEnd = (event: PointerEvent<HTMLDivElement>) => {
     const drag = gesture.current
@@ -118,12 +138,32 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
     if (drag?.dragged) select(Math.round(physical.current.position))
   }
+  const openProject = () => {
+    if (firingLock.current) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { onOpen(); return }
+    // Finish loading the chosen slot before the short, local recoil.
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    frame.current = null
+    physical.current.position = physical.current.target
+    physical.current.velocity = 0
+    setPosition(physical.current.target)
+    onPositionChange(physical.current.target)
+    firingLock.current = true
+    setFiring(true)
+    fireTimer.current = window.setTimeout(() => {
+      onOpen()
+      setFiring(false)
+      firingLock.current = false
+      fireTimer.current = null
+    }, 150)
+  }
   const center = Math.round(position)
 
   return (
-    <div className="smooth-reel-stage">
+    <div className={`smooth-reel-stage ${firing ? 'is-firing' : ''}`}>
       <div ref={root} className="smooth-reel" role="group" aria-label="Project selector" tabIndex={0} onKeyDown={keyboard}>
         <div className="reel-aperture" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
+          <div className="reel-seat" aria-hidden="true"><span key={seat} className={seat > 0 ? 'reel-seat-pulse' : ''} /></div>
           {[-2, -1, 0, 1, 2].map((slot) => {
             const absolute = center + slot
             const index = wrapIndex(absolute, projects.length)
@@ -133,13 +173,13 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
             const opacity = distance <= 1 ? 1 - distance * .55 : Math.max(0, .45 * (2 - distance))
             return (
               <button type="button" className="reel-item" key={absolute}
-                style={{ '--offset': offset, opacity, transform: `translateY(calc(-50% + ${offset} * var(--reel-spacing))) perspective(900px) rotateX(${offset * -13}deg) scale(${1 - Math.min(distance, 2) * .055})` } as CSSProperties}
+                style={{ '--offset': offset, opacity, transform: `translateY(calc(-50% + ${offset} * var(--reel-spacing))) perspective(900px) rotateX(${Math.min(distance, 2) * 18}deg) scale(${1 - Math.min(distance, 2) * .055})` } as CSSProperties}
                 aria-hidden={Math.abs(slot) > 1} tabIndex={Math.abs(slot) > 1 ? -1 : 0}
                 aria-pressed={index === activeIndex && Math.abs(slot) <= 1}
                 aria-label={`${index === activeIndex ? 'Selected project' : 'Select project'}: ${project.title}`}
                 onClick={(event) => { if (event.detail === 0 || !suppressClick.current) select(absolute) }}>
                 <span className="reel-number">{project.number}</span>
-                <span><strong>{project.title}</strong><small>{project.summary}</small></span>
+                <span className="reel-item-copy"><strong>{project.title}</strong><small>{project.summary}</small></span>
               </button>
             )
           })}
@@ -149,7 +189,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
       <p className="reel-summary">{selectedProject.summary}</p>
       <div className="reel-footer">
         <span className="reel-hint"><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe sideways to explore</span></span>
-        <button type="button" className="reel-open" onClick={onOpen} aria-label={`View ${selectedProject.title}`}>View project <span aria-hidden="true">↗</span></button>
+        <button type="button" className="reel-open" onClick={openProject} disabled={firing} aria-label={`View ${selectedProject.title}`}>View project <span aria-hidden="true">↗</span></button>
       </div>
       <span className="visually-hidden" aria-live="polite">Selected: {selectedProject.title}</span>
     </div>
