@@ -146,6 +146,7 @@ export function ProjectRevolver({ projects, activeIndex, onChange, onOpen }: Pro
         </div>
         <div className="reel-navigation"><button type="button" aria-label="Previous project" onClick={() => rotate(-1)}>↑</button><button type="button" aria-label="Next project" onClick={() => rotate(1)}>↓</button></div>
       </div>
+      <p className="reel-summary">{selectedProject.summary}</p>
       <div className="reel-footer">
         <span className="reel-hint"><span className="desktop-reel-hint">Scroll or drag to explore</span><span className="mobile-reel-hint">Swipe sideways to explore</span></span>
         <button type="button" className="reel-open" onClick={onOpen} aria-label={`View ${selectedProject.title}`}>View project <span aria-hidden="true">↗</span></button>

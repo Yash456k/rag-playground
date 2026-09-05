@@ -127,3 +127,12 @@
 
 .about-header .route-header-home, .all-projects-header .route-header-home { position: static; font-size: 12px; }
 .about-header > p, .all-projects-header > p { font-size: 11px; }
+
+.reel-summary { display: none; }
+@media (max-width: 550px) {
+  .smooth-reel { --reel-spacing: 100px; }
+  .reel-aperture { height: 330px; }
+  .reel-item small { display: none; }
+  .reel-summary { display: block; min-height: 76px; margin: 0; padding: 6px 36px 12px 29px; color: #67745a; font-size: 13px; line-height: 1.7; }
+  .reel-footer { margin-top: 8px; }
+}
