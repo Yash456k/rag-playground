@@ -3,7 +3,7 @@ import type { KeyboardEvent } from 'react'
 import { experienceItems } from '../data/experience'
 
 const chapters = [experienceItems[2], experienceItems[1], experienceItems[0]]
-const labels = ['Internship', 'Degree', 'Full-time']
+const labels = ['Intern', 'Degree', '']
 
 export function ExperienceTimeline() {
   const [active, setActive] = useState(2)
@@ -24,7 +24,7 @@ export function ExperienceTimeline() {
           <button key={chapter.id} ref={(element) => { buttons.current[index] = element }} type="button" role="tab" id={`chapter-tab-${chapter.id}`} aria-controls={`chapter-${chapter.id}`} aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={(event) => onKeyDown(event, index)}>
             <span className="journey-point" aria-hidden="true" />
             <span className="journey-date">{index === 0 ? '2024' : index === 1 ? '2026' : 'Now'}{index === 2 && <i aria-hidden="true" />}</span>
-            <span className="journey-label">{labels[index]}</span>
+            {labels[index] && <span className="journey-label">{labels[index]}</span>}
           </button>
         ))}
       </div>
