@@ -136,3 +136,9 @@
   .reel-summary { display: block; min-height: 76px; margin: 0; padding: 6px 36px 12px 29px; color: #67745a; font-size: 13px; line-height: 1.7; }
   .reel-footer { margin-top: 8px; }
 }
+
+/* Settle near a section boundary while keeping long sections freely scrollable. */
+.portfolio-site { scroll-snap-type: y proximity; }
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-site { scroll-snap-type: none; }
+}
