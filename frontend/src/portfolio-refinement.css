@@ -195,7 +195,7 @@
 }
 @media (min-width: 901px) and (max-width: 1200px) {
   .work-section .work-mobile-panel { padding-inline: 25px; }
-  .work-section .projects-intro .view-all-projects { top: auto; bottom: 0; padding: 7px; font-size: 8px; }
+  .work-section .projects-intro .view-all-projects { position: static; margin-top: 12px; padding: 7px; font-size: 8px; }
   .career-story { padding: 17px; }
   .career-title { font-size: 24px; }
   .career-detail { font-size: 11px; }
@@ -231,6 +231,7 @@
   .section-navigator { right: 7px; padding: 4px; }
   .section-navigator a { width: 26px; height: 26px; }
   .work-section .work-mobile-panel { padding: 55px 12px 38px; }
+  .work-section .experience-panel { padding-top: 85px; }
   .work-section .split-panel-intro h2 { font-size: 54px; }
   .work-section .split-panel-intro .work-overline { font-size: 8px; margin-bottom: 21px; }
   .work-section .split-panel-intro .work-subtitle { font-size: 11px; }
@@ -247,8 +248,8 @@
   .career-proof dt { font-size: 20px; }
   .career-proof dd { font-size: 8px; }
   .career-proof > div + div { padding-left: 10px; }
-  .work-section .projects-intro .view-all-projects { top: 37px; right: 0; font-size: 8px; }
-  .work-section .project-view-stack { height: 565px; }
+  .work-section .projects-intro .view-all-projects { position: static; margin-top: 14px; font-size: 9px; }
+  .work-section .project-view-stack { height: 630px; }
   .project-revolver-item { padding: 12px 10px; grid-template-columns: 20px minmax(0,1fr); gap: 8px; }
   .project-revolver-item strong { font-size: 22px; }
   .project-revolver-item small { font-size: 10px; }
@@ -257,4 +258,29 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .career-expansion, .career-dot, .career-toggle { transition: none; }
+}
+
+/* Laptop-height layouts keep all three chapters and project controls in view. */
+@media (min-width: 901px) and (max-height: 800px) {
+  .work-section { min-height: 100svh; padding-top: 12px; padding-bottom: 14px; }
+  .work-section .section-header { min-height: 35px; padding-bottom: 12px; }
+  .work-section .work-mobile-panel { padding-top: 19px; padding-bottom: 10px; }
+  .work-section .split-panel-intro h2 { font-size: 56px; }
+  .work-section .split-panel-intro .work-overline { margin-bottom: 14px; }
+  .work-section .split-panel-intro .work-subtitle { margin-top: 8px; font-size: 11px; }
+  .work-section .experience-panel .split-panel-intro { margin-bottom: 10px; }
+  .career-heading > button { min-height: 72px; padding: 8px 0; }
+  .career-heading-copy { gap: 4px; }
+  .career-title { font-size: 25px; }
+  .career-story { padding: 12px 16px; margin-bottom: 11px; }
+  .career-chapter { margin-bottom: 7px; }
+  .career-summary { font-size: 22px; margin-bottom: 8px; }
+  .career-detail { font-size: 11.5px; line-height: 1.6; }
+  .career-proof { margin-top: 12px; padding-top: 9px; }
+  .career-proof dt { font-size: 21px; }
+  .career-proof dd { margin-top: 4px; }
+  .project-revolver { --project-spacing: 88px; }
+  .work-section .project-selector-view { grid-template-rows: auto minmax(310px, 1fr); }
+  .project-revolver-stage { gap: 12px; }
+  .project-selection-receipt { min-height: 55px; padding-top: 8px; }
 }

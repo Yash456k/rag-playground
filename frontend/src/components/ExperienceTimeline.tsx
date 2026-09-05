@@ -21,7 +21,7 @@ export function ExperienceTimeline() {
                   id={`career-trigger-${item.id}`}
                   aria-expanded={expanded}
                   aria-controls={`career-panel-${item.id}`}
-                  onClick={() => setActiveId(item.id)}
+                  onClick={() => setActiveId((current) => current === item.id ? '' : item.id)}
                 >
                   <span className="career-heading-copy">
                     <span className="career-organization">{item.organization}{item.current && <span className="career-current">Now</span>}</span>
