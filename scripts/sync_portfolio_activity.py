@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import subprocess
 import tempfile
 from datetime import UTC, date, datetime, timedelta
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -43,7 +45,7 @@ def find_codex_home() -> Path:
     raise RuntimeError("Could not find a Codex home containing authentication")
 
 
-def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, Any]:
+def read_codex_credentials(codex_home: Path) -> tuple[str, str]:
     auth_path = codex_home / "auth.json"
     if not auth_path.exists():
         raise RuntimeError(f"Codex authentication was not found at {auth_path}")
@@ -54,11 +56,41 @@ def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, A
         raise RuntimeError("Codex authentication could not be read") from error
 
     tokens = auth.get("tokens") or {}
-    access_token = tokens.get("access_token")
     account_id = tokens.get("account_id")
+    source = os.environ.get("ACTIVITY_CODEX_AUTH_SOURCE", "codex")
+    if source == "codex":
+        access_token = tokens.get("access_token")
+    elif source == "hermes":
+        # Hermes owns token rotation and locks its shared credential pool. Never
+        # copy its refresh tokens into the independent Codex CLI auth file.
+        try:
+            status = import_module("hermes_cli.auth").get_codex_auth_status()
+            access_token = status.get("api_key") if status.get("logged_in") else None
+        except Exception:
+            raise RuntimeError("Hermes Codex authentication could not be resolved") from None
+        if not access_token:
+            raise RuntimeError("Hermes has no current Codex login")
+        try:
+            payload = access_token.split(".")[1]
+            claims = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+            managed_account = claims.get("https://api.openai.com/auth", {}).get(
+                "chatgpt_account_id"
+            )
+        except (ValueError, IndexError, AttributeError):
+            raise RuntimeError("Hermes Codex account could not be identified") from None
+        # Anchor the public graph to the original account, even if Hermes later
+        # selects a different account from its pool.
+        if not account_id or managed_account != account_id:
+            raise RuntimeError("Hermes Codex login does not match the portfolio account")
+    else:
+        raise RuntimeError("Unknown activity Codex authentication source")
     if not access_token or not account_id:
         raise RuntimeError("Codex authentication is missing an access token or account ID")
+    return access_token, account_id
 
+
+def read_codex_activity(codex_home: Path, start: date, end: date) -> dict[str, Any]:
+    access_token, account_id = read_codex_credentials(codex_home)
     request = Request(  # noqa: S310 - URL is the HTTPS constant above.
         CODEX_PROFILE_URL,
         headers={

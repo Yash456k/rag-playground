@@ -136,6 +136,20 @@ docker compose up -d api
 
 The API binds to `127.0.0.1:18080` and PostgreSQL to `127.0.0.1:55432`. Caddy is the only public production entry point.
 
+## Portfolio activity refresh on Hermes
+
+The daily `portfolio-activity-sync.timer` writes a public, allowlisted cache without
+commits or frontend deployments. Install its units with
+`scripts/install-activity-sync-hermes.sh`. The Hermes service runs in the existing
+Hermes Python environment and uses `ACTIVITY_CODEX_AUTH_SOURCE=hermes` to resolve
+its current Codex login through the shared, refresh-aware credential pool. The
+original Codex auth file supplies the expected account ID; a different account
+fails closed. Credentials stay on the server and are never copied into the cache.
+Outside Hermes, the collector defaults to the existing Codex auth-file behavior.
+Failed service runs retry after five minutes, with at most three starts per hour;
+the nightly schedule remains 23:55 Asia/Kolkata. Check the service journal and the
+cache's `generatedAt` when diagnosing stale activity.
+
 ## Checks
 
 ```bash
