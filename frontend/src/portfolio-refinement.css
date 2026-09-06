@@ -193,19 +193,24 @@
 
 /* The chosen title rises into its detail heading as its surroundings sweep left. */
 .tactile-work .project-selector-view,.tactile-work .project-detail-view { transform: none; transition: none; }
-.tactile-work .is-detail-open .project-selector-view { opacity: 1; transform: none; visibility: hidden; transition: visibility 0s 230ms; }
+.tactile-work .is-detail-open .project-selector-view { opacity: 1; transform: none; visibility: hidden; transition: none; animation: project-selector-exit 310ms step-end; }
 .tactile-work .is-detail-open .project-detail-view { opacity: 1; transform: none; visibility: visible; }
 .project-focus-copy h2 { transform-origin: top left; position: relative; z-index: 2; }
 .is-detail-open .reel-item[aria-pressed='true'] strong { visibility: hidden; }
 .is-detail-open .projects-intro,.is-detail-open .reel-footer,.is-detail-open .reel-summary,.is-detail-open .reel-seat,
-.is-detail-open .reel-item:not([aria-pressed='true']) .reel-item-copy,.is-detail-open .reel-number,.is-detail-open .reel-item[aria-pressed='true'] small { animation: project-surroundings-out 220ms cubic-bezier(.4,0,.8,.4) both; }
-.is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: project-details-unfold 260ms cubic-bezier(.22,1,.36,1) both; }
+.is-detail-open .reel-item[aria-pressed='true'] .reel-number,.is-detail-open .reel-item[aria-pressed='true'] small { animation: project-surroundings-out 220ms cubic-bezier(.4,0,.8,.4) both; }
+.is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']) { animation: project-option-sweep 290ms cubic-bezier(.3,0,.7,1) both; }
+.is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy { animation: project-option-stretch 290ms ease-in both; }
+.is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: project-details-unfold 200ms cubic-bezier(.22,1,.36,1) both; }
 .is-detail-open .reel-seat { animation-name: project-seat-out; }
-.is-detail-open .project-focus-header { animation-delay: 100ms; }
-.is-detail-open .project-focus-copy > p { animation-delay: 150ms; }
-.is-detail-open .project-focus-metrics { animation-delay: 180ms; }
-.is-detail-open .project-focus-highlights { animation-delay: 210ms; }
-.is-detail-open .project-focus-footer { animation-delay: 230ms; }
+.is-detail-open .project-focus-header { animation-delay: 140ms; }
+.is-detail-open .project-focus-copy > p { animation-delay: 250ms; }
+.is-detail-open .project-focus-metrics { animation-delay: 270ms; }
+.is-detail-open .project-focus-highlights { animation-delay: 290ms; }
+.is-detail-open .project-focus-footer { animation-delay: 310ms; }
+@keyframes project-selector-exit { from { visibility: visible; } to { visibility: hidden; } }
+@keyframes project-option-sweep { from { translate: 0 0; } to { translate: calc(-100% - 40px) 0; } }
+@keyframes project-option-stretch { from { transform: none; } to { transform: skewX(8deg) scaleX(1.04); } }
 @keyframes project-surroundings-out { from { translate: 0 0; opacity: 1; } to { translate: -85px 0; transform: skewX(-7deg); opacity: 0; } }
 @keyframes project-seat-out { from { translate: 0 0; opacity: 1; } to { translate: -85px 0; opacity: 0; } }
 @keyframes project-details-unfold { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -213,5 +218,7 @@
   .gesture-cue::after,.is-detail-open .projects-intro,.is-detail-open .reel-footer,.is-detail-open .reel-summary,.is-detail-open .reel-seat,
   .is-detail-open .reel-item-copy,.is-detail-open .reel-number,.is-detail-open .reel-item small,
   .is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: none; }
-  .tactile-work .is-detail-open .project-selector-view { transition: none; }
+  .tactile-work .is-detail-open .project-selector-view,
+  .is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']),
+  .is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy { animation: none; transition: none; }
 }
