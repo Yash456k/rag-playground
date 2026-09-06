@@ -191,7 +191,7 @@
   .gesture-cue.is-vertical::after { left: 7.5px; top: 2.5px; animation-name: gesture-bop-x; }
 }
 
-/* The chosen title rises into its detail heading as its surroundings sweep left. */
+/* Clear the neighbouring rows first, then lift the chosen title and unfold details. */
 .tactile-work .project-selector-view,.tactile-work .project-detail-view { transform: none; transition: none; }
 .tactile-work .is-detail-open .project-selector-view { opacity: 1; transform: none; visibility: hidden; transition: none; animation: project-selector-exit 310ms step-end; }
 .tactile-work .is-detail-open .project-detail-view { opacity: 1; transform: none; visibility: visible; }
@@ -204,11 +204,11 @@
 .is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy { animation: project-option-stretch 290ms ease-in both; }
 .is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: project-details-unfold 200ms cubic-bezier(.22,1,.36,1) both; }
 .is-detail-open .reel-seat { animation-name: project-seat-out; }
-.is-detail-open .project-focus-header { animation-delay: 140ms; }
-.is-detail-open .project-focus-copy > p { animation-delay: 250ms; }
-.is-detail-open .project-focus-metrics { animation-delay: 270ms; }
-.is-detail-open .project-focus-highlights { animation-delay: 290ms; }
-.is-detail-open .project-focus-footer { animation-delay: 310ms; }
+.is-detail-open .project-focus-header { animation-delay: 450ms; }
+.is-detail-open .project-focus-copy > p { animation-delay: 560ms; }
+.is-detail-open .project-focus-metrics { animation-delay: 580ms; }
+.is-detail-open .project-focus-highlights { animation-delay: 600ms; }
+.is-detail-open .project-focus-footer { animation-delay: 620ms; }
 @keyframes project-selector-exit { from { visibility: visible; } to { visibility: hidden; } }
 @keyframes project-option-sweep { from { translate: 0 0; } to { translate: calc(-100% - 40px) 0; } }
 @keyframes project-option-stretch { from { transform: none; } to { transform: skewX(8deg) scaleX(1.04); } }
@@ -233,6 +233,10 @@
 .is-returning .reel-item[aria-pressed='true'] .reel-number,.is-returning .reel-item[aria-pressed='true'] small { animation: project-surroundings-return 290ms cubic-bezier(.22,1,.36,1) both; }
 .is-returning .reel-seat { animation: project-seat-return 290ms cubic-bezier(.22,1,.36,1) both; }
 .is-returning .project-focus-header,.is-returning .project-focus-copy > p,.is-returning .project-focus-metrics,.is-returning .project-focus-highlights,.is-returning .project-focus-footer { animation: project-details-fold 160ms ease-in both; }
+.is-returning .reel-item[aria-hidden='false']:not([aria-pressed='true']),
+.is-returning .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy,
+.is-returning .projects-intro,.is-returning .reel-footer,.is-returning .reel-summary,.is-returning .reel-seat,
+.is-returning .reel-item[aria-pressed='true'] .reel-number,.is-returning .reel-item[aria-pressed='true'] small { animation-delay: var(--return-reveal-delay,420ms); }
 @keyframes project-option-return { from { translate: var(--return-translate,calc(-100% - 40px) 0); } to { translate: 0 0; } }
 @keyframes project-copy-return { from { transform: var(--return-transform,skewX(8deg) scaleX(1.04)); } to { transform: none; } }
 @keyframes project-surroundings-return { from { translate: var(--return-translate,-85px 0); transform: var(--return-transform,none); opacity: var(--return-opacity,0); } to { translate: 0 0; transform: none; opacity: 1; } }

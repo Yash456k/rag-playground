@@ -8,6 +8,8 @@ import { projectPointerPosition } from '../lib/revolver'
 
 const projectItems = projectsData as readonly ProjectItem[]
 const projectDates = projectItems.map((project) => project.date)
+const sweepDuration = 310
+const titleDuration = 420
 
 type WorkSectionProps = {
   onNavigate: (path: string) => void
@@ -25,6 +27,8 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   const interacted = useRef(false)
   const titleOrigin = useRef<{ x: number; y: number; fontSize: number } | null>(null)
   const returnTitle = useRef({ transform: 'none', color: '#282b24' })
+  const titleMotion = useRef<Animation | null>(null)
+  const returnDuration = useRef(titleDuration)
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
 
   const openProject = () => {
@@ -49,6 +53,9 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
     }
     const titleStyle = getComputedStyle(heading)
     returnTitle.current = { transform: titleStyle.transform, color: titleStyle.color }
+    const elapsed = titleMotion.current?.currentTime
+    returnDuration.current = typeof elapsed === 'number' ? Math.min(titleDuration, Math.max(0, elapsed - sweepDuration)) : titleDuration
+    panel.current?.style.setProperty('--return-reveal-delay', `${returnDuration.current}ms`)
     // Start a reversal at the current frame, including an interrupted opening.
     const snapshots = [...(panel.current?.querySelectorAll<HTMLElement>('.projects-intro,.reel-footer,.reel-summary,.reel-seat,.reel-item,.reel-item-copy,.reel-number,.reel-item small,.project-focus-header,.project-focus-copy > p,.project-focus-metrics,.project-focus-highlights,.project-focus-footer') ?? [])].map((element) => {
       const style = getComputedStyle(element)
@@ -81,10 +88,14 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
     const slotFrame = { transform: `translate(${x}px, ${y}px) scale(${scale})`, color: '#293d24' }
     const detailFrame = { transform: 'translate(0, 0) scale(1)', color: '#282b24' }
     const motion = heading.animate(returning ? [returnTitle.current, slotFrame] : [slotFrame, detailFrame], {
-      duration: 420, easing: 'cubic-bezier(.22,1,.36,1)', fill: returning ? 'forwards' : 'none',
+      duration: returning ? returnDuration.current : titleDuration,
+      delay: returning ? 0 : sweepDuration,
+      endDelay: returning ? sweepDuration : 0,
+      easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both',
     })
+    titleMotion.current = motion
     if (returning) motion.onfinish = () => setProjectView('selector')
-    return () => { motion.onfinish = null; motion.cancel() }
+    return () => { titleMotion.current = null; motion.onfinish = null; motion.cancel() }
   }, [projectView])
 
   useEffect(() => {
