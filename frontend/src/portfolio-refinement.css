@@ -48,11 +48,8 @@
 .career-proof { margin-top: 22px; padding-top: 15px; border-top: 1px solid #d8ddce; font-size: 12px; color: #536747; }
 .career-navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; font-size: 12px; color: #53624b; font-variant-numeric: tabular-nums; }
 .career-navigation i { color: #939989; font-style: normal; margin-left: 5px; }
-.career-navigation > div, .reel-navigation { display: flex; gap: 8px; }
-.career-navigation button, .reel-navigation button { width: 38px; height: 38px; border: 1px solid #cdd1c0; background: transparent; border-radius: 50%; color: #55674a; font-size: 18px; transition: background 180ms,border-color 180ms; }
-.career-navigation button:hover, .reel-navigation button:hover { background: #e4e9da; border-color: #9ba88e; }
 .smooth-reel-stage { min-width: 0; }
-.smooth-reel { --reel-spacing: 110px; display: grid; grid-template-columns: minmax(0,1fr) 38px; gap: 12px; align-items: center; min-width: 0; outline-offset: 8px; }
+.smooth-reel { --reel-spacing: 110px; display: grid; grid-template-columns: minmax(0,1fr); align-items: center; min-width: 0; outline-offset: 8px; }
 .reel-aperture { height: 378px; position: relative; overflow: hidden; touch-action: pan-y; cursor: grab; user-select: none; mask-image: linear-gradient(transparent,#000 12%,#000 88%,transparent); }
 .reel-aperture:active { cursor: grabbing; }
 .reel-item { position: absolute; top: 50%; left: 0; width: 100%; display: grid; grid-template-columns: 27px minmax(0,1fr); align-items: center; gap: 14px; padding: 16px 4px; border: 0; background: transparent; text-align: left; transform-origin: center center; cursor: inherit; will-change: transform,opacity; }
@@ -60,7 +57,6 @@
 .reel-number { color: #aa5542; font-size: 11px; font-variant-numeric: tabular-nums; }
 .reel-item strong { display: block; color: #35402e; font: 400 clamp(26px,2.45vw,38px)/1.08 'Newsreader',serif; letter-spacing: -.025em; }
 .reel-item small { display: block; margin-top: 10px; max-width: 400px; color: #6d7961; font-size: 12px; line-height: 1.55; }
-.reel-navigation { flex-direction: column; }
 .reel-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid #d4d8c9; padding-top: 20px; margin-top: 12px; }
 .reel-hint { font-size: 11px; color: #858c7c; }
 .mobile-reel-hint { display: none; }
@@ -114,9 +110,9 @@
   .tactile-work { padding: 45px 24px; }.tactile-work .view-all-projects { font-size: 11px; }
   .career-card { padding: 23px; }.career-card h3 { font-size: 30px; }.career-card p { font-size: 13px; line-height: 1.75; }
   .career-card-meta { font-size: 10px; }.career-proof { font-size: 11px; line-height: 1.5; }
-  .smooth-reel { --reel-spacing: 118px; grid-template-columns: minmax(0,1fr) 32px; gap: 4px; }.reel-aperture { height: 374px; }
+  .smooth-reel { --reel-spacing: 118px; grid-template-columns: minmax(0,1fr); }.reel-aperture { height: 374px; }
   .reel-item { grid-template-columns: 20px minmax(0,1fr); gap: 9px; }.reel-item strong { font-size: 27px; }.reel-item small { font-size: 11px; }
-  .reel-navigation button { width: 32px; height: 38px; }.reel-hint { font-size: 10px; max-width: 130px; }.reel-open { font-size: 12px; gap: 10px; }
+  .reel-hint { font-size: 10px; max-width: 130px; }.reel-open { font-size: 12px; gap: 10px; }
   .desktop-reel-hint { display: none; }.mobile-reel-hint { display: inline; }
   .about-statement h2,.all-projects-intro h2 { font-size: 49px; }.experience-list h3 { font-size: 24px; }.experience-list p { font-size: 12px; }
   .all-projects-grid article { padding: 22px; }.all-projects-grid article h3 { font-size: 28px; }
@@ -150,17 +146,9 @@
 
 /* The centre seat stays still while the barrel rolls through it. */
 .reel-seat { position: absolute; inset: 50% 0 auto; height: 110px; transform: translateY(-50%); pointer-events: none; border-radius: 11px; background: linear-gradient(90deg,#d9dfc43d,#fdfaf34d 80%,transparent); border-left: 2px solid #ab5940; }
-.reel-seat > span { display: block; width: 100%; height: 100%; border-radius: inherit; }
-.reel-seat-pulse { animation: reel-seat-lock 230ms ease-out; }
 .reel-item { padding-left: 12px; }
 .reel-item[aria-pressed='true'] .reel-number { color: #aa4731; font-weight: 600; }
 .reel-item[aria-pressed='true'] strong { color: #293d24; }
-.is-firing .reel-item[aria-pressed='true'] .reel-item-copy { animation: reel-release 150ms cubic-bezier(.3,.8,.3,1) both; }
-.is-firing .reel-seat { animation: reel-seat-lock 190ms ease-out; }
-.reel-open:disabled { cursor: default; }
-@keyframes reel-seat-lock { 0% { background-color: #b8885033; box-shadow: inset 3px 0 #a45036; } 45% { background-color: #b888501a; } 100% { background-color: transparent; box-shadow: inset 0 0 transparent; } }
-@keyframes reel-release { 0% { transform: translateX(0) scale(1); opacity: 1; } 35% { transform: translateX(-4px) scale(.988); opacity: 1; } 100% { transform: translateX(26px) scale(1.015); opacity: 0; } }
-
 /* A small project-date pointer shares the experience rail without taking it over. */
 .career-timeline { position: relative; padding-top: 34px; }
 .project-timeline-pointer { position: absolute; top: 0; left: calc(18px + (100% - 36px) * var(--project-position)); color: #a6523a; pointer-events: auto; }
@@ -187,5 +175,43 @@
 @media (prefers-reduced-motion: reduce) {
   .career-stack.is-dragging .career-card.is-current { transform: none !important; }
   .project-marker-label { transition: none; }
-  .reel-seat-pulse,.is-firing .reel-seat,.is-firing .reel-item[aria-pressed='true'] .reel-item-copy { animation: none; }
+}
+
+/* Quiet gesture cues replace the two sets of navigation arrows. */
+.reel-hint,.career-drag-hint { display: inline-flex; align-items: center; gap: 9px; }
+.gesture-cue { flex: 0 0 auto; display: inline-block; position: relative; width: 20px; height: 10px; border: 1px solid #a6af9970; border-radius: 10px; }
+.gesture-cue::after { content: ''; position: absolute; width: 3px; height: 3px; top: 2.5px; left: 7.5px; border-radius: 50%; background: #798a68; animation: gesture-bop-x 3.6s ease-in-out infinite; }
+.gesture-cue.is-vertical { width: 10px; height: 20px; }
+.gesture-cue.is-vertical::after { left: 2.5px; top: 7.5px; animation-name: gesture-bop-y; }
+.career-deck:hover .gesture-cue::after,.career-deck:focus-within .gesture-cue::after,.smooth-reel-stage:hover .gesture-cue::after,.smooth-reel-stage:focus-within .gesture-cue::after { animation-play-state: paused; }
+@keyframes gesture-bop-x { 0%,60%,100% { transform: translateX(0); } 72% { transform: translateX(4px); } 86% { transform: translateX(-3px); } }
+@keyframes gesture-bop-y { 0%,60%,100% { transform: translateY(0); } 72% { transform: translateY(4px); } 86% { transform: translateY(-3px); } }
+@media (max-width: 550px) {
+  .gesture-cue.is-vertical { width: 20px; height: 10px; }
+  .gesture-cue.is-vertical::after { left: 7.5px; top: 2.5px; animation-name: gesture-bop-x; }
+}
+
+/* The chosen title rises into its detail heading as its surroundings sweep left. */
+.tactile-work .project-selector-view,.tactile-work .project-detail-view { transform: none; transition: none; }
+.tactile-work .is-detail-open .project-selector-view { opacity: 1; transform: none; visibility: hidden; transition: visibility 0s 230ms; }
+.tactile-work .is-detail-open .project-detail-view { opacity: 1; transform: none; visibility: visible; }
+.project-focus-copy h2 { transform-origin: top left; position: relative; z-index: 2; }
+.is-detail-open .reel-item[aria-pressed='true'] strong { visibility: hidden; }
+.is-detail-open .projects-intro,.is-detail-open .reel-footer,.is-detail-open .reel-summary,.is-detail-open .reel-seat,
+.is-detail-open .reel-item:not([aria-pressed='true']) .reel-item-copy,.is-detail-open .reel-number,.is-detail-open .reel-item[aria-pressed='true'] small { animation: project-surroundings-out 220ms cubic-bezier(.4,0,.8,.4) both; }
+.is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: project-details-unfold 260ms cubic-bezier(.22,1,.36,1) both; }
+.is-detail-open .reel-seat { animation-name: project-seat-out; }
+.is-detail-open .project-focus-header { animation-delay: 100ms; }
+.is-detail-open .project-focus-copy > p { animation-delay: 150ms; }
+.is-detail-open .project-focus-metrics { animation-delay: 180ms; }
+.is-detail-open .project-focus-highlights { animation-delay: 210ms; }
+.is-detail-open .project-focus-footer { animation-delay: 230ms; }
+@keyframes project-surroundings-out { from { translate: 0 0; opacity: 1; } to { translate: -85px 0; transform: skewX(-7deg); opacity: 0; } }
+@keyframes project-seat-out { from { translate: 0 0; opacity: 1; } to { translate: -85px 0; opacity: 0; } }
+@keyframes project-details-unfold { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .gesture-cue::after,.is-detail-open .projects-intro,.is-detail-open .reel-footer,.is-detail-open .reel-summary,.is-detail-open .reel-seat,
+  .is-detail-open .reel-item-copy,.is-detail-open .reel-number,.is-detail-open .reel-item small,
+  .is-detail-open .project-focus-header,.is-detail-open .project-focus-copy > p,.is-detail-open .project-focus-metrics,.is-detail-open .project-focus-highlights,.is-detail-open .project-focus-footer { animation: none; }
+  .tactile-work .is-detail-open .project-selector-view { transition: none; }
 }

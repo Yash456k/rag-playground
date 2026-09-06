@@ -102,7 +102,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
           const style: CSSProperties = { '--depth': depth, zIndex: isLeaving ? 5 : chapters.length - depth } as CSSProperties
           if (isLeaving) { style.transform = `translate3d(${leaving.direction * leaving.distance}px,-30px,70px) rotateY(${leaving.direction * -20}deg) rotateZ(${leaving.direction * 9}deg)`; style.opacity = 0 }
           else if (isDragged) { style.transform = `translate3d(${drag.x}px,${drag.y - Math.abs(drag.x) * .035}px,${Math.min(Math.abs(drag.x) * .16, 50)}px) rotateY(${Math.max(-14, Math.min(14, -drag.x * .055))}deg) rotateZ(${drag.x * .018}deg)` }
-          return <article className={`career-card ${depth === 0 ? 'is-current' : ''} ${isLeaving ? 'is-peeling' : ''}`} key={chapter.id} style={style} id={`career-${chapter.id}`} role="tabpanel" aria-labelledby={`career-tab-${chapter.id}`} aria-hidden={depth !== 0} inert={depth !== 0} tabIndex={depth === 0 ? 0 : -1}>
+          return <article className={`career-card ${depth === 0 ? 'is-current' : ''} ${isLeaving ? 'is-peeling' : ''}`} key={chapter.id} style={style} id={`career-${chapter.id}`} role="tabpanel" aria-labelledby={`career-tab-${chapter.id}`} aria-describedby="career-gesture" aria-hidden={depth !== 0} inert={depth !== 0} tabIndex={depth === 0 ? 0 : -1}>
             <div className="career-card-content">
               <div className="career-card-meta"><span>{chapter.organization}</span>{chapter.current && <span className="career-current">Current</span>}</div>
               <h3>{chapter.title}</h3><time>{chapter.period}</time>
@@ -112,7 +112,7 @@ export function ExperienceTimeline({ project, projectOpen }: Props) {
           </article>
         })}
       </div>
-      <div className="career-navigation"><span>{String(active + 1).padStart(2, '0')} <i>/ 03</i></span><span className="career-drag-hint">Drag to explore</span><div><button type="button" onClick={() => select(active - 1)} aria-label="Previous experience">←</button><button type="button" onClick={() => select(active + 1)} aria-label="Next experience">→</button></div></div>
+      <div className="career-navigation"><span>{String(active + 1).padStart(2, '0')} <i>/ 03</i></span><span className="career-drag-hint" id="career-gesture"><span className="gesture-cue" aria-hidden="true" />Drag to explore</span></div>
     </div>
   )
 }
