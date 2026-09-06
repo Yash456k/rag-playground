@@ -15,7 +15,8 @@ type WorkSectionProps = {
 
 export function WorkSection({ onNavigate }: WorkSectionProps) {
   const [activeProjectIndex, setActiveProjectIndex] = useState(1)
-  const [projectOpen, setProjectOpen] = useState(false)
+  const [projectView, setProjectView] = useState<'selector' | 'detail' | 'returning'>('selector')
+  const projectOpen = projectView !== 'selector'
   const work = useRef<HTMLElement>(null)
   const updateProjectPointer = useCallback((position: number) => {
     work.current?.style.setProperty('--project-position', String(projectPointerPosition(position, projectDates)))
@@ -23,6 +24,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
   const panel = useRef<HTMLElement>(null)
   const interacted = useRef(false)
   const titleOrigin = useRef<{ x: number; y: number; fontSize: number } | null>(null)
+  const returnTitle = useRef({ transform: 'none', color: '#282b24' })
   const selectedProject = projectItems[activeProjectIndex] ?? projectItems[0]
 
   const openProject = () => {
@@ -34,26 +36,56 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
       titleOrigin.current = { x: bounds.left - panelBounds.left, y: bounds.top - panelBounds.top, fontSize: Number.parseFloat(getComputedStyle(heading).fontSize) }
     }
     interacted.current = true
-    setProjectOpen(true)
+    setProjectView('detail')
+  }
+
+  const closeProject = () => {
+    if (projectView !== 'detail') return
+    const heading = panel.current?.querySelector<HTMLElement>('#project-focus-title')
+    const slot = panel.current?.querySelector<HTMLElement>('.reel-item[aria-pressed="true"] strong')
+    if (!heading || !slot || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setProjectView('selector')
+      return
+    }
+    const titleStyle = getComputedStyle(heading)
+    returnTitle.current = { transform: titleStyle.transform, color: titleStyle.color }
+    // Start a reversal at the current frame, including an interrupted opening.
+    const snapshots = [...(panel.current?.querySelectorAll<HTMLElement>('.projects-intro,.reel-footer,.reel-summary,.reel-seat,.reel-item,.reel-item-copy,.reel-number,.reel-item small,.project-focus-header,.project-focus-copy > p,.project-focus-metrics,.project-focus-highlights,.project-focus-footer') ?? [])].map((element) => {
+      const style = getComputedStyle(element)
+      return { element, translate: style.translate, transform: style.transform, opacity: style.opacity }
+    })
+    for (const snapshot of snapshots) {
+      snapshot.element.style.setProperty('--return-translate', snapshot.translate)
+      snapshot.element.style.setProperty('--return-transform', snapshot.transform)
+      snapshot.element.style.setProperty('--return-opacity', snapshot.opacity)
+    }
+    setProjectView('returning')
   }
 
   useLayoutEffect(() => {
-    if (!projectOpen || !titleOrigin.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (projectView === 'selector' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const heading = panel.current?.querySelector<HTMLElement>('#project-focus-title')
     const panelBounds = panel.current?.getBoundingClientRect()
     if (!heading || !panelBounds) return
     const bounds = heading.getBoundingClientRect()
-    const origin = titleOrigin.current
+    const returning = projectView === 'returning'
+    const slot = panel.current?.querySelector<HTMLElement>('.reel-item[aria-pressed="true"] strong')
+    const slotBounds = slot?.getBoundingClientRect()
+    const origin = returning && slot && slotBounds
+      ? { x: slotBounds.left - panelBounds.left, y: slotBounds.top - panelBounds.top, fontSize: Number.parseFloat(getComputedStyle(slot).fontSize) }
+      : titleOrigin.current
+    if (!origin) return
     const x = origin.x - (bounds.left - panelBounds.left)
     const y = origin.y - (bounds.top - panelBounds.top)
     const scale = origin.fontSize / Number.parseFloat(getComputedStyle(heading).fontSize)
-    // Move the actual detail heading from the selected entry's position.
-    const motion = heading.animate([
-      { transform: `translate(${x}px, ${y}px) scale(${scale})`, color: '#293d24' },
-      { transform: 'translate(0, 0) scale(1)', color: '#282b24' },
-    ], { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' })
-    return () => motion.cancel()
-  }, [projectOpen])
+    const slotFrame = { transform: `translate(${x}px, ${y}px) scale(${scale})`, color: '#293d24' }
+    const detailFrame = { transform: 'translate(0, 0) scale(1)', color: '#282b24' }
+    const motion = heading.animate(returning ? [returnTitle.current, slotFrame] : [slotFrame, detailFrame], {
+      duration: 420, easing: 'cubic-bezier(.22,1,.36,1)', fill: returning ? 'forwards' : 'none',
+    })
+    if (returning) motion.onfinish = () => setProjectView('selector')
+    return () => { motion.onfinish = null; motion.cancel() }
+  }, [projectView])
 
   useEffect(() => {
     if (!interacted.current) return
@@ -80,7 +112,7 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
           className={`work-mobile-panel projects-panel ${projectOpen ? 'is-project-detail' : ''}`}
           aria-labelledby={projectOpen ? 'project-focus-title' : 'projects-title'}
         >
-          <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''}`}>
+          <div className={`project-view-stack ${projectOpen ? 'is-detail-open' : ''} ${projectView === 'returning' ? 'is-returning' : ''}`}>
             <div className="project-selector-view" aria-hidden={projectOpen} inert={projectOpen}>
               <header className="split-panel-intro projects-intro">
                 <h2 id="projects-title">Projects</h2>
@@ -101,8 +133,8 @@ export function WorkSection({ onNavigate }: WorkSectionProps) {
                 onOpen={openProject}
               />
             </div>
-            <div className="project-detail-view" aria-hidden={!projectOpen} inert={!projectOpen}>
-              <ProjectDetail project={selectedProject} onBack={() => setProjectOpen(false)} />
+            <div className="project-detail-view" aria-hidden={!projectOpen} inert={projectView !== 'detail'}>
+              <ProjectDetail project={selectedProject} onBack={closeProject} />
             </div>
           </div>
         </section>

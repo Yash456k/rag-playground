@@ -196,6 +196,7 @@
 .tactile-work .is-detail-open .project-selector-view { opacity: 1; transform: none; visibility: hidden; transition: none; animation: project-selector-exit 310ms step-end; }
 .tactile-work .is-detail-open .project-detail-view { opacity: 1; transform: none; visibility: visible; }
 .project-focus-copy h2 { transform-origin: top left; position: relative; z-index: 2; }
+.is-detail-open .project-focus-copy h2 { visibility: visible; }
 .is-detail-open .reel-item[aria-pressed='true'] strong { visibility: hidden; }
 .is-detail-open .projects-intro,.is-detail-open .reel-footer,.is-detail-open .reel-summary,.is-detail-open .reel-seat,
 .is-detail-open .reel-item[aria-pressed='true'] .reel-number,.is-detail-open .reel-item[aria-pressed='true'] small { animation: project-surroundings-out 220ms cubic-bezier(.4,0,.8,.4) both; }
@@ -221,4 +222,25 @@
   .tactile-work .is-detail-open .project-selector-view,
   .is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']),
   .is-detail-open .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy { animation: none; transition: none; }
+}
+
+
+/* Back retraces the same movement, keeping the selected title continuous. */
+.tactile-work .is-returning .project-selector-view { visibility: visible; animation: none; }
+.is-returning .reel-item[aria-hidden='false']:not([aria-pressed='true']) { animation: project-option-return 290ms cubic-bezier(.3,0,.7,1) both; }
+.is-returning .reel-item[aria-hidden='false']:not([aria-pressed='true']) .reel-item-copy { animation: project-copy-return 290ms ease-out both; }
+.is-returning .projects-intro,.is-returning .reel-footer,.is-returning .reel-summary,
+.is-returning .reel-item[aria-pressed='true'] .reel-number,.is-returning .reel-item[aria-pressed='true'] small { animation: project-surroundings-return 290ms cubic-bezier(.22,1,.36,1) both; }
+.is-returning .reel-seat { animation: project-seat-return 290ms cubic-bezier(.22,1,.36,1) both; }
+.is-returning .project-focus-header,.is-returning .project-focus-copy > p,.is-returning .project-focus-metrics,.is-returning .project-focus-highlights,.is-returning .project-focus-footer { animation: project-details-fold 160ms ease-in both; }
+@keyframes project-option-return { from { translate: var(--return-translate,calc(-100% - 40px) 0); } to { translate: 0 0; } }
+@keyframes project-copy-return { from { transform: var(--return-transform,skewX(8deg) scaleX(1.04)); } to { transform: none; } }
+@keyframes project-surroundings-return { from { translate: var(--return-translate,-85px 0); transform: var(--return-transform,none); opacity: var(--return-opacity,0); } to { translate: 0 0; transform: none; opacity: 1; } }
+@keyframes project-seat-return { from { translate: var(--return-translate,-85px 0); opacity: var(--return-opacity,0); } to { translate: 0 0; opacity: 1; } }
+@keyframes project-details-fold { from { transform: var(--return-transform,none); opacity: var(--return-opacity,1); } to { transform: translateY(16px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .tactile-work .is-returning .project-selector-view,.is-returning .reel-item,.is-returning .reel-item-copy,
+  .is-returning .projects-intro,.is-returning .reel-footer,.is-returning .reel-summary,.is-returning .reel-seat,
+  .is-returning .reel-number,.is-returning .reel-item small,.is-returning .project-focus-header,
+  .is-returning .project-focus-copy > p,.is-returning .project-focus-metrics,.is-returning .project-focus-highlights,.is-returning .project-focus-footer { animation: none; }
 }
